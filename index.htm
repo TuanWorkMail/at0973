@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<!-- saved from url=(0070)http://atomicrobotdesign.com/blog_media/canvas_game/Part_6/part_6.html -->
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>HTML5 Canvas Game Part 6 || Atomic Robot Design</title>
+    <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+    <!-- And a little bit of CSS so we can see what’s going on: -->
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background: #666;
+        }
+
+        canvas {
+            display: block;
+            margin: 30px auto 0;
+            border: 1px dashed #ccc;
+            background: #000;
+        }
+    </style>
+    <script>
+        //Now, let’s get onto the part that will make this game run, the JavaScript. 
+        //First, we’ll get our ship working, so we need to set up some variables.
+        var canvas,
+            ctx,
+            whichMap = "map3",
+            shipSpeed = 8,
+            enemySpeed = 4,
+            fps = 30,
+            width = 480,
+            height = 320,
+            tmxloader = {},
+            enemyTotal = 5,
+            enemies = [],
+            enemy_x = 50,
+            enemy_y = -45,
+            enemy_w = 32,
+            enemy_h = 32,
+            enemy,
+            //array of coordinate the bot can randomly go to
+            botDestination,
+            //Now, let’s make our ship move. Add these to the variables at the top:
+            rightKey = false,
+            leftKey = false,
+            upKey = false,
+            downKey = false,
+            //which direction the ship is facing
+            direction = 0,
+            //Add the socket variable to the file
+            socket,
+            //remote player
+            remotePlayers,
+            remotePlayers = [],
+            //viewport for drawing map
+            viewport,
+            viewport_x = 0,
+            viewport_y = 0,
+            ship,
+            ship_x, ship_y, ship_w = 32, ship_h = 32,
+            laserTotal = 6,
+            lasers = [],
+            laserSpeed = 16,
+            score = 0,
+            alive = true,
+            lives = 3,
+            gameStarted = false;
+    </script>
+
+    <script src="js/Player.js"></script>
+    <script src="js/Pathfinding.js"></script>
+    <script src="js/TMX_Engine.js"></script>
+    <script src="js/Map.js"></script>
+    <script src="js/jquery-1.8.3.js"></script>
+    <script src="js/Multiplayer.js"></script>
+    <script src="js/TheGame.js"></script>
+    <script src="js/Bot.js"></script>
+</head>
+
+<body>
+    <!-- Let’s get started. We only need one line of HTML: -->
+    <canvas id="canvas"></canvas>
+    <!-- Embed the Socket.IO script that is generated automatically by the Node.js server 
+	by adding the following line after the canvas element: -->
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
+    <!-- Notice how you need to include the port number that you defined on the server. -->
+    <script>
+        document.getElementById("canvas").setAttribute("width", width);
+        document.getElementById("canvas").setAttribute("height", height);
+    </script>
+</body>
+</html>
