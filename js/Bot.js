@@ -21,17 +21,17 @@ var
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0,
     check = true,
-    reachedCheck = false,
-    enemyIntelligence = 0;
+    reachedCheck = [],
+    enemyIntelligence = 0,
+    whereNow = [],
+    pathFound = [],
+    //check if run for first time
+    firstRun = true;
 
 	
 		
 function moveEnemies() {
     //pathEnd = [Math.floor(ship_x / 32), Math.floor(ship_y / 32)];
-    //NOTE ~~ and ( | 0) is similar to Math.floor but it only truncated not round the number
-    //random number from 1 to length
-    var desti = (Math.random() * botDestination.length | 0) + 1;//~~(Math.random() * 6) + 1
-    pathEnd = [~~(botDestination[desti - 1].x/32), (botDestination[desti - 1].y/32 | 0)];
     //array hold all enemies
     //get the spawn point in enemiesGroup into enemies array and max 2 enemies
     while (enemies.length < enemiesGroup.length && enemies.length < 2) {
@@ -47,8 +47,59 @@ function moveEnemies() {
             whereSpawn = 0;
         }
     }
-    if (reachedCheck) {
-
+    //initialize
+    if (firstRun) {
+        for (var i = 0; i < enemies.length; i++)
+            reachedCheck[i] = 1;
+        firstRun = false;
+    }
+    for (var bot = 0; bot < enemies.length; bot++) {
+        //check if bot reached destination, if yes then choose another destination
+        if (reachedCheck[bot] = 1) {
+            pathStart = [Math.floor(enemies[bot][0] / 32),
+                            Math.floor(enemies[bot][1] / 32)];
+            //NOTE ~~ and ( | 0) is similar to Math.floor but it only truncated not round the number
+            //random number from 1 to botDestination.length
+            var desti = (Math.random() * botDestination.length | 0) + 1;//~~(Math.random() * 6) + 1
+            //pathEnd is random point in botDestination array
+            pathEnd = [~~(botDestination[desti - 1].x / 32), (botDestination[desti - 1].y / 32 | 0)];
+            pathFound[bot] = findPath(world, pathStart, pathEnd);
+            //WARNING: thePath is the tile array, not PIXEL, you have to CONVERT it to use it
+            //bot havent reached destination
+            reachedCheck[bot] = 0;
+            //bot currently at the starting tile
+            whereNow[bot] = 0;
+        }
+        //if bot havent reached destination yet
+        if (whereNow[bot] < pathFound[bot].length) {
+            //convert to pixel
+            thePathX = pathFound[bot][whereNow[bot]][0] * 32;
+            thePathY = pathFound[bot][whereNow[bot]][1] * 32;
+            //coordinate difference between object and destination
+            xDiff = enemies[bot][0] - thePathX;
+            yDiff = enemies[bot][1] - thePathY;
+            //go vertically
+            if (xDiff == 0) {
+                //down or up
+                if (yDiff > 0) {
+                    enemies[bot][1] -= enemySpeed;
+                } else {
+                    enemies[bot][1] += enemySpeed;
+                }
+                //go horizontally
+            } else if (yDiff == 0) {
+                //right or left
+                if (xDiff > 0) {
+                    enemies[bot][0] -= enemySpeed;
+                } else {
+                    enemies[bot][0] += enemySpeed;
+                }
+            }
+        }
+        if (whereNow[bot] == pathFound.length) {
+        }
+    }
+    //////////////////////////////////////////////////
     //the super human intelligent bot
     if (false) {
         for (var i = 0; i < enemies.length; i++) {
