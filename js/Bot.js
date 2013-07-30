@@ -6,7 +6,7 @@ function drawEnemies() {
     }
 }
 	
-var
+var maximumBot = 2,
     pathStart,
     pathStartX,
     pathStartY,
@@ -15,22 +15,83 @@ var
     thePathX,
     thePathY,
     c,//currently headed to which target in thePath
-    enemiesGroup,
+    //enemiesGroup,
+
     //grid = new PF.Grid(20, 20, world),
     //finder = new PF.AStarFinder(),
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0,
     check = true,
-    reachedCheck = [],
+    arrived = new Array(maximumBot),
     enemyIntelligence = 0,
-    whereNow = [],
-    pathFound = [],
+    whereNow = new Array(maximumBot),
+    pathFound = new Array(maximumBot),
     //check if run for first time
     firstRun = true;
 
-	
-		
+
 function moveEnemies() {
+    createBot();
+    for (var bot = 0; bot < enemies.length; bot++) {
+        if (enemies[bot][2] == pathFound[bot].length) {
+            findNewPath(bot);
+        }
+        if (enemies[bot][2] < pathFound[bot].length) {
+            movingBot(bot);
+        } else {
+            arrived[bot] = 1;
+        }
+    }
+}
+
+function createBot() {
+    if (whereSpawn == enemiesGroup.length) {
+        whereSpawn = 0;
+    }
+    while (enemies.length < 2) {
+        enemies.push([enemiesGroup[whereSpawn].x, enemiesGroup[whereSpawn].y, 0]);
+        whereSpawn++;
+    }
+}
+
+function findNewPath(bot) {
+    pathStart = [Math.floor(enemies[bot][0] / 32), Math.floor(enemies[bot][1] / 32)];
+    var random = Math.floor(Math.random() * botDestination.length);
+    pathEnd = [Math.floor(botDestination[random].x / 32), Math.floor(botDestination[random].y / 32)];
+    pathFound[bot] = pathFinder(world, pathStart, pathEnd);
+    //WARNING: pathFound is the tile array, not PIXEL, you have to CONVERT it to use it
+    arrived[bot] = 0;
+    whereNow[bot] = 0;
+}
+
+function movingBot(bot) {
+    var pixelX = pathFound[bot][whereNow[bot] + 1][0] * tmxloader.map.tileWidth,
+        pixelY = pathFound[bot][whereNow[bot] + 1][1] * tmxloader.map.tileHeight,
+        differenceX = enemies[bot][0] - pixelX,
+        differenceY = enemies[bot][1] - pixelY;
+    //go vertically
+    if (differenceX == 0 && differenceY != 0) {
+        //down or up
+        if (differenceY > 0) {
+            enemies[bot][1] -= enemySpeed;
+        } else {
+            enemies[bot][1] += enemySpeed;
+        }
+        //go horizontally
+    } else if (differenceY == 0 && differenceX != 0) {
+        //right or left
+        if (differenceX > 0) {
+            enemies[bot][0] -= enemySpeed;
+        } else {
+            enemies[bot][0] += enemySpeed;
+        }
+    } else {
+        //whereNow[bot]++;
+        enemies[bot][2]++;
+    }
+}
+		
+function moveEnemies2() {
     //pathEnd = [Math.floor(ship_x / 32), Math.floor(ship_y / 32)];
     //array hold all enemies
     //get the spawn point in enemiesGroup into enemies array and max 2 enemies
@@ -41,6 +102,7 @@ function moveEnemies() {
             enemyIntelligence = 0;
         }
         enemies.push([enemiesGroup[whereSpawn].x, enemiesGroup[whereSpawn].y, enemyIntelligence]);
+        //where bot will spawn, each map have a number of predefined point
         if (whereSpawn < enemiesGroup.length - 1) {
             whereSpawn++;
         } else {
@@ -50,12 +112,12 @@ function moveEnemies() {
     //initialize
     if (firstRun) {
         for (var i = 0; i < enemies.length; i++)
-            reachedCheck[i] = 1;
+            arrived[i] = 1;
         firstRun = false;
     }
     for (var bot = 0; bot < enemies.length; bot++) {
         //check if bot reached destination, if yes then choose another destination
-        if (reachedCheck[bot] = 1) {
+        if (arrived[bot] = 1) {
             pathStart = [Math.floor(enemies[bot][0] / 32),
                             Math.floor(enemies[bot][1] / 32)];
             //NOTE ~~ and ( | 0) is similar to Math.floor but it only truncated not round the number
@@ -63,23 +125,23 @@ function moveEnemies() {
             var desti = (Math.random() * botDestination.length | 0) + 1;//~~(Math.random() * 6) + 1
             //pathEnd is random point in botDestination array
             pathEnd = [~~(botDestination[desti - 1].x / 32), (botDestination[desti - 1].y / 32 | 0)];
-            pathFound[bot] = findPath(world, pathStart, pathEnd);
+            pathFound[bot] = pathFinder(world, pathStart, pathEnd);
             //WARNING: thePath is the tile array, not PIXEL, you have to CONVERT it to use it
             //bot havent reached destination
-            reachedCheck[bot] = 0;
+            arrived[bot] = 0;
             //bot currently at the starting tile
             whereNow[bot] = 0;
         }
         //if bot havent reached destination yet
         if (whereNow[bot] < pathFound[bot].length) {
             //convert to pixel
-            thePathX = pathFound[bot][whereNow[bot]][0] * 32;
-            thePathY = pathFound[bot][whereNow[bot]][1] * 32;
+            thePathX = pathFound[bot][whereNow[bot] + 1][0] * 32;
+            thePathY = pathFound[bot][whereNow[bot] + 1][1] * 32;
             //coordinate difference between object and destination
             xDiff = enemies[bot][0] - thePathX;
             yDiff = enemies[bot][1] - thePathY;
             //go vertically
-            if (xDiff == 0) {
+            if (xDiff == 0 && yDiff != 0) {
                 //down or up
                 if (yDiff > 0) {
                     enemies[bot][1] -= enemySpeed;
@@ -87,16 +149,36 @@ function moveEnemies() {
                     enemies[bot][1] += enemySpeed;
                 }
                 //go horizontally
-            } else if (yDiff == 0) {
+            } else if (yDiff == 0 && xDiff != 0) {
                 //right or left
                 if (xDiff > 0) {
                     enemies[bot][0] -= enemySpeed;
                 } else {
                     enemies[bot][0] += enemySpeed;
                 }
+                //if there no diferrent between bot and destination mean bot reached destination
+            } else {
+                whereNow[bot]++;
             }
         }
         if (whereNow[bot] == pathFound.length) {
+            arrived[bot] = 1;
+        }
+        // draw the path
+        for (rp = 0; rp < pathFound.length; rp++) {
+            switch (rp) {
+                case 0:
+                    spriteNum = 2; // start
+                    break;
+                case pathFound.length - 1:
+                    spriteNum = 3; // end
+                    break;
+                default:
+                    spriteNum = 4; // path node
+                    break;
+            }
+
+            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, pathFound[rp][0] * 32, pathFound[rp][1] * 32, 32, 32);
         }
     }
     //////////////////////////////////////////////////
@@ -105,8 +187,8 @@ function moveEnemies() {
         for (var i = 0; i < enemies.length; i++) {
             pathStart = [Math.floor(enemies[i][0] / 32),
                             Math.floor(enemies[i][1] / 32)];
-            thePath = findPath(world, pathStart, pathEnd);
-            //var path = finder.findPath(pathStart[0], pathStart[1], pathEnd[0], pathEnd[1], grid);
+            thePath = pathFinder(world, pathStart, pathEnd);
+            //var path = finder.pathFinder(pathStart[0], pathStart[1], pathEnd[0], pathEnd[1], grid);
             //thePath = PF.Util.smoothenPath(grid, path);
 
             //WARNING: thePath is the tile array, not PIXEL, you have to CONVERT it to use it
@@ -222,16 +304,99 @@ function hitTestEnemies() {
         }
     }
 }
+var Bot = function (startX, startY, facing) {
+    var x = startX,
+		y = startY,
+		id,
+		moveAmount = 5,
+		//which way the ship is facing
+		direction = facing;
 
+    // Getters and setters
+    var getX = function () {
+        return x;
+    };
 
+    var getY = function () {
+        return y;
+    };
 
+    var setX = function (newX) {
+        x = newX;
+    };
 
+    var setY = function (newY) {
+        y = newY;
+    };
 
+    var getDirection = function () {
+        return direction;
+    };
 
+    var setDirection = function (newX) {
+        direction = newX;
+    };
 
+    // Update player position
+    var update = function (keys) {
+        // Previous position
+        var prevX = x,
+			prevY = y;
+
+        // Up key takes priority over down
+        if (keys.up) {
+            y -= moveAmount;
+        } else if (keys.down) {
+            y += moveAmount;
+        };
+
+        // Left key takes priority over right
+        if (keys.left) {
+            x -= moveAmount;
+        } else if (keys.right) {
+            x += moveAmount;
+        };
+
+        return (prevX != x || prevY != y) ? true : false;
+    };
+
+    // Draw player
+    var draw = function (ctx) {
+        ship = new Image();
+        ship.src = 'ship.png';
+        ship_right = new Image();
+        ship_right.src = 'ship_right.png';
+        ship_left = new Image();
+        ship_left.src = 'ship_left.png';
+        ship_down = new Image();
+        ship_down.src = 'ship_down.png';
+        if (direction == 1) {
+            ctx.drawImage(ship_right, x, y);
+        } else if (direction == -1) {
+            ctx.drawImage(ship_left, x, y);
+        } if (direction == 0) {
+            ctx.drawImage(ship, x, y);
+        } else if (direction == 2) {
+            ctx.drawImage(ship_down, x, y);
+        }
+    };
+
+    // Define which variables and methods can be accessed
+    return {
+        getX: getX,
+        getY: getY,
+        setX: setX,
+        setY: setY,
+        getDirection: getDirection,
+        setDirection: setDirection,
+        update: update,
+        draw: draw
+    }
+};
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 // world is a 2d array of integers (eg world[10][15] = 0)
 // pathStart and pathEnd are arrays like [5,10]
-function findPath(world, pathStart, pathEnd)
+function pathFinder (world, pathStart, pathEnd)
 {
 	// shortcuts for speed
 	var	abs = Math.abs;
