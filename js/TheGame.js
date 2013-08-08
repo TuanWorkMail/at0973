@@ -3,8 +3,8 @@
 function init() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    enemy = new Image();
-    enemy.src = 'images/8bit_enemy.png';
+    bot = new Image();
+    bot.src = 'images/8bit_enemy.png';
     ship = new Image();
     ship.src = 'images/ship.png';
     ship_right = new Image();
@@ -50,9 +50,9 @@ function gameLoop() {
     draw();
     if (alive && gameStarted && lives > 0) {
         //shipCollision();
-        moveEnemies();
-        drawEnemies();
-        hitTestEnemies();
+        moveBot();
+        drawBot();
+        hitTestBot();
         //map collision
         mapCollision();
         moveLaser();
