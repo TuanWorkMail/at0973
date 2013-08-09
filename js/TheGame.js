@@ -52,7 +52,7 @@ function gameLoop() {
         //shipCollision();
         moveBot();
         drawBot();
-        hitTestBot();
+        //hitTestBot();
         //map collision
         mapCollision();
         moveLaser();

@@ -20,27 +20,17 @@ var maximumBot = 2,
     //grid = new PF.Grid(20, 20, world),
     //finder = new PF.AStarFinder(),
     //where bot will spawn, each map have a number of predefined point
-    whereSpawn = 0,
-    check = true,
-    arrived = new Array(maximumBot),
-    enemyIntelligence = 0,
-    whereNow = new Array(maximumBot),
-    pathFound = new Array(maximumBot),
-    //check if run for first time
-    firstRun = true;
-
+    whereSpawn = 0;
 
 function moveBot() {
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].whereNow == bots[bot].pathFound.length - 1 || bots[bot].pathFound.length == 0) {
-            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getX());
-            bots[bot].whereNow = 0;
-        }
         if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
             movingBot(bot);
+            drawPath();
         } else {
-            arrived[bot] = 1;
+            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
+            bots[bot].whereNow = 0;
         }
     }
 }
@@ -49,7 +39,7 @@ function createBot() {
     if (whereSpawn == enemiesGroup.length) {
         whereSpawn = 0;
     }
-    while (bots.length < 2 && whereSpawn < enemiesGroup.length) {
+    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
         // Initialise the new bot
         var x = enemiesGroup[whereSpawn].x;
             y = enemiesGroup[whereSpawn].y;
@@ -62,9 +52,15 @@ function createBot() {
 //input: current location
 //output: array of path to a random point
 function botRandomPath(x, y) {
-    pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
-    var randomNumber = Math.floor(Math.random() * botDestination.length);
-    pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
+    var check = true;
+    while (check) {
+        pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
+        var randomNumber = Math.floor(Math.random() * botDestination.length);
+        pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
+        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
+            check = false;
+        }
+    }
     return pathFinder(world, pathStart, pathEnd);
 }
 function movingBot(bot) {
@@ -90,6 +86,43 @@ function movingBot(bot) {
         }
     } else {
         bots[bot].whereNow++;
+    }
+}
+function drawPath() {
+    for (var i = 0; i < bots.length; i++) {
+        for (var rp = 0; rp < bots[i].pathFound.length; rp++) {
+            switch (rp) {
+                case 0:
+                    spriteNum = 10; // start
+                    break;
+                case bots[i].pathFound.length -1:
+                    spriteNum = 1; // end
+                    break;
+                default:
+                    spriteNum = 4; // path node
+                    break;
+            }
+            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, bots[i].pathFound[rp][0] * 32, bots[i].pathFound[rp][1] * 32, 32, 32);
+        }
+    }
+}
+function hitTestBot() {
+    var enemy_xw,
+        enemy_yh,
+        check = false;
+
+    for (var i = 0; i < lasers.length; i++) {
+        for (var obj = 0; obj < bots.length; ++obj) {
+
+            enemy_xw = bots[obj][0] + enemy_w;
+            enemy_yh = bots[obj][1] + enemy_h;
+
+            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj][0] && lasers[i][1] > bots[obj][1]) {
+                check = true;
+                bots.splice(obj, 1);
+                lasers.splice(i, 1);
+            }
+        }
     }
 }
 /*
@@ -292,25 +325,6 @@ function moveEnemies2() {
 
                     ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, thePath[rp][0] * 32, thePath[rp][1] * 32, 32, 32);
                 }
-            }
-        }
-    }
-}
-function hitTestBot() {
-    var enemy_xw,
-        enemy_yh,
-        check = false;
-
-    for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
-
-            enemy_xw = bots[obj][0] + enemy_w;
-            enemy_yh = bots[obj][1] + enemy_h;
-
-            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj][0] && lasers[i][1] > bots[obj][1]) {
-                check = true;
-                bots.splice(obj, 1);
-                lasers.splice(i, 1);
             }
         }
     }
