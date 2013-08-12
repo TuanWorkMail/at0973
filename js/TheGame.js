@@ -1,4 +1,44 @@
-
+//Now, let’s get onto the part that will make this game run, the JavaScript. 
+//First, we’ll get our ship working, so we need to set up some variables.
+var canvas,
+    ctx,
+    whichMap = "map3",
+    shipSpeed = 2,
+    enemySpeed = 1,
+    fps = 60,
+    width = 480,
+    height = 320,
+    tmxloader = {},
+    enemyTotal = 5,
+    bots = [],
+    bot_w = 32,
+    bot_h = 32,
+    bot,
+    //array of coordinate the bot can randomly go to
+    botDestination,
+    //Now, let’s make our ship move. Add these to the variables at the top:
+    rightKey = false,
+    leftKey = false,
+    upKey = false,
+    downKey = false,
+    //which direction the ship is facing
+    direction = 0,
+    //Add the socket variable to the file
+    socket,
+    remotePlayers = [],
+    //viewport for drawing map
+    viewport,
+    viewport_x = 0,
+    viewport_y = 0,
+    ship,
+    ship_x, ship_y, ship_w = 32, ship_h = 32,
+    laserTotal = 6,
+    lasers = [],
+    laserSpeed = 16,
+    score = 0,
+    alive = true,
+    lives = 3,
+    gameStarted = false;
 //The initial function called when the page first loads. Loads the ship, enemy and starfield images and adds the event listeners for the arrow keys. It then calls the gameLoop function.
 function init() {
     canvas = document.getElementById('canvas');
