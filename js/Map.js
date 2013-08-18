@@ -68,6 +68,9 @@ function findLayerByName(name) {
         }
     }
 }
+
+function checkCollision() {
+}
 		
 //check ship collide with map
 function mapCollision() {
