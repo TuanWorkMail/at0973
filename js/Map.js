@@ -61,7 +61,7 @@ function draw() {
     }
 }
 
-function findLayer(name) {
+function findLayerByName(name) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
         if (tmxloader.map.layers[i].name == name) {
             return i;
@@ -75,12 +75,12 @@ function mapCollision() {
         ship_yh = ship_y + ship_h,
         object_xw,
         object_yh;
-
     var objectGroup = tmxloader.map.objectgroup['colision'].objects;
     for (var obj = 0; obj < objectGroup.length; ++obj) {
-
         object_xw = objectGroup[obj].x + objectGroup[obj].width;
         object_yh = objectGroup[obj].y + objectGroup[obj].height;
+
+        var layerID = findLayerByName('obstacle');
 
         if (ship_x < object_xw && ship_y < object_yh && ship_xw > objectGroup[obj].x && ship_yh > objectGroup[obj].y) {
             return true;
