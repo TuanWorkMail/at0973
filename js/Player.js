@@ -59,14 +59,6 @@ var Player = function(startX, startY, facing) {
 
 	// Draw player
 	var draw = function(ctx) {
-		ship = new Image();
-		ship.src = 'ship.png';
-		ship_right = new Image();
-		  ship_right.src = 'ship_right.png';
-		  ship_left = new Image();
-		  ship_left.src = 'ship_left.png';
-		  ship_down = new Image();
-		  ship_down.src = 'ship_down.png';
 		if (direction==1) {
 			ctx.drawImage(ship_right, x, y);
 		} else if (direction==-1) {

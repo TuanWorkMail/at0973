@@ -63,7 +63,7 @@ function init() {
 
     enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
 
-    //array hold the world
+    //array hold the obstacle/rock wall
     world = tmxloader.map.layers[1].data,
 
     gameLoop();
