@@ -3,7 +3,8 @@
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"),				// Socket.IO
-	Player = require("./Player").Player;	// Player class
+	Player = require("./Player").Player,	// Player class
+    Bot = require("./Bot").Bot;             // Bot class
 
 
 /**************************************************
@@ -151,6 +152,92 @@ function playerById(id) {
 	return false;
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//BOT SECTION
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var maximumBot = 2,
+    pathStart,
+    pathStartX,
+    pathStartY,
+    pathEnd,
+    thePath,
+    thePathX,
+    thePathY,
+    c,//currently headed to which target in thePath
+    //enemiesGroup,
+
+    //grid = new PF.Grid(20, 20, world),
+    //finder = new PF.AStarFinder(),
+    //where bot will spawn, each map have a number of predefined point
+    whereSpawn = 0;
+
+function moveBot() {
+    createBot();
+    for (var bot = 0; bot < bots.length; bot++) {
+        if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
+            movingBot(bot);
+            drawPath();
+        } else {
+            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
+            bots[bot].whereNow = 0;
+        }
+    }
+}
+//add new bot to the array
+function createBot() {
+    if (whereSpawn == enemiesGroup.length) {
+        whereSpawn = 0;
+    }
+    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
+        // Initialise the new bot
+        var x = enemiesGroup[whereSpawn].x;
+        y = enemiesGroup[whereSpawn].y;
+        newBot = new Bot(x, y, botRandomPath(x, y), 0);
+        // Add new player to the remote players array
+        bots.push(newBot);
+        whereSpawn++;
+    }
+}
+//input: current location
+//output: array of path to a random point
+function botRandomPath(x, y) {
+    var check = true;
+    while (check) {
+        pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
+        var randomNumber = Math.floor(Math.random() * botDestination.length);
+        pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
+        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
+            check = false;
+        }
+    }
+    return pathFinder(world, pathStart, pathEnd);
+}
+function movingBot(bot) {
+    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * tmxloader.map.tileWidth,
+        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * tmxloader.map.tileHeight,
+        differenceX = bots[bot].getX() - pixelX,
+        differenceY = bots[bot].getY() - pixelY;
+    //go vertically
+    if (differenceX == 0 && differenceY != 0) {
+        //down or up
+        if (differenceY > 0) {
+            bots[bot].setY(bots[bot].getY() - enemySpeed);
+        } else {
+            bots[bot].setY(bots[bot].getY() + enemySpeed);
+        }
+        //go horizontally
+    } else if (differenceY == 0 && differenceX != 0) {
+        //right or left
+        if (differenceX > 0) {
+            bots[bot].setX(bots[bot].getX() - enemySpeed);
+        } else {
+            bots[bot].setX(bots[bot].getX() + enemySpeed);
+        }
+    } else {
+        bots[bot].whereNow++;
+    }
+}
 
 /**************************************************
 ** RUN THE GAME

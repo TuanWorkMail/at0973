@@ -1,3 +1,4 @@
+//THIS FILE IS NO LONGER BEING USED, ARCHEVED
 
 //Cycles through the array and draws the updated enemy position
 function drawBot() {
