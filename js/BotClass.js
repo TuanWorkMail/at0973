@@ -1,10 +1,10 @@
-//THIS FILE IS NO LONGER BEING USED, ARCHEVED
 
 //Cycles through the array and draws the updated enemy position
 function drawBot() {
     for (var i = 0; i < bots.length; i++) {
         ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
     }
+    drawPath();
 }
 	
 var maximumBot = 2,
@@ -24,11 +24,14 @@ var maximumBot = 2,
     whereSpawn = 0;
 
 function moveBot() {
+    console.log('host' + isBotBroadcast);
+    if (isBotBroadcast == 'client') return;
+    isBotBroadcast = 'host';
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
             movingBot(bot);
-            drawPath();
+            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y:bots[bot].getY() });
         } else {
             bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
             bots[bot].whereNow = 0;

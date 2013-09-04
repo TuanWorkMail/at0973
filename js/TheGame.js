@@ -2,12 +2,13 @@
 //First, we’ll get our ship working, so we need to set up some variables.
 var canvas,
     ctx,
-    whichMap = "map3",
-    shipSpeed = 2,
+    whichMap = "classic1",
+    shipSpeed = 5,
     enemySpeed = 1,
     fps = 60,
-    width = 480,
-    height = 320,
+    ship_w = 40, ship_h = 40,
+    width,
+    height,
     tmxloader = {},
     enemyTotal = 5,
     bots = [],
@@ -30,19 +31,28 @@ var canvas,
     viewport,
     viewport_x = 0,
     viewport_y = 0,
-    ship,
-    ship_x, ship_y, ship_w = 32, ship_h = 32,
+    ship, ship_right, ship_left, ship_down,
+    bullet, bullet_right, bullet_left, bullet_down,
+    ship_x, ship_y, 
     laserTotal = 6,
     lasers = [],
-    laserSpeed = 16,
+    laserSpeed = 15,
+    //is there a host that broadcast bot, or i am the host doing all the work
+    isBotBroadcast = 'initial',
+    lastKey = 'left',
     score = 0,
     alive = true,
     lives = 3,
     gameStarted = false;
 //The initial function called when the page first loads. Loads the ship, enemy and starfield images and adds the event listeners for the arrow keys. It then calls the gameLoop function.
 function init() {
+    tmxloader.load("map/" + whichMap + ".tmx");
+    width = tmxloader.map.width * tmxloader.map.tileWidth;
+    height = tmxloader.map.height * tmxloader.map.tileHeight;
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
+    canvas.setAttribute("width", width);
+    canvas.setAttribute("height", height);
     bot = new Image();
     bot.src = 'images/8bit_enemy.png';
     ship = new Image();
@@ -53,10 +63,18 @@ function init() {
     ship_left.src = 'images/ship_left.png';
     ship_down = new Image();
     ship_down.src = 'images/ship_down.png';
+    bullet = new Image();
+    bullet.src = 'images/bullet.png';
+    bullet_right = new Image();
+    bullet_right.src = 'images/bulletRight.png';
+    bullet_left = new Image();
+    bullet_left.src = 'images/bulletLeft.png';
+    bullet_down = new Image();
+    bullet_down.src = 'images/bulletDown.png';
+    //user input event listener
     document.addEventListener('keydown', keyDown, false);
     document.addEventListener('keyup', keyUp, false);
     canvas.addEventListener('click', gameStart, false);
-    tmxloader.load("map/" + whichMap + ".tmx");
     viewport = new Viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
     spriteSheet = new Image();
     spriteSheet.src = "map/" + tmxloader.map.tilesets[0].src;
@@ -66,7 +84,6 @@ function init() {
     //array hold the obstacle/rock wall
     world = tmxloader.map.layers[1].data,
 
-    gameLoop();
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.
     socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
@@ -79,6 +96,8 @@ function init() {
     console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
+    
+    gameLoop();
 }
 
 
@@ -86,24 +105,25 @@ function init() {
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
     clearCanvas();
-    //call draw() from example.js
+    //draw the map
     draw();
     if (alive && gameStarted && lives > 0) {
         //shipCollision();
-        moveBot();
-        drawBot();
+
+        //moveBot();
+        //drawBot();
         //hitTestBot();
         //map collision
         mapCollision();
         moveLaser();
+        shootDestruction();
         //hitTest();
         //check laser collide with wall
         laserCollision();
         drawShip();
         drawLaser();
         // Draw the remote players
-        var i;
-        for (i = 0; i < remotePlayers.length; i++) {
+        for (var i = 0; i < remotePlayers.length; i++) {
             remotePlayers[i].draw(ctx);
         };
         //call update function
@@ -121,13 +141,17 @@ function keyDown(e) {
     else if (e.keyCode == 40) downKey = true;
     if (e.keyCode == 88 && lasers.length <= laserTotal) {
         if (direction == 0) {
-            lasers.push([ship_x + 23, ship_y - 20, 0]);
+            lasers.push([ship_x + ship_w / 2, ship_y - 1, 0]);
+            console.log((ship_x + ship_w / 2) + ' ' + (ship_y - 1) + ' up');
         } else if (direction == 2) {
-            lasers.push([ship_x + 23, ship_y + 51, 2]);
+            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, 2]);
+            console.log((ship_x + ship_w / 2) + ' ' + (ship_y + ship_h + 1) + ' down');
         } else if (direction == 1) {
-            lasers.push([ship_x + 51, ship_y + 23, 1]);
+            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, 1]);
+            console.log((ship_x + ship_w + 1) + ' ' + (ship_y + ship_h / 2) + ' right');
         } else if (direction == -1) {
-            lasers.push([ship_x - 20, ship_y + 23, -1]);
+            lasers.push([ship_x - 1, ship_y + ship_h / 2, -1]);
+            console.log((ship_x - 1) + ' ' + (ship_y + ship_h / 2) + ' left');
         }
         //update lasers shot
         socket.emit("move lasers", { x: ship_x, y: ship_y, direction: direction });
@@ -136,10 +160,18 @@ function keyDown(e) {
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
 function keyUp(e) {
-    if (e.keyCode == 39) rightKey = false;
-    else if (e.keyCode == 37) leftKey = false;
-    else if (e.keyCode == 38) upKey = false;
-    else if (e.keyCode == 40) downKey = false;
+    if (e.keyCode == 39) {
+        rightKey = false; lastKey = 'right';
+    } else if (e.keyCode == 37) {
+        leftKey = false;
+        lastKey = 'left';
+    } else if (e.keyCode == 38) {
+        upKey = false;
+        lastKey = 'up';
+    } else if (e.keyCode == 40) {
+        downKey = false;
+        lastKey = 'down';
+    }
 }
 
 window.onload = init;
@@ -153,6 +185,40 @@ function clearCanvas() {
 
 //If an arrow key is being pressed, moves the ship in the right direction
 function drawShip() {
+    //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
+    if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
+        if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
+            //debug
+            //console.log(ship_x + ' ' + ship_x % (ship_w / 2) + ' ' + ship_y + ' ' + ship_y % (ship_h / 2));
+            switch (lastKey) {
+                case 'right':
+                    ship_x += shipSpeed;
+                    if (mapCollision()) {
+                        ship_x -= shipSpeed;
+                    }
+                    break;
+                case 'left':
+                    ship_x -= shipSpeed;
+                    if (mapCollision()) {
+                        ship_x += shipSpeed;
+                    }
+                    break;
+                case 'up':
+                    direction = 0;
+                    ship_y -= shipSpeed;
+                    if (mapCollision()) {
+                        ship_y += shipSpeed;
+                    }
+                    break;
+                case 'down':
+                    ship_y += shipSpeed;
+                    if (mapCollision()) {
+                        ship_y -= shipSpeed;
+                    }
+                    break;
+            }
+        }
+    }
     if (rightKey) {
 		direction=1;
 		ship_x += shipSpeed;
@@ -198,7 +264,7 @@ function drawShip() {
 function drawLaser() {
     for (var i = 0; i < lasers.length; i++) {
       ctx.fillStyle = '#f00';
-      ctx.fillRect(lasers[i][0],lasers[i][1],4,4)
+      ctx.fillRect(lasers[i][0] - 2, lasers[i][1] - 2, 4, 4);
     }
 }
 
@@ -240,6 +306,7 @@ function shipCollision() {
     }
   }
 }
+
 
 //This function runs whenever the player's ship hits an enemy and either subtracts a life or sets the alive variable to false if the player runs out of lives
 function checkLives() {

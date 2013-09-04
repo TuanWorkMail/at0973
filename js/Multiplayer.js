@@ -24,6 +24,9 @@ var setEventHandlers = function() {
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
+
+    // Player removed message received
+	socket.on("bot broadcast", onBotBroadcast);
 };
 
 // Socket connected
@@ -102,6 +105,21 @@ function onRemovePlayer(data) {
 	// Remove player from array
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
+
+// Bot broadcast
+function onBotBroadcast(data) {
+    console.log('client' + isBotBroadcast);
+    if (isBotBroadcast == 'host') return;
+    isBotBroadcast = 'client';
+    ctx.drawImage(bot, data.x, data.y);
+};
+
+function drawBroadcastBot() {
+    for (var i = 0; i < bots.length; i++) {
+        ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+    }
+    drawPath();
+}
 
 /**************************************************
 ** GAME FINDER FUNCTIONS

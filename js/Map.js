@@ -69,7 +69,98 @@ function findLayerByName(name) {
     }
 }
 
-function checkCollision() {
+function shootDestruction() {
+    var foundID = findLayerByName('brick');
+    for (var i = 0; i < lasers.length; i++) {
+        var justanumber = 2;
+        switch (lasers[i][2]) {
+            //bullet travel upward
+            case 0:
+                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
+                for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
+                    if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i][0] / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] != 0 ||
+                        tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] - 1) / 10)][Math.floor(((lasers[i][1] + behindpresent) / 10))] != 0) {
+                        //destroy 4 brick at impact
+                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
+                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + the4tinybrick) / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] = 0;
+                        }
+                        lasers.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+                //bullet travel downward
+            case 2:
+                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
+                for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
+                    if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i][0] / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] != 0 ||
+                        tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] - 1) / 10)][Math.floor(((lasers[i][1] + behindpresent) / 10))] != 0) {
+                        //destroy 4 brick at impact
+                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
+                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + the4tinybrick) / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] = 0;
+                        }
+                        lasers.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+                //bullet travel to the right
+            case -1:
+                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
+                for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
+                    if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor(lasers[i][1] / 10)] != 0 ||
+                        tmxloader.map.layers[foundID].data[Math.floor(((lasers[i][0] + behindpresent) / 10))][Math.floor((lasers[i][1] - 1) / 10)] != 0) {
+                        //destroy 4 brick at impact
+                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
+                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor((lasers[i][1] + the4tinybrick) / 10)] = 0;
+                        }
+                        lasers.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+                //bullet travel to the right
+            case 1:
+                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
+                for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
+                    if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor(lasers[i][1] / 10)] != 0 ||
+                        tmxloader.map.layers[foundID].data[Math.floor(((lasers[i][0] + behindpresent) / 10))][Math.floor((lasers[i][1] - 1) / 10)] != 0) {
+                        //destroy 4 brick at impact
+                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
+                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor((lasers[i][1] + the4tinybrick) / 10)] = 0;
+                        }
+                        lasers.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
+}
+
+function shipCollision() {
+    var foundID = findLayerByName('brick'),
+        changeCheck = 0;
+    for (var i = 0; i < lasers.length; i++) {
+        var justanumber = 2;
+        switch (lasers[i][2]) {
+            //bullet travel upward
+            case 0:
+                break;
+                //bullet travel downward
+            case 2:
+        }
+    }
+}
+
+//iput:x,y,w,h,type(bullet/tank)
+function checkCollision(x,y,w,h,type) {
+    //for every layer in map
+    for (var i = 0; i < tmxloader.map.layers.length; i++) {
+        var xTile = x / tmxloader.map.tileWidth,
+            yTile = y / tmxloader.map.tileHeight;
+
+    }
 }
 		
 //check ship collide with map
