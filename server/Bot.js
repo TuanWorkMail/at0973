@@ -1,5 +1,5 @@
 ﻿/**************************************************
-** CLIENT BOT CLASS
+** SERVER BOT CLASS
 **************************************************/
 var Bot = function (startX, startY, path, where) {
     var x = startX,

@@ -70,7 +70,7 @@ function findLayerByName(name) {
 }
 
 function shootDestruction() {
-    var foundID = findLayerByName('brick');
+    var foundID = findLayerByName('destructible');
     for (var i = 0; i < lasers.length; i++) {
         var justanumber = 2;
         switch (lasers[i][2]) {
@@ -138,33 +138,30 @@ function shootDestruction() {
     }
 }
 
-function shipCollision() {
-    var foundID = findLayerByName('brick'),
-        changeCheck = 0;
-    for (var i = 0; i < lasers.length; i++) {
-        var justanumber = 2;
-        switch (lasers[i][2]) {
-            //bullet travel upward
-            case 0:
-                break;
-                //bullet travel downward
-            case 2:
+
+//iput:x,y,w,h,type(bullet/tank)
+function mapCollision(x, y, w, h, type) {
+    var xTile = Math.floor(x / tmxloader.map.tileWidth),
+        yTile = Math.floor(y / tmxloader.map.tileHeight),
+        //NOT(number of tiles) horizontally(w) or vertically(h)
+        wNOT = w / tmxloader.map.tileWidth,
+        hNOT = h / tmxloader.map.tileWidth;
+    //for every layer in map
+    for (var i = 0; i < tmxloader.map.layers.length; i++) {
+        if (tmxloader.map.layers[i].name == 'background' || tmxloader.map.layers[i].name == 'overhead') continue;
+        if (type == 'bullet') {
+            if (tmxloader.map.layers[i].name == 'water' || tmxloader.map.layers[i].name == 'destructible') continue;
+        }
+        for (var j = 0; j < wNOT; j++) {
+            for (var k = 0; k < hNOT; k++) {
+                if (tmxloader.map.layers[i].data[xTile + j][yTile + k] != 0) return true;
+            }
         }
     }
 }
-
-//iput:x,y,w,h,type(bullet/tank)
-function checkCollision(x,y,w,h,type) {
-    //for every layer in map
-    for (var i = 0; i < tmxloader.map.layers.length; i++) {
-        var xTile = x / tmxloader.map.tileWidth,
-            yTile = y / tmxloader.map.tileHeight;
-
-    }
-}
-		
+	/*	
 //check ship collide with map
-function mapCollision() {
+function mapCollision_old() {
     var ship_xw = ship_x + ship_w,
         ship_yh = ship_y + ship_h,
         object_xw,
@@ -206,4 +203,5 @@ function laserCollision() {
         }
     }
 }
+*/
 

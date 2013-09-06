@@ -24,9 +24,6 @@ var maximumBot = 2,
     whereSpawn = 0;
 
 function moveBot() {
-    console.log('host' + isBotBroadcast);
-    if (isBotBroadcast == 'client') return;
-    isBotBroadcast = 'host';
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {

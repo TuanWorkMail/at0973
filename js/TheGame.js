@@ -37,8 +37,6 @@ var canvas,
     laserTotal = 6,
     lasers = [],
     laserSpeed = 15,
-    //is there a host that broadcast bot, or i am the host doing all the work
-    isBotBroadcast = 'initial',
     lastKey = 'left',
     score = 0,
     alive = true,
@@ -113,13 +111,9 @@ function gameLoop() {
         //moveBot();
         //drawBot();
         //hitTestBot();
-        //map collision
-        mapCollision();
         moveLaser();
         shootDestruction();
         //hitTest();
-        //check laser collide with wall
-        laserCollision();
         drawShip();
         drawLaser();
         // Draw the remote players
@@ -185,6 +179,11 @@ function clearCanvas() {
 
 //If an arrow key is being pressed, moves the ship in the right direction
 function drawShip() {
+    //if ship cross the map border, throw it back in
+    if (ship_x <= 0) ship_x = 0;
+    if ((ship_x + ship_w) >= width) ship_x = width - ship_w;
+    if (ship_y <= 0) ship_y = 0;
+    if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
     //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
     if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
         if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
@@ -193,26 +192,26 @@ function drawShip() {
             switch (lastKey) {
                 case 'right':
                     ship_x += shipSpeed;
-                    if (mapCollision()) {
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
                         ship_x -= shipSpeed;
                     }
                     break;
                 case 'left':
                     ship_x -= shipSpeed;
-                    if (mapCollision()) {
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
                         ship_x += shipSpeed;
                     }
                     break;
                 case 'up':
                     direction = 0;
                     ship_y -= shipSpeed;
-                    if (mapCollision()) {
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
                         ship_y += shipSpeed;
                     }
                     break;
                 case 'down':
                     ship_y += shipSpeed;
-                    if (mapCollision()) {
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
                         ship_y -= shipSpeed;
                     }
                     break;
@@ -222,32 +221,28 @@ function drawShip() {
     if (rightKey) {
 		direction=1;
 		ship_x += shipSpeed;
-		if(mapCollision()) {
+		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
 			ship_x -= shipSpeed;
 		}
 	} else if (leftKey) {
 		direction=-1;
 		ship_x -= shipSpeed;
-		if(mapCollision()) {
+		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
 			ship_x += shipSpeed;
 		}
 	} else if (upKey) {
 		direction=0;
 		ship_y -= shipSpeed;
-		if(mapCollision()) {
+		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
 			ship_y += shipSpeed;
 		}
 	} else if (downKey) {
 		direction=2;
 		ship_y += shipSpeed;
-		if(mapCollision()) {
+		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
 			ship_y -= shipSpeed;
 		}
 	}
-  if (ship_x <= 0) ship_x = 0;
-  if ((ship_x + ship_w) >= width) ship_x = width - ship_w;
-  if (ship_y <= 0) ship_y = 0;
-  if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
   
 	if (direction==1) {
 		ctx.drawImage(ship_right, ship_x, ship_y);
@@ -280,7 +275,7 @@ function moveLaser() {
 		} else if (lasers[i][2]==-1) {
 			lasers[i][0] -= laserSpeed;
 		}
-    if (lasers[i][1] < 0 || lasers[i][1] > height || lasers[i][0] < 0 || lasers[i][0] > width) {
+		if (lasers[i][1] < 0 || lasers[i][1] > height || lasers[i][0] < 0 || lasers[i][0] > width || mapCollision(lasers[i][0], lasers[i][1], 4, 4, 'bullet')) {
       lasers.splice(i, 1);
     }
   } 

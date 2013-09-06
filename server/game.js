@@ -5,7 +5,9 @@
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"),				// Socket.IO
-	Player = require("./Player").Player;	// Player class
+	Player = require("./Player").Player,	// Player class
+    Bot = require("./Bot").Bot,             // Bot class
+    BotClass = require("./BotClass").BotClass;
 
 
 /**************************************************
