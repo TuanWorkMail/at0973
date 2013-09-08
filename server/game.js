@@ -4,11 +4,14 @@
 ** NODE.JS REQUIREMENTS
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
-	io = require("socket.io"),				// Socket.IO
+	io = require("socket.io"), 			    // Socket.IO
 	Player = require("./Player").Player,	// Player class
     Bot = require("./Bot").Bot,             // Bot class
+    tmxloader = require("./tmxloader_server").tmxloader,
     fps = 60,                               // game speed(frame per second)
     whichMap = 'classic1';
+
+
 
 
 /**************************************************
