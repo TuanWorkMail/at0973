@@ -1,5 +1,5 @@
 /**************************************************
-** GAME PLAYER CLASS
+** SERVER PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY, facing) {
 	var x = startX,

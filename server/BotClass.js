@@ -6,89 +6,6 @@ function drawBot() {
     }
     drawPath();
 }
-	
-var maximumBot = 2,
-    pathStart,
-    pathStartX,
-    pathStartY,
-    pathEnd,
-    thePath,
-    thePathX,
-    thePathY,
-    c,//currently headed to which target in thePath
-    //enemiesGroup,
-
-    //grid = new PF.Grid(20, 20, world),
-    //finder = new PF.AStarFinder(),
-    //where bot will spawn, each map have a number of predefined point
-    whereSpawn = 0;
-
-function moveBot() {
-    createBot();
-    for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-            movingBot(bot);
-            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y:bots[bot].getY() });
-        } else {
-            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
-            bots[bot].whereNow = 0;
-        }
-    }
-}
-//add new bot to the array
-function createBot() {
-    if (whereSpawn == enemiesGroup.length) {
-        whereSpawn = 0;
-    }
-    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
-        // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x;
-            y = enemiesGroup[whereSpawn].y;
-            newBot = new Bot(x, y, botRandomPath(x, y), 0);
-        // Add new player to the remote players array
-        bots.push(newBot);
-        whereSpawn++;
-    }
-}
-//input: current location
-//output: array of path to a random point
-function botRandomPath(x, y) {
-    var check = true;
-    while (check) {
-        pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
-        var randomNumber = Math.floor(Math.random() * botDestination.length);
-        pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
-        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
-            check = false;
-        }
-    }
-    return pathFinder(world, pathStart, pathEnd);
-}
-function movingBot(bot) {
-    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * tmxloader.map.tileWidth,
-        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * tmxloader.map.tileHeight,
-        differenceX = bots[bot].getX() - pixelX,
-        differenceY = bots[bot].getY() - pixelY;
-    //go vertically
-    if (differenceX == 0 && differenceY != 0) {
-        //down or up
-        if (differenceY > 0) {
-            bots[bot].setY(bots[bot].getY() - enemySpeed);
-        } else {
-            bots[bot].setY(bots[bot].getY() + enemySpeed);
-        }
-        //go horizontally
-    } else if (differenceY == 0 && differenceX != 0) {
-        //right or left
-        if (differenceX > 0) {
-            bots[bot].setX(bots[bot].getX() - enemySpeed);
-        } else {
-            bots[bot].setX(bots[bot].getX() + enemySpeed);
-        }
-    } else {
-        bots[bot].whereNow++;
-    }
-}
 function drawPath() {
     for (var i = 0; i < bots.length; i++) {
         for (var rp = 0; rp < bots[i].pathFound.length; rp++) {
@@ -96,7 +13,7 @@ function drawPath() {
                 case 0:
                     spriteNum = 10; // start
                     break;
-                case bots[i].pathFound.length -1:
+                case bots[i].pathFound.length - 1:
                     spriteNum = 1; // end
                     break;
                 default:
@@ -107,25 +24,14 @@ function drawPath() {
         }
     }
 }
-function hitTestBot() {
-    var enemy_xw,
-        enemy_yh,
-        check = false;
 
-    for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
 
-            enemy_xw = bots[obj][0] + enemy_w;
-            enemy_yh = bots[obj][1] + enemy_h;
 
-            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj][0] && lasers[i][1] > bots[obj][1]) {
-                check = true;
-                bots.splice(obj, 1);
-                lasers.splice(i, 1);
-            }
-        }
-    }
-}
+
+	
+
+
+
 /*
 function findNewPath(bot) {
     pathStart = [Math.floor(bots[bot][0] / 32), Math.floor(bots[bot][1] / 32)];

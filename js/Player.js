@@ -1,5 +1,5 @@
 /**************************************************
-** GAME PLAYER CLASS
+** CLIENT PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY, facing) {
 	var x = startX,

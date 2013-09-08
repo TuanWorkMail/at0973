@@ -73,6 +73,7 @@ tmxloader.ObjectGroup = function (groupname, width, height, properties) {
     this.objects = new Array();
     this.properties = properties;
 }
+//MAYBE NO FUNCTION
 tmxloader.parseProperties = function ($xml) {
     var properties = new Array();
     $xml.find('properties:first ').each(function () {

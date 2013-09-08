@@ -106,20 +106,15 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
+/**************************************************
+** BOT FROM SERVER 
+**************************************************/
 // Bot broadcast
 function onBotBroadcast(data) {
-    console.log('client' + isBotBroadcast);
-    if (isBotBroadcast == 'host') return;
-    isBotBroadcast = 'client';
+
     ctx.drawImage(bot, data.x, data.y);
 };
 
-function drawBroadcastBot() {
-    for (var i = 0; i < bots.length; i++) {
-        ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
-    }
-    drawPath();
-}
 
 /**************************************************
 ** GAME FINDER FUNCTIONS
