@@ -6,10 +6,8 @@
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
 	Player = require("./Player").Player,	// Player class
-    Bot = require("./Bot").Bot,             // Bot class
-    tmxloader = require("./tmxloader_server").tmxloader,
-    fps = 60,                               // game speed(frame per second)
-    whichMap = 'classic1';
+    Bot = require("./Bot").Bot;             // Bot class
+    //tmxloader = require("./tmxloader_server").tmxloader;
 
 
 
@@ -17,37 +15,39 @@ var util = require("util"),					// Utility resources (logging, object inspection
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
-var socket,		// Socket controller
-	players;	// Array of connected players
+var socket,		            // Socket controller
+    players,	            // Array of connected players
+    fps = 60,               // game speed(frame per second)
+    whichMap = 'classic1';  // the map name
 
 
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
 function init() {
-	// Create an empty array to store players
-	players = [];
+    // Create an empty array to store players
+    players = [];
 
-	// Set up Socket.IO to listen on port 8000
-	socket = io.listen(8000);
+    // Set up Socket.IO to listen on port 8000
+    socket = io.listen(8000);
 
-	// Configure Socket.IO
-	socket.configure(function() {
-		// Only use WebSockets
-		socket.set("transports", ["websocket"]);
+    // Configure Socket.IO
+    socket.configure(function () {
+        // Only use WebSockets
+        socket.set("transports", ["websocket"]);
 
-		// Restrict log output
-		socket.set("log level", 2);
-	});
+        // Restrict log output
+        socket.set("log level", 2);
+    });
 
-	// Start listening for events
-	setEventHandlers();
+    // Start listening for events
+    setEventHandlers();
 
     //read the map
-	tmxloader.load("../map/" + whichMap + ".tmx");
+    //tmxloader.load("../map/" + whichMap + ".tmx");
 
     //start game loop
-	gameLoop();
+    gameLoop();
 };
 
 /**************************************************
@@ -55,110 +55,110 @@ function init() {
 **************************************************/
 //
 function gameLoop() {
-    moveBot();
+    //moveBot();
     game = setTimeout(gameLoop, 1000 / fps);
 }
 
 /**************************************************
 ** GAME EVENT HANDLERS
 **************************************************/
-var setEventHandlers = function() {
-	// Socket.IO
-	socket.sockets.on("connection", onSocketConnection);
+var setEventHandlers = function () {
+    // Socket.IO
+    socket.sockets.on("connection", onSocketConnection);
 };
 
 // New socket connection
 function onSocketConnection(client) {
-	util.log("New player has connected: "+client.id);
+    util.log("New player has connected: " + client.id);
 
-	// Listen for client disconnected
-	client.on("disconnect", onClientDisconnect);
+    // Listen for client disconnected
+    client.on("disconnect", onClientDisconnect);
 
-	// Listen for new player message
-	client.on("new player", onNewPlayer);
+    // Listen for new player message
+    client.on("new player", onNewPlayer);
 
-	// Listen for move player message
-	client.on("move player", onMovePlayer);
-	
-	// Listen for move lasers message
-	client.on("move lasers", onMoveLasers);
+    // Listen for move player message
+    client.on("move player", onMovePlayer);
+
+    // Listen for move lasers message
+    client.on("move lasers", onMoveLasers);
 
     // Listen for bot broadcast message
-	client.on("bot broadcast", onBotBroadcast);
+    client.on("bot broadcast", onBotBroadcast);
 };
 
 // Socket client has disconnected
 function onClientDisconnect() {
-	util.log("Player has disconnected: "+this.id);
+    util.log("Player has disconnected: " + this.id);
 
-	var removePlayer = playerById(this.id);
+    var removePlayer = playerById(this.id);
 
-	// Player not found
-	if (!removePlayer) {
-		util.log("Player not found: "+this.id);
-		return;
-	};
+    // Player not found
+    if (!removePlayer) {
+        util.log("Player not found: " + this.id);
+        return;
+    };
 
-	// Remove player from players array
-	players.splice(players.indexOf(removePlayer), 1);
+    // Remove player from players array
+    players.splice(players.indexOf(removePlayer), 1);
 
-	// Broadcast removed player to connected socket clients
-	this.broadcast.emit("remove player", {id: this.id});
+    // Broadcast removed player to connected socket clients
+    this.broadcast.emit("remove player", { id: this.id });
 };
 
 // New player has joined
 function onNewPlayer(data) {
-	// Create a new player
-	var newPlayer = new Player(data.x, data.y);
-	newPlayer.id = this.id;
+    // Create a new player
+    var newPlayer = new Player(data.x, data.y);
+    newPlayer.id = this.id;
 
-	// Broadcast new player to connected socket clients
-	this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()});
+    // Broadcast new player to connected socket clients
+    this.broadcast.emit("new player", { id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY() });
 
-	// Send existing players to the new player
-	var i, existingPlayer;
-	for (i = 0; i < players.length; i++) {
-		existingPlayer = players[i];
-		this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});
-	};
-		
-	// Add new player to the players array
-	players.push(newPlayer);
+    // Send existing players to the new player
+    var i, existingPlayer;
+    for (i = 0; i < players.length; i++) {
+        existingPlayer = players[i];
+        this.emit("new player", { id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY() });
+    };
+
+    // Add new player to the players array
+    players.push(newPlayer);
 };
 
 // Player has moved
 function onMovePlayer(data) {
-	// Find player in array
-	var movePlayer = playerById(this.id);
+    // Find player in array
+    var movePlayer = playerById(this.id);
 
-	// Player not found
-	if (!movePlayer) {
-		util.log("Player not found: "+this.id);
-		return;
-	};
+    // Player not found
+    if (!movePlayer) {
+        util.log("Player not found: " + this.id);
+        return;
+    };
 
-	// Update player position
-	movePlayer.setX(data.x);
-	movePlayer.setY(data.y);
-	movePlayer.setDirection(data.direction);
+    // Update player position
+    movePlayer.setX(data.x);
+    movePlayer.setY(data.y);
+    movePlayer.setDirection(data.direction);
 
-	// Broadcast updated position to connected socket clients
-	this.broadcast.emit("move player", {id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY(), direction: data.direction});
+    // Broadcast updated position to connected socket clients
+    this.broadcast.emit("move player", { id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY(), direction: data.direction });
 };
 
 // Lasers has moved
 function onMoveLasers(data) {
-	// Find player in array
-	var movePlayer = playerById(this.id);
+    // Find player in array
+    var movePlayer = playerById(this.id);
 
-	// Player not found
-	if (!movePlayer) {
-		util.log("Player not found: "+this.id);
-		return;
-	};
+    // Player not found
+    if (!movePlayer) {
+        util.log("Player not found: " + this.id);
+        return;
+    };
 
-	// Broadcast updated position to connected socket clients
-	this.broadcast.emit("move lasers", {id: movePlayer.id, x: data.x, y: data.y, direction: data.direction});
+    // Broadcast updated position to connected socket clients
+    this.broadcast.emit("move lasers", { id: movePlayer.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 //broadcast bot
@@ -172,13 +172,13 @@ function onBotBroadcast(data) {
 **************************************************/
 // Find player by ID
 function playerById(id) {
-	var i;
-	for (i = 0; i < players.length; i++) {
-		if (players[i].id == id)
-			return players[i];
-	};
-	
-	return false;
+    var i;
+    for (i = 0; i < players.length; i++) {
+        if (players[i].id == id)
+            return players[i];
+    };
+
+    return false;
 };
 
 
@@ -188,7 +188,7 @@ function playerById(id) {
 //begin to send bot over the air to client
 //create a game loop similar to client on server side
 //send bot coordinate to client
-var maximumBot = 2,
+/*var maximumBot = 2,
     pathStart,
     pathStartX,
     pathStartY,
@@ -291,7 +291,7 @@ function hitTestBot() {
         }
     }
 }
-
+*/
 
 /**************************************************
 ** RUN THE GAME

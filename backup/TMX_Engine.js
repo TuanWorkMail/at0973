@@ -9,41 +9,6 @@
  * 	Depends on: Jquery for file loading and XML parsing
  *
  */
-var requirejs = require('requirejs');
-
-/**************************************************
-** RequireJS config
-**************************************************/
-requirejs.config({
-    //Use node's special variable __dirname to
-    //get the directory containing this file.
-    //Useful if building a library that will
-    //be used in node but does not require the
-    //use of node outside
-    baseUrl: __dirname,
-    //Pass the top-level main.js/index.js require
-    //function to requirejs so that node modules
-    //are loaded relative to the top-level JS file.
-    nodeRequire: require,
-    paths: {
-        // the left side is the module ID,
-        // the right side is the path to
-        // the jQuery file, relative to baseUrl.
-        // Also, the path should NOT include
-        // the '.js' file extension. This example
-        // is using jQuery 1.9.0 located at
-        // js/lib/jquery-1.9.0.js, relative to
-        // the HTML page.
-        jquery: 'jquery-1.8.3'
-        
-    }
-});
-var $ = requirejs('jquery');
-
-var tmxloader = {};
-
-module.exports = tmxloader;
-
 tmxloader.trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 }
