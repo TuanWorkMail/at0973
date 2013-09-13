@@ -7,7 +7,8 @@ var util = require("util"),					// Utility resources (logging, object inspection
 	io = require("socket.io"), 			    // Socket.IO
 	Player = require("./Player").Player,	// Player class
     Bot = require("./Bot").Bot;             // Bot class
-    //tmxloader = require("./tmxloader_server").tmxloader;
+    //jsdom = require("jsdom"),
+    //tmxloader = require("./TMX_Engine").tmxloader;
 
 
 
@@ -44,7 +45,7 @@ function init() {
     setEventHandlers();
 
     //read the map
-    //tmxloader.load("../map/" + whichMap + ".tmx");
+    tmxloader.load('http://localhost/classic1.tmx');
 
     //start game loop
     gameLoop();
@@ -188,7 +189,7 @@ function playerById(id) {
 //begin to send bot over the air to client
 //create a game loop similar to client on server side
 //send bot coordinate to client
-/*var maximumBot = 2,
+var maximumBot = 2,
     pathStart,
     pathStartX,
     pathStartY,
@@ -291,7 +292,7 @@ function hitTestBot() {
         }
     }
 }
-*/
+
 
 /**************************************************
 ** RUN THE GAME

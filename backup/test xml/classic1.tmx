@@ -219,15 +219,15 @@
   <object name="1" x="210" y="440" width="40" height="40"/>
   <object name="2" x="240" y="0" width="40" height="40"/>
  </objectgroup>
- <objectgroup color="#0000ff" name="destination" width="48" height="48">
+ <objectgroup color="#00ff00" name="spawn" width="48" height="48">
+  <object name="1" x="280" y="440" width="40" height="40"/>
+  <object name="2" x="160" y="0" width="40" height="40"/>
+ </objectgroup>
+ <objectgroup color="#0000ff" name="destination" width="48" height="48" visible="0">
   <object x="80" y="240" width="40" height="40"/>
   <object x="360" y="200" width="40" height="40"/>
  </objectgroup>
  <objectgroup name="colision" width="48" height="48">
   <object x="220" y="130" width="60" height="20"/>
- </objectgroup>
- <objectgroup color="#00ff00" name="spawn" width="48" height="48">
-  <object name="1" x="280" y="440" width="40" height="40"/>
-  <object name="2" x="160" y="0" width="40" height="40"/>
  </objectgroup>
 </map>

@@ -1,14 +1,20 @@
 /**
- * tmx-loader.js  - A Javascript loader for the TMX File Format.
+ * 
  *
- * 	Currenty Supports: 
- *						- Map
- *						- Layers
- *						- Tile Data (CSV only)
+ * 	
+ *						
+ *						                    SERVER SIDE
+ *						
  *
- * 	Depends on: Jquery for file loading and XML parsing
+ * 	
  *
  */
+var tmxloader = {},
+    XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+//export to use with nodejs require
+exports.tmxloader = tmxloader;
+
 tmxloader.trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 }
@@ -103,12 +109,12 @@ tmxloader.load = function (url) {
     var xmlDoc = jQuery.parseXML(result);
     $xml = $(xmlDoc);
     */
-    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+    //if (global.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
         xmlhttp = new XMLHttpRequest();
-    }
+    /*}
     else {// code for IE6, IE5
         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
+    }*/
     xmlhttp.open("GET", url, false);
     //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     //xmlhttp.setRequestHeader("Content-length", 4096);
@@ -117,9 +123,9 @@ tmxloader.load = function (url) {
     xmlDoc = xmlhttp.responseXML;
 
 
-    $version = xmlDoc.getElementsByTagName("map")[0].getAttribute("version");
+    //$version = (Element)(xmlDoc.getElementsByTagName("map")[0].getAttribute("version"));
 
-    console.log('Parsing...' + $version);
+    //console.log('Parsing...' + $version);
 
     $width = xmlDoc.getElementsByTagName("map")[0].getAttribute("width");
     $height = xmlDoc.getElementsByTagName("map")[0].getAttribute("height");
