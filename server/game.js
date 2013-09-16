@@ -1,14 +1,23 @@
-//RESTART for changes to applied                RESTART THE SERVER
+
+
+
+
+
+
+//                      RESTART for changes to applied                RESTART THE SERVER
+
+
+
+
+
 
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
-	Player = require("./Player").Player,	// Player class
-    Bot = require("./Bot").Bot;             // Bot class
-    //jsdom = require("jsdom"),
-    //tmxloader = require("./TMX_Engine").tmxloader;
+	Player = require("./Player").Player;	// Player class
+    
 
 
 
@@ -17,10 +26,8 @@ var util = require("util"),					// Utility resources (logging, object inspection
 ** GAME VARIABLES
 **************************************************/
 var socket,		            // Socket controller
-    players,	            // Array of connected players
-    fps = 60,               // game speed(frame per second)
-    whichMap = 'classic1';  // the map name
-
+    players, 	            // Array of connected players
+    host;                   // if there already a host or not
 
 /**************************************************
 ** GAME INITIALISATION
@@ -28,6 +35,8 @@ var socket,		            // Socket controller
 function init() {
     // Create an empty array to store players
     players = [];
+
+    host = false;
 
     // Set up Socket.IO to listen on port 8000
     socket = io.listen(8000);
@@ -44,21 +53,7 @@ function init() {
     // Start listening for events
     setEventHandlers();
 
-    //read the map
-    tmxloader.load('http://localhost/classic1.tmx');
-
-    //start game loop
-    gameLoop();
 };
-
-/**************************************************
-** GAME LOOP FUNCTION
-**************************************************/
-//
-function gameLoop() {
-    //moveBot();
-    game = setTimeout(gameLoop, 1000 / fps);
-}
 
 /**************************************************
 ** GAME EVENT HANDLERS
