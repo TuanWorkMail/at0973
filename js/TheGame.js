@@ -4,7 +4,7 @@ var canvas,
     ctx,
     whichMap = "classic1",
     shipSpeed = 5,
-    enemySpeed = 1,
+    enemySpeed = 5,
     fps = 60,
     ship_w = 40, ship_h = 40,
     width,
@@ -12,6 +12,7 @@ var canvas,
     tmxloader = {},
     enemyTotal = 5,
     bots = [],
+    remoteBots = [],
     bot_w = 32,
     bot_h = 32,
     bot,
@@ -27,6 +28,8 @@ var canvas,
     //Add the socket variable to the file
     socket,
     remotePlayers = [],
+    //check if gameLoop is over or not, for onBotBroadcast(Multiplayer)
+    checkGameLoop = false,
     //viewport for drawing map
     viewport,
     viewport_x = 0,
@@ -79,8 +82,6 @@ function init() {
 
     enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
 
-    //array hold the obstacle/rock wall
-    world = tmxloader.map.layers[1].data,
 
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.
@@ -94,7 +95,10 @@ function init() {
     console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
-    
+
+    //debug
+    //drawTileLayerRaw(combine16to1tile(combineTileLayer()));
+
     gameLoop();
 }
 
@@ -102,14 +106,16 @@ function init() {
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
+    //a new loop
+    checkGameLoop = true;
     clearCanvas();
     //draw the map
     draw();
     if (alive && gameStarted && lives > 0) {
         //shipCollision();
 
-        //moveBot();
-        //drawBot();
+        moveBot();
+        drawBot(host);
         //hitTestBot();
         moveLaser();
         shootDestruction();

@@ -1,10 +1,16 @@
 
-//Cycles through the array and draws the updated enemy position
-function drawBot() {
-    for (var i = 0; i < bots.length; i++) {
-        ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+//if host draw from bots, if guest draw from remoteBots
+function drawBot(host) {
+    if (host == true) {
+        for (var i = 0; i < bots.length; i++) {
+            ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+        }
+    } else {
+        for (var i = 0; i < remoteBots.length; i++) {
+            ctx.drawImage(bot, remoteBots[i].getX(), remoteBots[i].getY());
+        }
     }
-    drawPath();
+    //drawPath();
 }
 	
 var maximumBot = 2,
@@ -24,14 +30,14 @@ var maximumBot = 2,
     whereSpawn = 0;
 
 function moveBot() {
-    if (host == 'false') return;
+    if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-            movingBot(bot);
-            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y:bots[bot].getY() });
+            movingBot(bot, ship_w, ship_h);
+            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y: bots[bot].getY() });
         } else {
-            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
+            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY(), ship_w, ship_h);
             bots[bot].whereNow = 0;
         }
     }
@@ -51,23 +57,25 @@ function createBot() {
         whereSpawn++;
     }
 }
-//input: current location
+//input: current location and width/height of the bot, not the map tile
 //output: array of path to a random point
-function botRandomPath(x, y) {
+function botRandomPath(x, y, width, height) {
     var check = true;
     while (check) {
-        pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
+        pathStart = [Math.floor(x / width), Math.floor(y / height)];
         var randomNumber = Math.floor(Math.random() * botDestination.length);
-        pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
+        pathEnd = [Math.floor(botDestination[randomNumber].x / width), Math.floor(botDestination[randomNumber].y / height)];
         if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
             check = false;
         }
-    }
-    return pathFinder(world, pathStart, pathEnd);
+    } 
+    return pathFinder(combine16to1tile(combineTileLayer()), pathStart, pathEnd);
 }
-function movingBot(bot) {
-    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * tmxloader.map.tileWidth,
-        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * tmxloader.map.tileHeight,
+//input: bot array, width and height of the bot, not the tileWidth/height
+//move the bot according to there foundPath
+function movingBot(bot, width, height) {
+    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * width,
+        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * height,
         differenceX = bots[bot].getX() - pixelX,
         differenceY = bots[bot].getY() - pixelY;
     //go vertically
@@ -108,6 +116,68 @@ function drawPath() {
         }
     }
 }
+
+//combine all the tile layers together for pathfinding
+//output: 1 combined layer
+function combineTileLayer() {
+    var combined = [];
+    for (var layer = 0; layer < tmxloader.map.layers.length; layer++) {
+        if (tmxloader.map.layers[layer].name == 'overhead')
+            continue;
+        //first use 1 layer as the start
+        if (combined.length == 0) {
+            combined = tmxloader.map.layers[layer].data;
+            continue;
+        }
+        //if combined is 0 and layer is not 0, combined = 1 (unwalkable)
+        for (var i = 0; i < tmxloader.map.width; i++) {
+            for (var j = 0; j < tmxloader.map.height; j++) {
+                if (combined[i][j] == 0 && tmxloader.map.layers[layer].data[i][j] != 0) {
+                    combined[i][j] = 1;
+                }
+            }
+        }
+    }
+    return combined;
+}
+//input: the small tile layer
+//combine 4x4 into 1 big tile
+//check if any tile in 4x4 is unwalkable, make the big tile unwalkable too
+//output: the big tile layer
+function combine16to1tile(combined) {
+    var combinedBig = [];
+    for (var width = 0; width < tmxloader.map.width / 4; width++) {
+        combinedBig[width] = [];
+        for (var height = 0; height < tmxloader.map.height / 4; height++) {
+            //if any of 4x4 is unwalkable, flag it unwalkable
+            var flag = false;
+            for (var i = 0; i < 4; i++) {
+                for (var j = 0; j < 4; j++) {
+                    if (combined[width * 4 + i][height * 4 + j] != 0)
+                        flag = true;
+                }
+            }
+            if (flag) {
+                combinedBig[width][height] = 1;
+            } else {
+                combinedBig[width][height] = 0;
+            }
+        }
+    }
+    return combinedBig;
+}
+
+function drawTileLayerRaw(combinedBig) {
+    for (var i = 0; i < combinedBig.length; i++) {
+        for (var j = 0; j < combinedBig[i].length; j++) {
+            document.getElementById('tile').innerHTML += combinedBig[j][i];
+            document.getElementById('tile').innerHTML += '  ,  ';//4
+        }
+        document.getElementById('tile').innerHTML += '<br />';
+    }
+    document.getElementById('tile').innerHTML += '<br />';
+}
+
 function hitTestBot() {
     var enemy_xw,
         enemy_yh,

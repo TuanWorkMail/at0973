@@ -111,10 +111,27 @@ function onRemovePlayer(data) {
 **************************************************/
 // Bot broadcast
 function onBotBroadcast(data) {
-
-    ctx.drawImage(bot, data.x, data.y);
+    if (data.bot == 0)
+        remoteBots.length = 0;
+    var newBot = new Bot(data.x, data.y, [], 0);
+    remoteBots.push(newBot);
 };
 
+//add new bot to the array
+function createRemoteBot() {
+    if (whereSpawn == enemiesGroup.length) {
+        whereSpawn = 0;
+    }
+    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
+        // Initialise the new bot
+        var x = enemiesGroup[whereSpawn].x;
+        y = enemiesGroup[whereSpawn].y;
+        newBot = new Bot(x, y, botRandomPath(x, y), 0);
+        // Add new player to the remote players array
+        bots.push(newBot);
+        whereSpawn++;
+    }
+}
 
 /**************************************************
 ** GAME FINDER FUNCTIONS
