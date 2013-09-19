@@ -3,17 +3,60 @@
 function drawBot(host) {
     if (host == true) {
         for (var i = 0; i < bots.length; i++) {
-            ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+            //ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+            drawingBot(bots, i);
         }
-    } else {
+    } else if (host == false) {
         for (var i = 0; i < remoteBots.length; i++) {
-            ctx.drawImage(bot, remoteBots[i].getX(), remoteBots[i].getY());
+            //ctx.drawImage(bot, remoteBots[i].getX(), remoteBots[i].getY());
+            drawingBot(remoteBots, i);
         }
     }
     //drawPath();
 }
+
+function drawingBot(array, i) {
+    // Get context
+    var context = canvas.getContext("2d"),
+        halfWidth = bot_w / 2,
+        halfHeight = bot_h / 2;
+
+    // Backup before messing with the canvas
+    context.save();
+
+    // Move registration point to the center of the canvas
+    context.translate(array[i].getX() + halfWidth, array[i].getY() + halfHeight);
+
+    switch (array[i].direction) {
+        case 'up':
+            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            break;
+        case 'down':
+            // Rotate 180 degree
+            context.rotate((Math.PI / 180) * 180);
+            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            break;
+        case 'left':
+            // Rotate 270 degree
+            context.rotate((Math.PI / 180) * 270);
+            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            break;
+        case 'right':
+            // Rotate 90 degree
+            context.rotate((Math.PI / 180) * 90);
+            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            break;
+    }
+
+    // Move registration point back to the top left corner of canvas
+    //context.translate(-(array[i].getX() + halfWidth), -(array[i].getY() + halfHeight));
+
+    // restore
+    context.restore();
+}
+
 	
-var maximumBot = 2,
+var botCount = 0,
     pathStart,
     pathStartX,
     pathStartY,
@@ -33,49 +76,25 @@ function moveBot() {
     if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-            movingBot(bot, ship_w, ship_h);
-            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y: bots[bot].getY() });
-        } else {
-            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY(), ship_w, ship_h);
-            bots[bot].whereNow = 0;
+        if (bots[bot].intel == 'smart') {
+            if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
+                movingBot(bot);
+                socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y: bots[bot].getY() });
+            } else {
+                bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
+                bots[bot].whereNow = 0;
+            }
+        } else if (bots[bot].intel == 'dumb') {
+            goStraight(bot);
         }
     }
 }
-//add new bot to the array
-function createBot() {
-    if (whereSpawn == enemiesGroup.length) {
-        whereSpawn = 0;
-    }
-    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
-        // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x;
-            y = enemiesGroup[whereSpawn].y;
-            newBot = new Bot(x, y, botRandomPath(x, y), 0);
-        // Add new player to the remote players array
-        bots.push(newBot);
-        whereSpawn++;
-    }
-}
-//input: current location and width/height of the bot, not the map tile
-//output: array of path to a random point
-function botRandomPath(x, y, width, height) {
-    var check = true;
-    while (check) {
-        pathStart = [Math.floor(x / width), Math.floor(y / height)];
-        var randomNumber = Math.floor(Math.random() * botDestination.length);
-        pathEnd = [Math.floor(botDestination[randomNumber].x / width), Math.floor(botDestination[randomNumber].y / height)];
-        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
-            check = false;
-        }
-    } 
-    return pathFinder(combine16to1tile(combineTileLayer()), pathStart, pathEnd);
-}
-//input: bot array, width and height of the bot, not the tileWidth/height
+//input: bot array
 //move the bot according to there foundPath
-function movingBot(bot, width, height) {
-    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * width,
-        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * height,
+function movingBot(bot) {
+    //bot current coordianate is calculate base on ship_w/h, not tileWidth/height
+    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * ship_w,
+        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * ship_h,
         differenceX = bots[bot].getX() - pixelX,
         differenceY = bots[bot].getY() - pixelY;
     //go vertically
@@ -83,21 +102,121 @@ function movingBot(bot, width, height) {
         //down or up
         if (differenceY > 0) {
             bots[bot].setY(bots[bot].getY() - enemySpeed);
+            bots[bot].direction = 'up';
         } else {
             bots[bot].setY(bots[bot].getY() + enemySpeed);
+            bots[bot].direction = 'down';
         }
         //go horizontally
     } else if (differenceY == 0 && differenceX != 0) {
         //right or left
         if (differenceX > 0) {
             bots[bot].setX(bots[bot].getX() - enemySpeed);
+            bots[bot].direction = 'left';
         } else {
             bots[bot].setX(bots[bot].getX() + enemySpeed);
+            bots[bot].direction = 'right';
         }
     } else {
         bots[bot].whereNow++;
     }
 }
+//stupid bot just go straight, if stuck turn randomly
+function goStraight(bot) {
+    //flag to check if hit the wall
+    var flag = false;
+    switch (bots[bot].direction) {
+        case 'up':
+            bots[bot].setY(bots[bot].getY() - enemySpeed);
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
+                bots[bot].setY(bots[bot].getY() + enemySpeed);
+                flag = true;
+            }
+            break;
+        case 'down':
+            bots[bot].setY(bots[bot].getY() + enemySpeed);
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
+                bots[bot].setY(bots[bot].getY() - enemySpeed);
+                flag = true;
+            }
+            break;
+        case 'left':
+            bots[bot].setX(bots[bot].getX() - enemySpeed);
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
+                bots[bot].setX(bots[bot].getX() + enemySpeed);
+                flag = true;
+            }
+            break;
+        case 'right':
+            bots[bot].setX(bots[bot].getX() + enemySpeed);
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
+                bots[bot].setX(bots[bot].getX() - enemySpeed);
+                flag = true;
+            }
+            break;
+    }
+    if(flag)
+        switch (randomNumber(1, 4)) {
+            case 1:
+                bots[bot].direction = 'up';
+                break;
+            case 2:
+                bots[bot].direction = 'down';
+                break;
+            case 3:
+                bots[bot].direction = 'left';
+                break;
+            case 4:
+                bots[bot].direction = 'right';
+                break;
+        }
+
+}
+//add new bot to the array
+function createBot() {
+    //reset spawn point when reach the last point
+    if (whereSpawn == enemiesGroup.length) {
+        whereSpawn = 0;
+    }
+    while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
+        botCount++;
+        // Initialise the new bot
+        var x = enemiesGroup[whereSpawn].x,
+            y = enemiesGroup[whereSpawn].y;
+        //every 3 bot is smart
+        if (botCount % 2 == 0) {
+            newBot = new Bot(x, y, 'smart', botRandomPath(x, y), 0, '');
+        } else {
+            newBot = new Bot(x, y, 'dumb', [], 0, 'down');
+        }
+        // Add new player to the remote players array
+        bots.push(newBot);
+        whereSpawn++;
+
+    }
+}
+//input: current location
+//output: array of path to a random point
+function botRandomPath(x, y) {
+    var check = true;
+    while (check) {
+        //pathStart/end calculate base on ship_w/h, not tileWidth/Height
+        pathStart = [Math.floor(x / ship_w), Math.floor(y / ship_h)];
+        var random = randomNumber(0, botDestination.length - 1);
+        pathEnd = [Math.floor(botDestination[random].x / ship_w), Math.floor(botDestination[random].y / ship_h)];
+        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
+            check = false;
+        }
+    }
+    return pathFinder(combine16to1tile(combineTileLayer()), pathStart, pathEnd);
+}
+
+//input: interval in which random number come from
+//output: random number between interval
+function randomNumber(from, to) {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+}
+
 function drawPath() {
     for (var i = 0; i < bots.length; i++) {
         for (var rp = 0; rp < bots[i].pathFound.length; rp++) {
@@ -125,8 +244,12 @@ function combineTileLayer() {
         if (tmxloader.map.layers[layer].name == 'overhead')
             continue;
         //first use 1 layer as the start
+        //var new = old[] will create a REFERENCE, not a clone
+        //have to manually clone each array in multi-dimentional array
         if (combined.length == 0) {
-            combined = tmxloader.map.layers[layer].data;
+            for (var i = 0; i < tmxloader.map.width; i++) {
+                combined[i] = tmxloader.map.layers[layer].data[i].slice(0);
+            }
             continue;
         }
         //if combined is 0 and layer is not 0, combined = 1 (unwalkable)
@@ -197,10 +320,32 @@ function hitTestBot() {
         }
     }
 }
+//work in progress
+//input: coordinate, direction, moving speed and type(tank/bullet)
+//move an object according to input parameter
+function moving(x, y, direction, speed, type) {
+    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+        ship_x -= shipSpeed;
+    }
+    switch (direction) {
+        case up:
+            x = -speed;
+            break;
+        case down:
+            x = +speed;
+            break;
+        case left:
+            y = -speed;
+            break;
+        case right:
+            y = +speed;
+            break;
+    }
+}
 /*
 function findNewPath(bot) {
     pathStart = [Math.floor(bots[bot][0] / 32), Math.floor(bots[bot][1] / 32)];
-    var random = Math.floor(Math.random() * botDestination.length);
+    var random = randomNumber(0, botDestination.length);
     pathEnd = [Math.floor(botDestination[random].x / 32), Math.floor(botDestination[random].y / 32)];
     pathFound[bot] = pathFinder(world, pathStart, pathEnd);
     //WARNING: pathFound is the tile array, not PIXEL, you have to CONVERT it to use it
@@ -297,7 +442,8 @@ function moveEnemies2() {
             ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, pathFound[rp][0] * 32, pathFound[rp][1] * 32, 32, 32);
         }
     }
-    //////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     //the super human intelligent bot
     if (false) {
         for (var i = 0; i < bots.length; i++) {

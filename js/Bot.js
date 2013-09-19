@@ -1,11 +1,15 @@
 ﻿/**************************************************
 ** CLIENT BOT CLASS
 **************************************************/
-var Bot = function (startX, startY, path, where) {
+
+//input: x/y coordinate, AI level, pathfiding result and current location in that result, direction bot is heading
+var Bot = function (startX, startY, intel, path, where, direction) {
     var x = startX,
-		y = startY,
+	y = startY,
+        intel = intel,
         pathFound = path,
-        whereNow = where;
+        whereNow = where,
+        direction = direction;
 
 
     // Getters and setters
@@ -31,8 +35,8 @@ var Bot = function (startX, startY, path, where) {
     return {
         pathFound: pathFound,
         whereNow: whereNow,
-        x: x,
-        y: y,
+        intel: intel,
+        direction: direction,
         getX: getX,
         getY: getY,
         setX: setX,

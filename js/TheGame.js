@@ -10,11 +10,11 @@ var canvas,
     width,
     height,
     tmxloader = {},
-    enemyTotal = 5,
+    botsLength = 2,
     bots = [],
     remoteBots = [],
-    bot_w = 32,
-    bot_h = 32,
+    bot_w = 40,
+    bot_h = 40,
     bot,
     //array of coordinate the bot can randomly go to
     botDestination,
@@ -37,7 +37,7 @@ var canvas,
     ship, ship_right, ship_left, ship_down,
     bullet, bullet_right, bullet_left, bullet_down,
     ship_x, ship_y, 
-    laserTotal = 6,
+    lasersLength = 1,
     lasers = [],
     laserSpeed = 15,
     lastKey = 'left',
@@ -98,6 +98,7 @@ function init() {
 
     //debug
     //drawTileLayerRaw(combine16to1tile(combineTileLayer()));
+    
 
     gameLoop();
 }
@@ -139,19 +140,15 @@ function keyDown(e) {
     else if (e.keyCode == 37) leftKey = true;
     else if (e.keyCode == 38) upKey = true;
     else if (e.keyCode == 40) downKey = true;
-    if (e.keyCode == 88 && lasers.length <= laserTotal) {
-        if (direction == 0) {
-            lasers.push([ship_x + ship_w / 2, ship_y - 1, 0]);
-            console.log((ship_x + ship_w / 2) + ' ' + (ship_y - 1) + ' up');
-        } else if (direction == 2) {
-            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, 2]);
-            console.log((ship_x + ship_w / 2) + ' ' + (ship_y + ship_h + 1) + ' down');
-        } else if (direction == 1) {
-            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, 1]);
-            console.log((ship_x + ship_w + 1) + ' ' + (ship_y + ship_h / 2) + ' right');
-        } else if (direction == -1) {
-            lasers.push([ship_x - 1, ship_y + ship_h / 2, -1]);
-            console.log((ship_x - 1) + ' ' + (ship_y + ship_h / 2) + ' left');
+    if (e.keyCode == 88 && lasers.length <= lasersLength) {
+        if (direction == 'up') {
+            lasers.push([ship_x + ship_w / 2, ship_y - 1, 'up']);
+        } else if (direction == 'down') {
+            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, 'down']);
+        } else if (direction == 'right') {
+            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, 'right']);
+        } else if (direction == 'left') {
+            lasers.push([ship_x - 1, ship_y + ship_h / 2, 'left']);
         }
         //update lasers shot
         socket.emit("move lasers", { x: ship_x, y: ship_y, direction: direction });
@@ -191,11 +188,11 @@ function drawShip() {
     if (ship_y <= 0) ship_y = 0;
     if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
     //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
-    if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
+    /*if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
         if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
             //debug
             //console.log(ship_x + ' ' + ship_x % (ship_w / 2) + ' ' + ship_y + ' ' + ship_y % (ship_h / 2));
-            switch (lastKey) {
+            switch (direction) {
                 case 'right':
                     ship_x += shipSpeed;
                     if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
@@ -209,7 +206,6 @@ function drawShip() {
                     }
                     break;
                 case 'up':
-                    direction = 0;
                     ship_y -= shipSpeed;
                     if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
                         ship_y += shipSpeed;
@@ -223,42 +219,42 @@ function drawShip() {
                     break;
             }
         }
-    }
+    }*/
     if (rightKey) {
-		direction=1;
-		ship_x += shipSpeed;
-		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-			ship_x -= shipSpeed;
-		}
-	} else if (leftKey) {
-		direction=-1;
-		ship_x -= shipSpeed;
-		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-			ship_x += shipSpeed;
-		}
-	} else if (upKey) {
-		direction=0;
-		ship_y -= shipSpeed;
-		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-			ship_y += shipSpeed;
-		}
-	} else if (downKey) {
-		direction=2;
-		ship_y += shipSpeed;
-		if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-			ship_y -= shipSpeed;
-		}
-	}
-  
-	if (direction==1) {
-		ctx.drawImage(ship_right, ship_x, ship_y);
-	} else if (direction==-1) {
-		ctx.drawImage(ship_left, ship_x, ship_y);
-	} if (direction==0) {
-		ctx.drawImage(ship, ship_x, ship_y);
-	} else if (direction==2) {
-		ctx.drawImage(ship_down, ship_x, ship_y);
-	}
+        direction = 'right';
+        ship_x += shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_x -= shipSpeed;
+        }
+    } else if (leftKey) {
+        direction = 'left';
+        ship_x -= shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_x += shipSpeed;
+        }
+    } else if (upKey) {
+        direction = 'up';
+        ship_y -= shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_y += shipSpeed;
+        }
+    } else if (downKey) {
+        direction = 'down';
+        ship_y += shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_y -= shipSpeed;
+        }
+    }
+
+    if (direction == 'right') {
+        ctx.drawImage(ship_right, ship_x, ship_y);
+    } else if (direction == 'left') {
+        ctx.drawImage(ship_left, ship_x, ship_y);
+    } if (direction == 'up') {
+        ctx.drawImage(ship, ship_x, ship_y);
+    } else if (direction == 'down') {
+        ctx.drawImage(ship_down, ship_x, ship_y);
+    }
 }
 
 //If there are lasers in the lasers array, then this will draw them on the canvas
@@ -271,20 +267,20 @@ function drawLaser() {
 
 //If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
-  for (var i = 0; i < lasers.length; i++) {
-		if (lasers[i][2]==0) {
-			lasers[i][1] -= laserSpeed;
-		} else if (lasers[i][2]==2) {
-			lasers[i][1] += laserSpeed;
-		} else if (lasers[i][2]==1) {
-			lasers[i][0] += laserSpeed;
-		} else if (lasers[i][2]==-1) {
-			lasers[i][0] -= laserSpeed;
-		}
-		if (lasers[i][1] < 0 || lasers[i][1] > height || lasers[i][0] < 0 || lasers[i][0] > width || mapCollision(lasers[i][0], lasers[i][1], 4, 4, 'bullet')) {
-      lasers.splice(i, 1);
+    for (var i = 0; i < lasers.length; i++) {
+        if (lasers[i][2] == 'up') {
+            lasers[i][1] -= laserSpeed;
+        } else if (lasers[i][2] == 'down') {
+            lasers[i][1] += laserSpeed;
+        } else if (lasers[i][2] == 'right') {
+            lasers[i][0] += laserSpeed;
+        } else if (lasers[i][2] == 'left') {
+            lasers[i][0] -= laserSpeed;
+        }
+        if (mapCollision(lasers[i][0], lasers[i][1], 4, 4, 'bullet') || lasers[i][1] < 0 || lasers[i][1] > height || lasers[i][0] < 0 || lasers[i][0] > width) {
+            lasers.splice(i, 1);
+        }
     }
-  } 
 }
 
 

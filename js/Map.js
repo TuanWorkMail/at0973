@@ -75,7 +75,7 @@ function shootDestruction() {
         var justanumber = 2;
         switch (lasers[i][2]) {
             //bullet travel upward
-            case 0:
+            case 'up':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
                     if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i][0] / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] != 0 ||
@@ -90,7 +90,7 @@ function shootDestruction() {
                 }
                 break;
                 //bullet travel downward
-            case 2:
+            case 'down':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
                     if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i][0] / 10)][Math.floor((lasers[i][1] + behindpresent) / 10)] != 0 ||
@@ -104,8 +104,8 @@ function shootDestruction() {
                     }
                 }
                 break;
-                //bullet travel to the right
-            case -1:
+                //bullet travel to the left
+            case 'left':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
                     if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor(lasers[i][1] / 10)] != 0 ||
@@ -120,7 +120,7 @@ function shootDestruction() {
                 }
                 break;
                 //bullet travel to the right
-            case 1:
+            case 'right':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
                     if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor(lasers[i][1] / 10)] != 0 ||
@@ -146,6 +146,9 @@ function mapCollision(x, y, w, h, type) {
         //NOT(number of tiles) horizontally(w) or vertically(h)
         wNOT = w / tmxloader.map.tileWidth,
         hNOT = h / tmxloader.map.tileWidth;
+    //check if out of map area
+    if (x < 0 || x + w > width || y < 0 || y + h > height)
+        return true;
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
         if (tmxloader.map.layers[i].name == 'background' || tmxloader.map.layers[i].name == 'overhead') continue;
@@ -154,10 +157,15 @@ function mapCollision(x, y, w, h, type) {
         }
         for (var j = 0; j < wNOT; j++) {
             for (var k = 0; k < hNOT; k++) {
-                if (tmxloader.map.layers[i].data[xTile + j][yTile + k] != 0) return true;
+                if (tmxloader.map.layers[i].data[xTile + j][yTile + k] != 0) {
+                    return true; 
+                }
             }
         }
     }
+
+    //if nothing match, object not collide with anything
+    return false;
 }
 	/*	
 //check ship collide with map
