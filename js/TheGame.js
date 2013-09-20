@@ -142,19 +142,22 @@ function keyDown(e) {
     else if (e.keyCode == 40) downKey = true;
     if (e.keyCode == 88 && lasers.length <= lasersLength) {
         if (direction == 'up') {
-            lasers.push([ship_x + ship_w / 2, ship_y - 1, direction]);
-            socket.emit("new lasers", { x: (ship_x + ship_w / 2), y: (ship_y - 1), direction: direction });
+            shooting(ship_x + ship_w / 2, ship_y - 1, direction);
         } else if (direction == 'down') {
-            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, direction]);
-            socket.emit("new lasers", { x: (ship_x + ship_w / 2), y: (ship_y + ship_h + 1), direction: direction });
+            shooting(ship_x + ship_w / 2, ship_y + ship_h + 1, direction);
         } else if (direction == 'right') {
-            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, direction]);
-            socket.emit("new lasers", { x: (ship_x + ship_w + 1), y: (ship_y + ship_h / 2), direction: direction });
+            shooting(ship_x + ship_w + 1, ship_y + ship_h / 2, direction);
         } else if (direction == 'left') {
-            lasers.push([ship_x - 1, ship_y + ship_h / 2, direction]);
-            socket.emit("new lasers", { x: (ship_x - 1), y: (ship_y + ship_h / 2), direction: direction });
+            shooting(ship_x - 1, ship_y + ship_h / 2, direction);
         }
     }
+}
+
+//input: x,y,direction of the bullet
+//push new bullet into array and emit to server
+function shooting(x,y,direction) {
+    lasers.push([x, y, direction]);
+    socket.emit("new lasers", { x: x, y: y, direction: direction });
 }
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
