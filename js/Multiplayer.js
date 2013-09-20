@@ -20,13 +20,16 @@ var setEventHandlers = function() {
 	socket.on("move player", onMovePlayer);
 	
 	// Lasers move message received
-	socket.on("move lasers", onMoveLasers);
+	socket.on("new lasers", onNewLasers);
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
 
-    // Player removed message received
+    // Bot broadcast message received
 	socket.on("bot broadcast", onBotBroadcast);
+
+    // Bot die message received
+    socket.on("bot die", onBotDie);
 };
 
 // Socket connected
@@ -71,25 +74,9 @@ function onMovePlayer(data) {
 };
 
 // Move lasers
-function onMoveLasers(data) {
-	var movePlayer = playerById(data.id);
-
-	// Player not found
-	if (!movePlayer) {
-		console.log("Player not found: "+data.id);
-		return;
-	};
-	
-		//add new lasers
-		if (data.direction==0) {
-			lasers.push([data.x + 25, data.y, 0]);
-		} else if (data.direction==2) {
-			lasers.push([data.x + 25, data.y + 50, 2]);
-		} else if (data.direction==1) {
-			lasers.push([data.x + 50, data.y + 20, 1]);
-		} else if (data.direction==-1) {
-			lasers.push([data.x - 20, data.y + 20, -1]);
-		}
+function onNewLasers(data) {
+	//add new lasers
+	lasers.push([data.x, data.y, data.direction]);
 };
 
 // Remove player
@@ -106,15 +93,42 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
-/**************************************************
-** BOT FROM SERVER 
-**************************************************/
 // Bot broadcast
 function onBotBroadcast(data) {
-    if (data.bot == 0)
-        remoteBots.length = 0;
-    var newBot = new Bot(data.x, data.y, [], 0);
+    var bot = botById(data.count);
+    if (bot!=false) {
+        bot.setX(data.x);
+        bot.setY(data.y);
+        bot.direction=data.direction;
+        return;
+    }
+    var newBot = new Bot(data.count, data.x, data.y, '', [], 0, data.direction);
     remoteBots.push(newBot);
+};
+
+// Bot die
+function onBotDie(data) {
+    var bot = botById(data.count);
+    if (bot!=false) {
+        for (var i = 0; i < remoteBots.length; i++) {
+            if (remoteBots[i].id == data.count)
+                remoteBots.splice(i, 1);
+        };
+        return;
+    }
+    console.log('bot '+data.count+' not found');
+};
+
+/**************************************************
+ ** BOT FINDER FUNCTION
+ **************************************************/
+// Find bot by ID
+function botById(id) {
+    for (var i = 0; i < remoteBots.length; i++) {
+        if (remoteBots[i].id == id)
+            return remoteBots[i];
+    };
+    return false;
 };
 
 //add new bot to the array

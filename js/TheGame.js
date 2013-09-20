@@ -1,5 +1,5 @@
-//Now, let’s get onto the part that will make this game run, the JavaScript. 
-//First, we’ll get our ship working, so we need to set up some variables.
+//Now, letï¿½s get onto the part that will make this game run, the JavaScript. 
+//First, weï¿½ll get our ship working, so we need to set up some variables.
 var canvas,
     ctx,
     whichMap = "classic1",
@@ -18,7 +18,7 @@ var canvas,
     bot,
     //array of coordinate the bot can randomly go to
     botDestination,
-    //Now, let’s make our ship move. Add these to the variables at the top:
+    //Now, letï¿½s make our ship move. Add these to the variables at the top:
     rightKey = false,
     leftKey = false,
     upKey = false,
@@ -117,7 +117,7 @@ function gameLoop() {
 
         moveBot();
         drawBot(host);
-        //hitTestBot();
+        hitTestBot();
         moveLaser();
         shootDestruction();
         //hitTest();
@@ -142,16 +142,18 @@ function keyDown(e) {
     else if (e.keyCode == 40) downKey = true;
     if (e.keyCode == 88 && lasers.length <= lasersLength) {
         if (direction == 'up') {
-            lasers.push([ship_x + ship_w / 2, ship_y - 1, 'up']);
+            lasers.push([ship_x + ship_w / 2, ship_y - 1, direction]);
+            socket.emit("new lasers", { x: (ship_x + ship_w / 2), y: (ship_y - 1), direction: direction });
         } else if (direction == 'down') {
-            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, 'down']);
+            lasers.push([ship_x + ship_w / 2, ship_y + ship_h + 1, direction]);
+            socket.emit("new lasers", { x: (ship_x + ship_w / 2), y: (ship_y + ship_h + 1), direction: direction });
         } else if (direction == 'right') {
-            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, 'right']);
+            lasers.push([ship_x + ship_w + 1, ship_y + ship_h / 2, direction]);
+            socket.emit("new lasers", { x: (ship_x + ship_w + 1), y: (ship_y + ship_h / 2), direction: direction });
         } else if (direction == 'left') {
-            lasers.push([ship_x - 1, ship_y + ship_h / 2, 'left']);
+            lasers.push([ship_x - 1, ship_y + ship_h / 2, direction]);
+            socket.emit("new lasers", { x: (ship_x - 1), y: (ship_y + ship_h / 2), direction: direction });
         }
-        //update lasers shot
-        socket.emit("move lasers", { x: ship_x, y: ship_y, direction: direction });
     }
 }
 

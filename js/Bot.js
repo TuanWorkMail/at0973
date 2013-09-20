@@ -3,9 +3,10 @@
 **************************************************/
 
 //input: x/y coordinate, AI level, pathfiding result and current location in that result, direction bot is heading
-var Bot = function (startX, startY, intel, path, where, direction) {
-    var x = startX,
-	y = startY,
+var Bot = function (id, startX, startY, intel, path, where, direction) {
+    var id = id,
+        x = startX,
+	    y = startY,
         intel = intel,
         pathFound = path,
         whereNow = where,
@@ -37,6 +38,7 @@ var Bot = function (startX, startY, intel, path, where, direction) {
         whereNow: whereNow,
         intel: intel,
         direction: direction,
+        id: id,
         getX: getX,
         getY: getY,
         setX: setX,

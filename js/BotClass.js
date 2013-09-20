@@ -79,7 +79,6 @@ function moveBot() {
         if (bots[bot].intel == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
                 movingBot(bot);
-                socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y: bots[bot].getY() });
             } else {
                 bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
                 bots[bot].whereNow = 0;
@@ -87,6 +86,7 @@ function moveBot() {
         } else if (bots[bot].intel == 'dumb') {
             goStraight(bot);
         }
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction });
     }
 }
 //input: bot array
@@ -185,9 +185,9 @@ function createBot() {
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
         if (botCount % 2 == 0) {
-            newBot = new Bot(x, y, 'smart', botRandomPath(x, y), 0, '');
+            newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, '');
         } else {
-            newBot = new Bot(x, y, 'dumb', [], 0, 'down');
+            newBot = new Bot(botCount, x, y, 'dumb', [], 0, 'down');
         }
         // Add new player to the remote players array
         bots.push(newBot);
@@ -309,11 +309,13 @@ function hitTestBot() {
     for (var i = 0; i < lasers.length; i++) {
         for (var obj = 0; obj < bots.length; ++obj) {
 
-            enemy_xw = bots[obj][0] + enemy_w;
-            enemy_yh = bots[obj][1] + enemy_h;
+            enemy_xw = bots[obj].getX() + bot_w;
+            enemy_yh = bots[obj].getY() + bot_h;
 
-            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj][0] && lasers[i][1] > bots[obj][1]) {
+            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj].getX() && lasers[i][1] > bots[obj].getY()) {
                 check = true;
+                //must emit before splice
+                socket.emit("bot die", { count: bots[obj].id });
                 bots.splice(obj, 1);
                 lasers.splice(i, 1);
             }

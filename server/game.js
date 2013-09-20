@@ -76,11 +76,14 @@ function onSocketConnection(client) {
     // Listen for move player message
     client.on("move player", onMovePlayer);
 
-    // Listen for move lasers message
-    client.on("move lasers", onMoveLasers);
+    // Listen for new lasers message
+    client.on("new lasers", onNewLasers);
 
     // Listen for bot broadcast message
     client.on("bot broadcast", onBotBroadcast);
+
+    // Listen for bot die message
+    client.on("bot die", onBotDie);
 };
 
 // Socket client has disconnected
@@ -143,7 +146,7 @@ function onMovePlayer(data) {
 };
 
 // Lasers has moved
-function onMoveLasers(data) {
+function onNewLasers(data) {
     // Find player in array
     var movePlayer = playerById(this.id);
 
@@ -154,12 +157,18 @@ function onMoveLasers(data) {
     };
 
     // Broadcast updated position to connected socket clients
-    this.broadcast.emit("move lasers", { id: movePlayer.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.emit("new lasers", { id: movePlayer.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 //broadcast bot
 function onBotBroadcast(data) {
-    this.broadcast.emit("bot broadcast", { length: data.length, bot: data.bot, x: data.x, y: data.y });
+    this.broadcast.emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction });
+    //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
+}
+
+// Bot die
+function onBotDie(data) {
+    this.broadcast.emit("bot die", { count: data.count });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 
