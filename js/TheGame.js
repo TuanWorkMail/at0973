@@ -10,12 +10,14 @@ var canvas,
     width,
     height,
     tmxloader = {},
-    botsLength = 2,
+    botsLength = 4,
     bots = [],
     remoteBots = [],
     bot_w = 40,
     bot_h = 40,
     bot,
+    //stupid bot shoot flag
+    stupidShoot=false,
     //array of coordinate the bot can randomly go to
     botDestination,
     //Now, let�s make our ship move. Add these to the variables at the top:
@@ -98,7 +100,9 @@ function init() {
 
     //debug
     //drawTileLayerRaw(combine16to1tile(combineTileLayer()));
-    
+
+    //stupid bot shooting
+    setInterval(function() {stupidShoot=true;}, 1000 * 1);
 
     gameLoop();
 }
@@ -114,10 +118,11 @@ function gameLoop() {
     draw();
     if (alive && gameStarted && lives > 0) {
         //shipCollision();
-
-        moveBot();
-        drawBot(host);
         hitTestBot();
+        moveBot();
+        //shoot must behind check and move
+        BotShootInterval(bots, 1);
+        drawBot(host);
         moveLaser();
         shootDestruction();
         //hitTest();

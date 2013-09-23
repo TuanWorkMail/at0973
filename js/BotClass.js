@@ -184,7 +184,7 @@ function createBot() {
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (botCount % 2 == 0) {
+        if (botCount % 10 == 0) {
             newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, '');
         } else {
             newBot = new Bot(botCount, x, y, 'dumb', [], 0, 'down');
@@ -311,6 +311,12 @@ function hitTestBot() {
 
             enemy_xw = bots[obj].getX() + bot_w;
             enemy_yh = bots[obj].getY() + bot_h;
+
+            //quick patch, need to create a new delete condition, and multiplayer also
+            if(i>=lasers.length)
+                i=lasers.length-1;
+            if(lasers.length==0)
+                return;
 
             if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj].getX() && lasers[i][1] > bots[obj].getY()) {
                 check = true;
