@@ -2,15 +2,27 @@
 ** CLIENT BOT CLASS
 **************************************************/
 
-//input: x/y coordinate, AI level, pathfiding result and current location in that result, direction bot is heading
-var Bot = function (id, startX, startY, intel, path, where, direction) {
+/**
+ * @param id
+ * @param startX        coordinate
+ * @param startY
+ * @param intel         difficulty/bot intelligence
+ * @param path          pathfinder result
+ * @param where         currently location in [path]
+ * @param where         to which tile in [path]
+ * @param direction
+ * @param speed
+ */
+var Bot = function (id, startX, startY, intel, path, where, to, direction, speed) {
     var id = id,
         x = startX,
 	    y = startY,
         intel = intel,
         pathFound = path,
         whereNow = where,
-        direction = direction;
+        to = to,
+        direction = direction,
+        speed = speed;
 
 
     // Getters and setters
@@ -36,8 +48,10 @@ var Bot = function (id, startX, startY, intel, path, where, direction) {
     return {
         pathFound: pathFound,
         whereNow: whereNow,
+        to: to,
         intel: intel,
         direction: direction,
+        speed: speed,
         id: id,
         getX: getX,
         getY: getY,

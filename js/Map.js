@@ -123,6 +123,10 @@ function shootDestruction() {
             case 'right':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
+                    var x1 = Math.floor((lasers[i][0] + behindpresent) / 10),
+                        y1 = Math.floor(lasers[i][1] / 10),
+                        x2 = Math.floor(((lasers[i][0] + behindpresent) / 10)),
+                        y2 = Math.floor((lasers[i][1] - 1) / 10);
                     if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i][0] + behindpresent) / 10)][Math.floor(lasers[i][1] / 10)] != 0 ||
                         tmxloader.map.layers[foundID].data[Math.floor(((lasers[i][0] + behindpresent) / 10))][Math.floor((lasers[i][1] - 1) / 10)] != 0) {
                         //destroy 4 brick at impact

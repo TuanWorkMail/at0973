@@ -1,5 +1,8 @@
 //Now, let�s get onto the part that will make this game run, the JavaScript. 
 //First, we�ll get our ship working, so we need to set up some variables.
+
+window.onload = init;
+
 var canvas,
     ctx,
     whichMap = "classic1",
@@ -131,7 +134,7 @@ function gameLoop() {
         // Draw the remote players
         for (var i = 0; i < remotePlayers.length; i++) {
             remotePlayers[i].draw(ctx);
-        };
+        }
         //call update function
         update();
     }
@@ -181,7 +184,6 @@ function keyUp(e) {
     }
 }
 
-window.onload = init;
 
 //tmxloader.load("map/"+whichMap+".tmx");
 
