@@ -19,6 +19,7 @@ var canvas,
     bot_w = 40,
     bot_h = 40,
     bot,
+    bot2,
     //stupid bot shoot flag
     stupidShoot=false,
     //array of coordinate the bot can randomly go to
@@ -61,6 +62,8 @@ function init() {
     canvas.setAttribute("height", height);
     bot = new Image();
     bot.src = 'images/8bit_enemy.png';
+    bot2 = new Image();
+    bot2.src = 'images/bot2.png';
     ship = new Image();
     ship.src = 'images/ship.png';
     ship_right = new Image();
@@ -161,12 +164,7 @@ function keyDown(e) {
     }
 }
 
-//input: x,y,direction of the bullet
-//push new bullet into array and emit to server
-function shooting(x,y,direction) {
-    lasers.push([x, y, direction]);
-    socket.emit("new lasers", { x: x, y: y, direction: direction });
-}
+
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
 function keyUp(e) {
@@ -269,31 +267,7 @@ function drawShip() {
     }
 }
 
-//If there are lasers in the lasers array, then this will draw them on the canvas
-function drawLaser() {
-    for (var i = 0; i < lasers.length; i++) {
-      ctx.fillStyle = '#f00';
-      ctx.fillRect(lasers[i][0] - 2, lasers[i][1] - 2, 4, 4);
-    }
-}
 
-//If we're drawing lasers on the canvas, this moves them in the canvas
-function moveLaser() {
-    for (var i = 0; i < lasers.length; i++) {
-        if (lasers[i][2] == 'up') {
-            lasers[i][1] -= laserSpeed;
-        } else if (lasers[i][2] == 'down') {
-            lasers[i][1] += laserSpeed;
-        } else if (lasers[i][2] == 'right') {
-            lasers[i][0] += laserSpeed;
-        } else if (lasers[i][2] == 'left') {
-            lasers[i][0] -= laserSpeed;
-        }
-        if (mapCollision(lasers[i][0], lasers[i][1], 4, 4, 'bullet') || lasers[i][1] < 0 || lasers[i][1] > height || lasers[i][0] < 0 || lasers[i][0] > width) {
-            lasers.splice(i, 1);
-        }
-    }
-}
 
 
 //Similar to the laser hit test, this function checks to see if the player's ship collides with any of the enemies

@@ -19,7 +19,14 @@ function drawingBot(object) {
     // Get context
     var context = canvas.getContext("2d"),
         halfWidth = bot_w / 2,
-        halfHeight = bot_h / 2;
+        halfHeight = bot_h / 2,
+        botImg;
+
+    if(object.intel=='smart') {
+        botImg = bot2;
+    } else {
+        botImg = bot;
+    }
 
     // Backup before messing with the canvas
     context.save();
@@ -29,22 +36,22 @@ function drawingBot(object) {
 
     switch (object.direction) {
         case 'up':
-            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'down':
             // Rotate 180 degree
             context.rotate((Math.PI / 180) * 180);
-            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'left':
             // Rotate 270 degree
             context.rotate((Math.PI / 180) * 270);
-            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'right':
             // Rotate 90 degree
             context.rotate((Math.PI / 180) * 90);
-            ctx.drawImage(bot, -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
     }
 
@@ -86,61 +93,11 @@ function moveBot() {
         } else if (bots[bot].intel == 'dumb') {
             goStraight(bot);
         }
-        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction });
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, intel: bots[bot].intel });
     }
 }
 
-//stupid bot just go straight, if stuck turn randomly
-function goStraight(bot) {
-    //flag to check if hit the wall
-    var flag = false;
-    switch (bots[bot].direction) {
-        case 'up':
-            bots[bot].setY(bots[bot].getY() - enemySpeed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setY(bots[bot].getY() + enemySpeed);
-                flag = true;
-            }
-            break;
-        case 'down':
-            bots[bot].setY(bots[bot].getY() + enemySpeed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setY(bots[bot].getY() - enemySpeed);
-                flag = true;
-            }
-            break;
-        case 'left':
-            bots[bot].setX(bots[bot].getX() - enemySpeed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setX(bots[bot].getX() + enemySpeed);
-                flag = true;
-            }
-            break;
-        case 'right':
-            bots[bot].setX(bots[bot].getX() + enemySpeed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setX(bots[bot].getX() - enemySpeed);
-                flag = true;
-            }
-            break;
-    }
-    if(flag)
-        switch (randomNumber(1, 4)) {
-            case 1:
-                bots[bot].direction = 'up';
-                break;
-            case 2:
-                bots[bot].direction = 'down';
-                break;
-            case 3:
-                bots[bot].direction = 'left';
-                break;
-            case 4:
-                bots[bot].direction = 'right';
-                break;
-        }
 
-}
 //add new bot to the array
 function createBot() {
     //reset spawn point when reach the last point
@@ -153,8 +110,8 @@ function createBot() {
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (botCount % 10 == 0) {
-            newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, [], '', enemySpeed);
+        if (botCount % 2 == 0) {
+            newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, [], '', 5);
         } else {
             newBot = new Bot(botCount, x, y, 'dumb', [], 0, [], 'down', 2);
         }
@@ -164,27 +121,8 @@ function createBot() {
 
     }
 }
-//input: current location
-//output: array of path to a random point
-function botRandomPath(x, y) {
-    var check = true;
-    while (check) {
-        //pathStart/end calculate base on ship_w/h, not tileWidth/Height
-        pathStart = [Math.floor(x / ship_w), Math.floor(y / ship_h)];
-        var random = randomNumber(0, botDestination.length - 1);
-        pathEnd = [Math.floor(botDestination[random].x / ship_w), Math.floor(botDestination[random].y / ship_h)];
-        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
-            check = false;
-        }
-    }
-    return pathFinder(combine16to1tile(combineTileLayer()), pathStart, pathEnd);
-}
 
-//input: interval in which random number come from
-//output: random number between interval
-function randomNumber(from, to) {
-    return Math.floor(Math.random() * (to - from + 1) + from);
-}
+
 
 function drawPath() {
     for (var i = 0; i < bots.length; i++) {
@@ -270,33 +208,7 @@ function drawTileLayerRaw(combinedBig) {
     document.getElementById('tile').innerHTML += '<br />';
 }
 
-function hitTestBot() {
-    var enemy_xw,
-        enemy_yh,
-        check = false;
 
-    for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
-
-            enemy_xw = bots[obj].getX() + bot_w;
-            enemy_yh = bots[obj].getY() + bot_h;
-
-            //quick patch, need to create a new delete condition, and multiplayer also
-            if(i>=lasers.length)
-                i=lasers.length-1;
-            if(lasers.length==0)
-                return;
-
-            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj].getX() && lasers[i][1] > bots[obj].getY()) {
-                check = true;
-                //must emit before splice
-                socket.emit("bot die", { count: bots[obj].id });
-                bots.splice(obj, 1);
-                lasers.splice(i, 1);
-            }
-        }
-    }
-}
 //work in progress
 //input: coordinate, direction, moving speed and type(tank/bullet)
 //move an object according to input parameter

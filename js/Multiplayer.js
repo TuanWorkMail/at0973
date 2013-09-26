@@ -76,7 +76,8 @@ function onMovePlayer(data) {
 // Move lasers
 function onNewLasers(data) {
 	//add new lasers
-	lasers.push([data.x, data.y, data.direction]);
+    var newBullet = new Bullet(data.x, data.y, data.direction, false);
+    lasers.push(newBullet);
 };
 
 // Remove player
@@ -100,9 +101,10 @@ function onBotBroadcast(data) {
         bot.setX(data.x);
         bot.setY(data.y);
         bot.direction=data.direction;
+        bot.intel = data.intel;
         return;
     }
-    var newBot = new Bot(data.count, data.x, data.y, '', [], 0, data.direction);
+    var newBot = new Bot(data.count, data.x, data.y, data.intel, [], 0, [], data.direction, 0);
     remoteBots.push(newBot);
 };
 
