@@ -85,7 +85,7 @@ function moveBot() {
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].intel == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-                movingBot(bot);
+                movingBot(bots[bot]);
             } else {
                 bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
                 bots[bot].whereNow = 0;
@@ -110,10 +110,10 @@ function createBot() {
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (botCount % 2 == 0) {
+        if (botCount % 8 == 0) {
             newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, [], '', 5);
         } else {
-            newBot = new Bot(botCount, x, y, 'dumb', [], 0, [], 'down', 2);
+            newBot = new Bot(botCount, x, y, 'dumb', [], 0, [], 'down', 3);
         }
         // Add new player to the remote players array
         bots.push(newBot);
