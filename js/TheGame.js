@@ -1,7 +1,7 @@
 //Now, let�s get onto the part that will make this game run, the JavaScript. 
 //First, we�ll get our ship working, so we need to set up some variables.
 
-window.onload = init;
+//window.onload = init;
 
 var canvas,
     ctx,

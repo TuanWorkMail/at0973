@@ -1,10 +1,9 @@
 ﻿<!DOCTYPE html>
-<!-- saved from url=(0070)http://atomicrobotdesign.com/blog_media/canvas_game/Part_6/part_6.html -->
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>HTML5 Canvas Game Part 6 || Atomic Robot Design</title>
+    <title>Tank Game</title>
     <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <!-- And a little bit of CSS so we can see what’s going on: -->
     <style>
@@ -23,9 +22,21 @@
     </style>
 
     <script>
-        var host = false;
+        function server() {
+            host = true;
+            document.getElementById('tile').innerHTML += 'SERVER';
+            init();
+        }
+
+        function client() {
+            host = false;
+            document.getElementById('tile').innerHTML += 'CLIENT';
+            init();
+        }
     </script>
-    <!-- <script src="js/require.js"></script> -->
+
+    <!-- <script data-main="js/main" src="js/require.js"></script> -->
+
     <script src="js/util.js"></script>
     <script src="js/bullet.js"></script>
     <script src="js/bulletMain.js"></script>
@@ -40,9 +51,13 @@
     <script src="js/BotSmart.js"></script>
     <script src="js/BotClass.js"></script>
     <script src="js/Pathfinding.js"></script>
+    
 </head>
 
 <body>
+    <div id="tile"></div>
+    <input type="button" value="HOST" onclick="server();" />
+    <input type="button" value="CLIENT" onclick="client();" />
     <!-- Let’s get started. We only need one line of HTML: -->
     <canvas id="canvas"></canvas>
     <!-- Embed the Socket.IO script that is generated automatically by the Node.js server 
