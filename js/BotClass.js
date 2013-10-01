@@ -16,7 +16,6 @@ function drawBot(host) {
 }
 
 function drawingBot(object) {
-    // Get context
     var halfWidth = bot_w / 2,
         halfHeight = bot_h / 2,
         botImg;
@@ -28,10 +27,10 @@ function drawingBot(object) {
     }
 
     // Backup before messing with the canvas
-    context.save();
+    ctx.save();
 
     // Move registration point to the center of the canvas
-    context.translate(object.getX() + halfWidth, object.getY() + halfHeight);
+    ctx.translate(object.getX() + halfWidth, object.getY() + halfHeight);
 
     switch (object.direction) {
         case 'up':
@@ -39,26 +38,26 @@ function drawingBot(object) {
             break;
         case 'down':
             // Rotate 180 degree
-            context.rotate((Math.PI / 180) * 180);
+            ctx.rotate((Math.PI / 180) * 180);
             ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'left':
             // Rotate 270 degree
-            context.rotate((Math.PI / 180) * 270);
+            ctx.rotate((Math.PI / 180) * 270);
             ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'right':
             // Rotate 90 degree
-            context.rotate((Math.PI / 180) * 90);
+            ctx.rotate((Math.PI / 180) * 90);
             ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
     }
 
     // Move registration point back to the top left corner of canvas
-    //context.translate(-(object.getX() + halfWidth), -(object.getY() + halfHeight));
+    //ctx.translate(-(object.getX() + halfWidth), -(object.getY() + halfHeight));
 
     // restore
-    context.restore();
+    ctx.restore();
 }
 
 	

@@ -13,13 +13,13 @@
  * @param direction
  * @param speed
  */
-var Bot = function (id, startX, startY, intel, path, where, to, direction, speed) {
+var Bot = function (id, startX, startY, type, path, to, direction, speed) {
     var id = id,
         x = startX,
 	    y = startY,
-        intel = intel,
+        type = type,
         pathFound = path,
-        whereNow = where,
+        whereNow = 0,
         to = to,
         direction = direction,
         speed = speed;
@@ -49,7 +49,7 @@ var Bot = function (id, startX, startY, intel, path, where, to, direction, speed
         pathFound: pathFound,
         whereNow: whereNow,
         to: to,
-        intel: intel,
+        type: type,
         direction: direction,
         speed: speed,
         id: id,
