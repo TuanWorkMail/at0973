@@ -42,6 +42,7 @@
     <script src="js/bullet.js"></script>
     <script src="js/bulletMain.js"></script>
     <script src="js/input.js"></script>
+    <script src="js/lib/socket.io.js"></script>
     <script src="js/TheGame.js"></script>
     <script src="js/Player.js"></script>
     <script src="js/TMX_Engine.js"></script>
@@ -62,9 +63,5 @@
     <input type="button" value="CLIENT" onclick="client();" />
     <!-- Let’s get started. We only need one line of HTML: -->
     <canvas id="canvas"></canvas>
-    <!-- Embed the Socket.IO script that is generated automatically by the Node.js server 
-	by adding the following line after the canvas element: -->
-    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
-    <!-- Notice how you need to include the port number that you defined on the server. -->
 </body>
 </html>

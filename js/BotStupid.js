@@ -64,7 +64,7 @@ function goStraight(bot) {
 function BotShootInterval(bots, interval) {
     if(stupidShoot) {
         for(var i=0;i<bots.length;i++) {
-            if(bots[i].intel=='dumb') {
+            if(bots[i].type=='dumb') {
                 switch (bots[i].direction) {
                     case 'up':
                         shooting(bots[i].getX() + bot_w / 2, bots[i].getY() - 1, bots[i].direction);

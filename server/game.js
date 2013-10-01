@@ -162,7 +162,7 @@ function onNewLasers(data) {
 
 //broadcast bot
 function onBotBroadcast(data) {
-    this.broadcast.emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, intel: data.intel });
+    this.broadcast.emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, type: data.type });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 

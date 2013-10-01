@@ -20,7 +20,7 @@ function drawingBot(object) {
         halfHeight = bot_h / 2,
         botImg;
 
-    if(object.intel=='smart') {
+    if(object.type=='smart') {
         botImg = bot2;
     } else {
         botImg = bot;
@@ -81,17 +81,17 @@ function moveBot() {
     if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].intel == 'smart') {
+        if (bots[bot].type == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
                 movingBot(bots[bot]);
             } else {
                 bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
                 bots[bot].whereNow = 0;
             }
-        } else if (bots[bot].intel == 'dumb') {
+        } else if (bots[bot].type == 'dumb') {
             goStraight(bot);
         }
-        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, intel: bots[bot].intel });
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
 
@@ -108,10 +108,11 @@ function createBot() {
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (botCount % 8 == 0) {
-            newBot = new Bot(botCount, x, y, 'smart', botRandomPath(x, y), 0, [], '', 5);
+        if (botCount % 4 == 0) {
+            newBot = new Bot(botCount, x, y, 'smart');
+            newBot.pathFound = botRandomPath(x, y);
         } else {
-            newBot = new Bot(botCount, x, y, 'dumb', [], 0, [], 'down', 3);
+            newBot = new Bot(botCount, x, y, 'dumb');
         }
         // Add new player to the remote players array
         bots.push(newBot);

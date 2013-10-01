@@ -101,10 +101,11 @@ function onBotBroadcast(data) {
         bot.setX(data.x);
         bot.setY(data.y);
         bot.direction=data.direction;
-        bot.intel = data.intel;
+        bot.type = data.type;
         return;
     }
-    var newBot = new Bot(data.count, data.x, data.y, data.intel, [], 0, [], data.direction, 0);
+    var newBot = new Bot(data.count, data.x, data.y, data.type);
+    newBot.direction = data.direction;
     remoteBots.push(newBot);
 };
 

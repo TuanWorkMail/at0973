@@ -2,28 +2,36 @@
 ** CLIENT BOT CLASS
 **************************************************/
 
-/**
- * @param id
- * @param startX        coordinate
- * @param startY
- * @param intel         difficulty/bot intelligence
- * @param path          pathfinder result
- * @param where         currently location in [path]
- * @param where         to which tile in [path]
- * @param direction
- * @param speed
- */
-var Bot = function (id, startX, startY, type, path, to, direction, speed) {
+var Bot = function (id, startX, startY, type) {
     var id = id,
         x = startX,
 	    y = startY,
         type = type,
-        pathFound = path,
+        pathFound,
         whereNow = 0,
-        to = to,
-        direction = direction,
-        speed = speed;
+        to,
+        direction,
+        speed;
 
+    if (type == 'dumb') {
+        switch (randomNumber(1, 4)) {
+            case 1:
+                direction = 'up';
+                break;
+            case 2:
+                direction = 'down';
+                break;
+            case 3:
+                direction = 'left';
+                break;
+            case 4:
+                direction = 'right';
+                break;
+        }
+        speed = 2;
+    } else if (type == 'smart') {
+        speed = 5;
+    }
 
     // Getters and setters
     var getX = function () {
