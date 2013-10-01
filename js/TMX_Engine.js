@@ -114,8 +114,18 @@ tmxloader.load = function (url) {
     //xmlhttp.setRequestHeader("Content-length", 4096);
     //xmlhttp.setRequestHeader("Connection", "close");
     xmlhttp.send();
-    xmlDoc = xmlhttp.responseXML;
+    xmlText = xmlhttp.responseText;
 
+    if (window.DOMParser) {
+        parser = new DOMParser();
+        xmlDoc = parser.parseFromString(xmlText, "text/xml");
+    }
+    else // Internet Explorer
+    {
+        xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+        xmlDoc.async = false;
+        xmlDoc.loadXML(xmlText);
+    }
 
     $version = xmlDoc.getElementsByTagName("map")[0].getAttribute("version");
 
