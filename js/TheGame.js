@@ -95,7 +95,7 @@ function init() {
     //the first parameter as the server address.
     socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
     // Start listening for events
-    setEventHandlers();
+    setSocketEventHandlers();
     //where to spawn ship
     objGroup = tmxloader.map.objectgroup['spawn'].objects;
     ship_x = objGroup[1].x;
@@ -112,8 +112,6 @@ function init() {
 
     gameLoop();
 }
-
-
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
@@ -145,127 +143,29 @@ function gameLoop() {
     game = setTimeout(gameLoop, 1000 / fps);
 }
 
-//Checks to see which key has been pressed and either to move the ship or fire a laser
-function keyDown(e) {
-    if (e.keyCode == 39) rightKey = true;
-    else if (e.keyCode == 37) leftKey = true;
-    else if (e.keyCode == 38) upKey = true;
-    else if (e.keyCode == 40) downKey = true;
-    if (e.keyCode == 88 && lasers.length <= lasersLength) {
-        if (direction == 'up') {
-            shooting(ship_x + ship_w / 2, ship_y - 1, direction);
-        } else if (direction == 'down') {
-            shooting(ship_x + ship_w / 2, ship_y + ship_h + 1, direction);
-        } else if (direction == 'right') {
-            shooting(ship_x + ship_w + 1, ship_y + ship_h / 2, direction);
-        } else if (direction == 'left') {
-            shooting(ship_x - 1, ship_y + ship_h / 2, direction);
-        }
-    }
-}
 
 
 
-//Checks to see if a pressed key has been released and stops the ships movement if it has
-function keyUp(e) {
-    if (e.keyCode == 39) {
-        rightKey = false; lastKey = 'right';
-    } else if (e.keyCode == 37) {
-        leftKey = false;
-        lastKey = 'left';
-    } else if (e.keyCode == 38) {
-        upKey = false;
-        lastKey = 'up';
-    } else if (e.keyCode == 40) {
-        downKey = false;
-        lastKey = 'down';
-    }
-}
 
 
-//tmxloader.load("map/"+whichMap+".tmx");
 
-//Clears the canvas so it can be updated
-function clearCanvas() {
-  ctx.clearRect(0,0,width,height);
-}
 
-//If an arrow key is being pressed, moves the ship in the right direction
-function drawShip() {
-    //if ship cross the map border, throw it back in
-    if (ship_x <= 0) ship_x = 0;
-    if ((ship_x + ship_w) >= width) ship_x = width - ship_w;
-    if (ship_y <= 0) ship_y = 0;
-    if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
-    //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
-    /*if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
-        if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
-            //debug
-            //console.log(ship_x + ' ' + ship_x % (ship_w / 2) + ' ' + ship_y + ' ' + ship_y % (ship_h / 2));
-            switch (direction) {
-                case 'right':
-                    ship_x += shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_x -= shipSpeed;
-                    }
-                    break;
-                case 'left':
-                    ship_x -= shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_x += shipSpeed;
-                    }
-                    break;
-                case 'up':
-                    ship_y -= shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_y += shipSpeed;
-                    }
-                    break;
-                case 'down':
-                    ship_y += shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_y -= shipSpeed;
-                    }
-                    break;
-            }
-        }
-    }*/
-    if (rightKey) {
-        direction = 'right';
-        ship_x += shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_x -= shipSpeed;
-        }
-    } else if (leftKey) {
-        direction = 'left';
-        ship_x -= shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_x += shipSpeed;
-        }
-    } else if (upKey) {
-        direction = 'up';
-        ship_y -= shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_y += shipSpeed;
-        }
-    } else if (downKey) {
-        direction = 'down';
-        ship_y += shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_y -= shipSpeed;
-        }
-    }
 
-    if (direction == 'right') {
-        ctx.drawImage(ship_right, ship_x, ship_y);
-    } else if (direction == 'left') {
-        ctx.drawImage(ship_left, ship_x, ship_y);
-    } if (direction == 'up') {
-        ctx.drawImage(ship, ship_x, ship_y);
-    } else if (direction == 'down') {
-        ctx.drawImage(ship_down, ship_x, ship_y);
-    }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -321,28 +221,7 @@ function continueButton(e) {
   }
 }
 
-//holds the cursors position
-function cursorPosition(x,y) {
-  this.x = x;
-  this.y = y;
-}
 
-//finds the cursor's position after the mouse is clicked
-function getCursorPos(e) {
-  var x;
-  var y;
-  if (e.pageX || e.pageY) {
-    x = e.pageX;
-    y = e.pageY;
-  } else {
-    x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-    y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-  }
-  x -= canvas.offsetLeft;
-  y -= canvas.offsetTop;
-  var cursorPos = new cursorPosition(x, y);
-  return cursorPos;
-}
 
 //Draws the text for the score and lives on the canvas and if the player runs out of lives, it's draws the game over text and continue button as well as adding the event listener for the continue button
 function scoreTotal() {

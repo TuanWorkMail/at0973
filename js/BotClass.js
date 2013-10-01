@@ -17,8 +17,7 @@ function drawBot(host) {
 
 function drawingBot(object) {
     // Get context
-    var context = canvas.getContext("2d"),
-        halfWidth = bot_w / 2,
+    var halfWidth = bot_w / 2,
         halfHeight = bot_h / 2,
         botImg;
 

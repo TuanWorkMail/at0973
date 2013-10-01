@@ -2,7 +2,7 @@
 /**************************************************
 ** GAME EVENT HANDLERS
 **************************************************/
-var setEventHandlers = function() {
+var setSocketEventHandlers = function() {
 	// Keyboard
 	//window.addEventListener("keydown", onKeydown, false);
 	//window.addEventListener("keyup", onKeyup, false);
