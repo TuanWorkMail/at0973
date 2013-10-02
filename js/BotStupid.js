@@ -10,32 +10,32 @@
 function goStraight(bot) {
     //flag to check if hit the wall
     var flag = false;
-    switch (bots[bot].direction) {
+    switch (bots[bot].getDirection()) {
         case 'up':
-            bots[bot].setY(bots[bot].getY() - bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setY(bots[bot].getY() + bots[bot].speed);
+            bots[bot].setY(bots[bot].getY() - bots[bot].getSpeed());
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
+                bots[bot].setY(bots[bot].getY() + bots[bot].getSpeed());
                 flag = true;
             }
             break;
         case 'down':
-            bots[bot].setY(bots[bot].getY() + bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setY(bots[bot].getY() - bots[bot].speed);
+            bots[bot].setY(bots[bot].getY() + bots[bot].getSpeed());
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
+                bots[bot].setY(bots[bot].getY() - bots[bot].getSpeed());
                 flag = true;
             }
             break;
         case 'left':
-            bots[bot].setX(bots[bot].getX() - bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setX(bots[bot].getX() + bots[bot].speed);
+            bots[bot].setX(bots[bot].getX() - bots[bot].getSpeed());
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
+                bots[bot].setX(bots[bot].getX() + bots[bot].getSpeed());
                 flag = true;
             }
             break;
         case 'right':
-            bots[bot].setX(bots[bot].getX() + bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bot_w, bot_h, 'tank')) {
-                bots[bot].setX(bots[bot].getX() - bots[bot].speed);
+            bots[bot].setX(bots[bot].getX() + bots[bot].getSpeed());
+            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
+                bots[bot].setX(bots[bot].getX() - bots[bot].getSpeed());
                 flag = true;
             }
             break;
@@ -43,16 +43,16 @@ function goStraight(bot) {
     if(flag)
         switch (randomNumber(1, 4)) {
             case 1:
-                bots[bot].direction = 'up';
+                bots[bot].setDirection('up');
                 break;
             case 2:
-                bots[bot].direction = 'down';
+                bots[bot].setDirection('down');
                 break;
             case 3:
-                bots[bot].direction = 'left';
+                bots[bot].setDirection('left');
                 break;
             case 4:
-                bots[bot].direction = 'right';
+                bots[bot].setDirection('right');
                 break;
         }
 
@@ -64,19 +64,19 @@ function goStraight(bot) {
 function BotShootInterval(bots, interval) {
     if(stupidShoot) {
         for(var i=0;i<bots.length;i++) {
-            if(bots[i].type=='dumb') {
-                switch (bots[i].direction) {
+            if(bots[i].getType()=='dumb') {
+                switch (bots[i].getDirection()) {
                     case 'up':
-                        shooting(bots[i].getX() + bot_w / 2, bots[i].getY() - 1, bots[i].direction);
+                        shooting(bots[i].getX() + bots[i].getWidth() / 2, bots[i].getY() - 1, bots[i].getDirection());
                         break;
                     case 'down':
-                        shooting(bots[i].getX() + bot_w / 2, bots[i].getY() + bot_h + 1, bots[i].direction);
+                        shooting(bots[i].getX() + bots[i].getWidth() / 2, bots[i].getY() + bots[i].getHeight() + 1, bots[i].getDirection());
                         break;
                     case 'right':
-                        shooting(bots[i].getX() + bot_w + 1, bots[i].getY() + bot_h / 2, bots[i].direction);
+                        shooting(bots[i].getX() + bots[i].getWidth() + 1, bots[i].getY() + bots[i].getHeight() / 2, bots[i].getDirection());
                         break;
                     case 'left':
-                        shooting(bots[i].getX() - 1, bots[i].getY() + bot_h / 2, bots[i].direction);
+                        shooting(bots[i].getX() - 1, bots[i].getY() + bots[i].getHeight() / 2, bots[i].getDirection());
                         break;
                 }
             }
