@@ -190,7 +190,7 @@ function playerById(id) {
 /**************************************************
 ** GAME UPDATE
 **************************************************/
-function update() {
+function updatePlayer() {
 	// Update local player and check for change
 		if (rightKey || leftKey || upKey || downKey) {
 			// Send local player data to the game server
@@ -200,34 +200,3 @@ function update() {
 
 
 
-//Runs a couple of loops to see if any of the lasers have hit any of the enemies
-function hitTest() {
-  var ship_xw = ship_x + ship_w,
-      ship_yh = ship_y + ship_h,
-	  laserNewCor;
-  for (var i = 0; i < lasers.length; i++) {
-	if (lasers[i][2] == 0 || lasers[i][2] == -1) {
-      if (lasers[i][1] <= ship_yh && lasers[i][1] >= ship_y && lasers[i][0] >= ship_x && lasers[i][0] <= ship_xw) {
-        checkLives();
-		// Send local player data to the game server
-		socket.emit("move player", {x: ship_x, y: ship_y});
-      }
-    } else if (lasers[i][2] == 1) {//right
-	  //shift laser_x to face right
-	  laserNewCor = lasers[i][0] + 4;
-	  if (lasers[i][1] <= ship_yh && lasers[i][1] >= ship_y && laserNewCor >= ship_x && laserNewCor <= ship_xw) {
-        checkLives();
-		// Send local player data to the game server
-		socket.emit("move player", {x: ship_x, y: ship_y});
-      }
-	} else if (lasers[i][2] == 2) {//down
-	  //shift laser_y to face downward
-	  laserNewCor = lasers[i][1] + 4;
-	  if (laserNewCor <= ship_yh && laserNewCor >= ship_y && lasers[i][0] >= ship_x && lasers[i][0] <= ship_xw) {
-        checkLives();
-		// Send local player data to the game server
-		socket.emit("move player", {x: ship_x, y: ship_y});
-      }
-	}
-  }
-}

@@ -1,6 +1,6 @@
 
 //if host draw from bots, if guest draw from remoteBots
-function drawBot(host) {
+function drawBot() {
     if (host == true) {
         for (var i = 0; i < bots.length; i++) {
             //ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
@@ -78,7 +78,7 @@ var botCount = 0,
     whereSpawn = 0;
 
 function moveBot() {
-    if (host == false) return;
+    //if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].type == 'smart') {

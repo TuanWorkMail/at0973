@@ -130,26 +130,3 @@ function removeBullet(lasers) {
         }
     }
 }
-
-function hitTestBot() {
-    var enemy_xw,
-        enemy_yh,
-        check = false;
-
-    for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
-
-            enemy_xw = bots[obj].getX() + bot_w;
-            enemy_yh = bots[obj].getY() + bot_h;
-
-
-            if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
-                check = true;
-                //must emit before splice
-                socket.emit("bot die", { count: bots[obj].id });
-                bots.splice(obj, 1);
-                lasers[i].isRemoved = true;
-            }
-        }
-    }
-}

@@ -26,6 +26,62 @@ function mapCollision(x, y, w, h, type) {
     //if nothing match, object not collide with anything
     return false;
 }
+
+function hitTestBot() {
+    var enemy_xw,
+        enemy_yh,
+        check = false;
+
+    for (var i = 0; i < lasers.length; i++) {
+        for (var obj = 0; obj < bots.length; ++obj) {
+
+            enemy_xw = bots[obj].getX() + bot_w;
+            enemy_yh = bots[obj].getY() + bot_h;
+
+
+            if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
+                check = true;
+                //must emit before splice
+                socket.emit("bot die", { count: bots[obj].id });
+                bots.splice(obj, 1);
+                lasers[i].isRemoved = true;
+            }
+        }
+    }
+}
+
+//Runs a couple of loops to see if any of the lasers have hit any of the enemies
+function hitTestPlayer() {
+    var ship_xw = ship_x + ship_w,
+        ship_yh = ship_y + ship_h,
+        laserNewCor;
+    for (var i = 0; i < lasers.length; i++) {
+        if (lasers[i][2] == 0 || lasers[i][2] == -1) {
+            if (lasers[i][1] <= ship_yh && lasers[i][1] >= ship_y && lasers[i][0] >= ship_x && lasers[i][0] <= ship_xw) {
+                checkLives();
+                // Send local player data to the game server
+                socket.emit("move player", { x: ship_x, y: ship_y });
+            }
+        } else if (lasers[i][2] == 1) {//right
+            //shift laser_x to face right
+            laserNewCor = lasers[i][0] + 4;
+            if (lasers[i][1] <= ship_yh && lasers[i][1] >= ship_y && laserNewCor >= ship_x && laserNewCor <= ship_xw) {
+                checkLives();
+                // Send local player data to the game server
+                socket.emit("move player", { x: ship_x, y: ship_y });
+            }
+        } else if (lasers[i][2] == 2) {//down
+            //shift laser_y to face downward
+            laserNewCor = lasers[i][1] + 4;
+            if (laserNewCor <= ship_yh && laserNewCor >= ship_y && lasers[i][0] >= ship_x && lasers[i][0] <= ship_xw) {
+                checkLives();
+                // Send local player data to the game server
+                socket.emit("move player", { x: ship_x, y: ship_y });
+            }
+        }
+    }
+}
+
 /*	
 //check ship collide with map
 function mapCollision_old() {

@@ -117,26 +117,34 @@ function gameLoop() {
     clearCanvas();
     drawMap();
     if (alive && gameStarted && lives > 0) {
-        //shipCollision();
-        hitTestBot();
-        moveBot();
-        //shoot must behind check and move
-        BotShootInterval(bots, 1);
-        drawBot(host);
-        moveLaser();
-        shootDestruction();
-        hitTest();
-        moveShip();
-        drawShip();
-        drawLaser();
-        // Draw the remote players
-        for (var i = 0; i < remotePlayers.length; i++) {
-            remotePlayers[i].draw(ctx);
+        if (host) {
+            moveBot();
+            hitTestBot();
+            //shoot must behind check and move
+            BotShootInterval(bots, 1);
+        } else {
+
+
+            //shipCollision();
+
+            //COMBINE BOTS AND REMOTEBOTS, NOW DEPEND ON HOST
+            drawBot();
+
+            moveLaser();
+            shootDestruction();
+            hitTestPlayer();
+            moveShip();
+            drawShip();
+            drawLaser();
+            // Draw the remote players
+            for (var i = 0; i < remotePlayers.length; i++) {
+                remotePlayers[i].draw(ctx);
+            }
+            //call update function
+            updatePlayer();
+            //debug
+            //socket.emit("test", { test:'test' });
         }
-        //call update function
-        update();
-        //debug
-        //socket.emit("test", { test:'test' });
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
