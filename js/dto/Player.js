@@ -6,6 +6,8 @@ dto.Player = function(startX, startY, facing) {
 		y = startY,
 		id,
 		moveAmount = 5,
+        width = 40,
+        height = 40,
 		//which way the ship is facing
 		direction = facing;
 	
@@ -34,28 +36,6 @@ dto.Player = function(startX, startY, facing) {
 		direction = newX;
 	};
 
-	// Update player position
-	var update = function(keys) {
-		// Previous position
-		var prevX = x,
-			prevY = y;
-
-		// Up key takes priority over down
-		if (keys.up) {
-			y -= moveAmount;
-		} else if (keys.down) {
-			y += moveAmount;
-		};
-
-		// Left key takes priority over right
-		if (keys.left) {
-			x -= moveAmount;
-		} else if (keys.right) {
-			x += moveAmount;
-		};
-
-		return (prevX != x || prevY != y) ? true : false;
-	};
 
 	// Draw player
 	var draw = function(ctx) {

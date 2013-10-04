@@ -102,10 +102,7 @@ function init() {
     // Start listening for events
     setSocketEventHandlers();
     //where to spawn ship
-    objGroup = tmxloader.map.objectgroup['spawn'].objects;
-    ship_x = objGroup[1].x;
-    ship_y = objGroup[1].y;
-    console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
+    reset();
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
 
@@ -150,7 +147,15 @@ function gameLoop() {
     game = setTimeout(gameLoop, 1000 / fps);
 }
 
-
+//This simply resets the ship and enemies to their starting positions
+function reset() {
+    //where to spawn ship
+    objGroup = tmxloader.map.objectgroup['spawn'].objects;
+    ship_x = objGroup[1].x;
+    ship_y = objGroup[1].y;
+    //debug
+    //console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
+}
 
 
 
@@ -208,14 +213,7 @@ function checkLives() {
   }
 }
 
-//This simply resets the ship and enemies to their starting positions
-function reset() {
-	//where to spawn ship
-	objGroup = tmxloader.map.objectgroup['spawn'].objects;
-	ship_x = objGroup[1].x;
-	ship_y = objGroup[1].y;
-	console.log("Spawn: X="+ship_x+"; Y="+ship_y);
-}
+
 
 //After the player loses all their lives, the continue button is shown and if clicked, it resets the game and removes the event listener for the continue button
 function continueButton(e) {

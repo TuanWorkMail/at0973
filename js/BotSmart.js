@@ -2,8 +2,8 @@
 //move the bot according to there foundPath
 function movingBot(bots) {
     //bot current coordianate is calculate base on ship_w/h, not tileWidth/height
-    var pixelX = bots.pathFound[bots.whereNow + 1][0] * ship_w,
-        pixelY = bots.pathFound[bots.whereNow + 1][1] * ship_h,
+    var pixelX = bots.pathFound[bots.whereNow + 1][0] * bots.getWidth(),
+        pixelY = bots.pathFound[bots.whereNow + 1][1] * bots.getHeight(),
         differenceX = bots.getX() - pixelX,
         differenceY = bots.getY() - pixelY;
     //go vertically
@@ -33,13 +33,13 @@ function movingBot(bots) {
 
 //input: current location
 //output: array of path to a random point
-function botRandomPath(x, y) {
+function botRandomPath(object) {
     var check = true;
     while (check) {
         //pathStart/end calculate base on ship_w/h, not tileWidth/Height
-        pathStart = [Math.floor(x / ship_w), Math.floor(y / ship_h)];
+        pathStart = [Math.floor(object.getX() / object.getWidth()), Math.floor(object.getY() / object.getHeight())];
         var random = randomNumber(0, botDestination.length - 1);
-        pathEnd = [Math.floor(botDestination[random].x / ship_w), Math.floor(botDestination[random].y / ship_h)];
+        pathEnd = [Math.floor(botDestination[random].x / object.getWidth()), Math.floor(botDestination[random].y / object.getHeight())];
         if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
             check = false;
         }

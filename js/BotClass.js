@@ -85,7 +85,7 @@ function moveBot() {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
                 movingBot(bots[bot]);
             } else {
-                bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
+                bots[bot].pathFound = botRandomPath(bots[bot]);
                 bots[bot].whereNow = 0;
             }
         } else if (bots[bot].type == 'dumb') {
@@ -110,7 +110,7 @@ function createBot() {
         //every 3 bot is smart
         if (botCount % 4 == 0) {
             newBot = new Bot(botCount, x, y, 'smart');
-            newBot.pathFound = botRandomPath(x, y);
+            newBot.pathFound = botRandomPath(newBot);
         } else {
             newBot = new Bot(botCount, x, y, 'dumb');
         }
