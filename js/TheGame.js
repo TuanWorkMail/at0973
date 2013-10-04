@@ -117,8 +117,6 @@ function init() {
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
-    //a new loop
-    checkGameLoop = true;
     clearCanvas();
     //draw the map
     draw();
@@ -132,6 +130,7 @@ function gameLoop() {
         moveLaser();
         shootDestruction();
         hitTest();
+        moveShip();
         drawShip();
         drawLaser();
         // Draw the remote players
@@ -151,11 +150,88 @@ function gameLoop() {
 function reset() {
     //where to spawn ship
     objGroup = tmxloader.map.objectgroup['spawn'].objects;
+
     ship_x = objGroup[1].x;
     ship_y = objGroup[1].y;
+
+    var newPlayer = new dto.Player(objGroup[1].x, objGroup[1].y, 'up');
+
+
     //debug
     //console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
 }
+
+//If an arrow key is being pressed, moves the ship in the right direction
+function moveShip() {
+    //if ship cross the map border, throw it back in
+    if (ship_x <= 0) ship_x = 0;
+    if ((ship_x + ship_w) >= width) ship_x = width - ship_w;
+    if (ship_y <= 0) ship_y = 0;
+    if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
+    //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
+    /*if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
+        if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
+            //debug
+            //console.log(ship_x + ' ' + ship_x % (ship_w / 2) + ' ' + ship_y + ' ' + ship_y % (ship_h / 2));
+            switch (direction) {
+                case 'right':
+                    ship_x += shipSpeed;
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+                        ship_x -= shipSpeed;
+                    }
+                    break;
+                case 'left':
+                    ship_x -= shipSpeed;
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+                        ship_x += shipSpeed;
+                    }
+                    break;
+                case 'up':
+                    ship_y -= shipSpeed;
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+                        ship_y += shipSpeed;
+                    }
+                    break;
+                case 'down':
+                    ship_y += shipSpeed;
+                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+                        ship_y -= shipSpeed;
+                    }
+                    break;
+            }
+        }
+    }*/
+    if (rightKey) {
+        direction = 'right';
+        ship_x += shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_x -= shipSpeed;
+        }
+    } else if (leftKey) {
+        direction = 'left';
+        ship_x -= shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_x += shipSpeed;
+        }
+    } else if (upKey) {
+        direction = 'up';
+        ship_y -= shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_y += shipSpeed;
+        }
+    } else if (downKey) {
+        direction = 'down';
+        ship_y += shipSpeed;
+        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
+            ship_y -= shipSpeed;
+        }
+    }
+
+
+}
+
+
+
 
 
 

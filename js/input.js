@@ -20,16 +20,13 @@ function keyDown(e) {
 //Checks to see if a pressed key has been released and stops the ships movement if it has
 function keyUp(e) {
     if (e.keyCode == 39) {
-        rightKey = false; lastKey = 'right';
+        rightKey = false;
     } else if (e.keyCode == 37) {
         leftKey = false;
-        lastKey = 'left';
     } else if (e.keyCode == 38) {
         upKey = false;
-        lastKey = 'up';
     } else if (e.keyCode == 40) {
         downKey = false;
-        lastKey = 'down';
     }
 }
 

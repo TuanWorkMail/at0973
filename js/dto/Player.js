@@ -12,29 +12,16 @@ dto.Player = function(startX, startY, facing) {
 		direction = facing;
 	
 	// Getters and setters
-	var getX = function() {
-		return x;
-	};
-
-	var getY = function() {
-		return y;
-	};
-
-	var setX = function(newX) {
-		x = newX;
-	};
-
-	var setY = function(newY) {
-		y = newY;
-	};
-	
-	var getDirection = function() {
-		return direction;
-	};
-	
-	var setDirection = function(newX) {
-		direction = newX;
-	};
+	var getX = function () { return x; },
+        getY = function () { return y; },
+        setX = function (newX) { x = newX; },
+        setY = function (newY) { y = newY; },
+        getDirection = function () { return direction; },
+        setDirection = function (newX) { direction = newX; },
+        getWidth = function () { return width; },
+        setWidth = function (para) { width = para; },
+        getHeight = function () { return height; },
+        setHeight = function (para) { height = para; };
 
 
 	// Draw player
@@ -58,7 +45,10 @@ dto.Player = function(startX, startY, facing) {
 		setY: setY,
 		getDirection: getDirection,
 		setDirection: setDirection,
-		update: update,
+		getWidth: getWidth,
+		setWidth: setWidth,
+		getHeight: getHeight,
+		setHeight: setHeight,
 		draw: draw
 	}
 }
