@@ -57,7 +57,7 @@ function onNewPlayer(data) {
 	console.log("New player connected: "+data.id);
 
 	// Initialise the new player
-	var newPlayer = new Player(data.x, data.y, data.direction);
+	var newPlayer = new dto.Player(data.x, data.y, data.direction);
 	newPlayer.id = data.id;
 
 	// Add new player to the remote players array
@@ -197,6 +197,8 @@ function update() {
 			socket.emit("move player", {x: ship_x, y: ship_y, direction: direction});
 		}
 };
+
+
 
 //Runs a couple of loops to see if any of the lasers have hit any of the enemies
 function hitTest() {

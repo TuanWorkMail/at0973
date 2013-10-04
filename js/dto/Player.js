@@ -1,7 +1,7 @@
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
-var Player = function(startX, startY, facing) {
+dto.Player = function(startX, startY, facing) {
 	var x = startX,
 		y = startY,
 		id,
@@ -81,4 +81,4 @@ var Player = function(startX, startY, facing) {
 		update: update,
 		draw: draw
 	}
-};
+}

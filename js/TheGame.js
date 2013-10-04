@@ -3,6 +3,11 @@
 
 //window.onload = init;
 
+/************************
+**** NAMESPACE
+************************/
+window.dto = {};
+
 var canvas,
     ctx,
     whichMap = "classic1",
@@ -129,7 +134,7 @@ function gameLoop() {
         drawBot(host);
         moveLaser();
         shootDestruction();
-        //hitTest();
+        hitTest();
         drawShip();
         drawLaser();
         // Draw the remote players
