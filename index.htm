@@ -33,12 +33,18 @@
             document.getElementById('tile').innerHTML += 'CLIENT';
             init();
         }
+        function login() {
+            var username = document.getElementById('username').value,
+                password = document.getElementById('password').value;
+            socket.emit("login", { username: username, password: password });
+        }
     </script>
 
     <!-- <script data-main="js/main" src="js/require.js"></script>
     <script src="js/jquery-1.8.3.js"></script> -->
 
     <script src="js/util.js"></script>
+    <script src="js/sessionState.js"></script>
     <script src="js/bullet.js"></script>
     <script src="js/bulletMain.js"></script>
     <script src="js/input.js"></script>
@@ -54,6 +60,7 @@
     <script src="js/BotClass.js"></script>
     <script src="js/lib/Pathfinding.js"></script>
     <script src="js/collision.js"></script>
+    <script src="js/login.js"></script>
     
 </head>
 
@@ -61,6 +68,10 @@
     <div id="tile"></div>
     <input type="button" value="HOST" onclick="server();" />
     <input type="button" value="CLIENT" onclick="client();" />
+    <br />
+    <input type="text" id="username" value="acacacac" /><br />
+    <input type="text" id="password" value="123456" /><br />
+    <input type="button" value="login" onclick="login();" />
     <!-- Let’s get started. We only need one line of HTML: -->
     <canvas id="canvas"></canvas>
 </body>

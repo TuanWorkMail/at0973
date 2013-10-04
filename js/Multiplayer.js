@@ -29,12 +29,19 @@ var setSocketEventHandlers = function() {
 	socket.on("bot broadcast", onBotBroadcast);
 
     // Bot die message received
-    socket.on("bot die", onBotDie);
+	socket.on("bot die", onBotDie);
+
+    // Bot die message received
+	socket.on("login", onLogin);
+
+    // Testing message received
+	socket.on("test", onTest);
 };
 
 // Socket connected
 function onSocketConnected() {
 	console.log("Connected to socket server");
+	console.log("ID: " + this.socket.sessionid);
 
 	// Send local player data to the game server
 	socket.emit("new player", {x: ship_x, y: ship_y, direction: direction});
@@ -120,6 +127,22 @@ function onBotDie(data) {
         return;
     }
     console.log('bot '+data.count+' not found');
+}; 
+
+// Bot die
+function onLogin(data) {
+    var string = '<br/>';
+    if (data.uuid == 'failed') {
+        string += 'wrong username or password';
+    } else {
+        string += 'UUID: ' + data.uuid;
+    }
+    document.getElementById('tile').innerHTML += string;
+};
+
+// Testing
+function onTest(data) {
+    console.log(data.test);
 };
 
 /**************************************************

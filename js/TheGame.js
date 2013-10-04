@@ -138,6 +138,8 @@ function gameLoop() {
         }
         //call update function
         update();
+        //debug
+        //socket.emit("test", { test:'test' });
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);

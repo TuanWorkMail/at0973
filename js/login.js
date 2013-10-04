@@ -1,0 +1,7 @@
+﻿(function () {
+    
+
+    return {
+        login: login
+    }
+})();

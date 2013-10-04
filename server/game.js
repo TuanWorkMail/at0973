@@ -16,7 +16,8 @@
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
-	Player = require("./Player").Player;	// Player class
+	Player = require("./Player").Player,	// Player class
+    helper = require("./helper");
     
 
 
@@ -84,6 +85,12 @@ function onSocketConnection(client) {
 
     // Listen for bot die message
     client.on("bot die", onBotDie);
+
+    // Listen for bot die message
+    client.on("login", onLogin);
+
+    // Listen for testing message
+    client.on("test", onTest);
 };
 
 // Socket client has disconnected
@@ -172,6 +179,49 @@ function onBotDie(data) {
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 
+// Bot die
+function onLogin(data) {
+    var mysql = require('mysql'),
+        connection = mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',
+            password: '',
+            database: 'tank5'
+        });
+
+    var that = this;
+
+    connection.connect();
+
+    var query = connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
+        if (err) throw err;
+        //debug
+        //util.log(query.sql);
+        if (rows.length == 0) {
+            //debug
+            //util.log('wrong username or password');
+            result = 'failed';
+            that.emit("login", { uuid: result });
+        } else {
+            //debug
+            //util.log('user logon: ' + rows[0].Username);
+            //util.log(helper.createUUID());
+            result = helper.createUUID();
+            that.emit("login", { uuid: result });
+        }
+    });
+
+    connection.end();
+
+    //this.emit("login", { uuid: result });
+}
+
+// Testing
+function onTest(data) {
+    this.emit("test", { test: data.test });
+}
+
 /**************************************************
 ** GAME HELPER FUNCTIONS
 **************************************************/
@@ -185,118 +235,6 @@ function playerById(id) {
 
     return false;
 };
-
-
-/**************************************************
-** COPY OF BotClass
-**************************************************/
-//begin to send bot over the air to client
-//create a game loop similar to client on server side
-//send bot coordinate to client
-var maximumBot = 2,
-    pathStart,
-    pathStartX,
-    pathStartY,
-    pathEnd,
-    thePath,
-    thePathX,
-    thePathY,
-    c,//currently headed to which target in thePath
-    //enemiesGroup,
-
-    //grid = new PF.Grid(20, 20, world),
-    //finder = new PF.AStarFinder(),
-    //where bot will spawn, each map have a number of predefined point
-    whereSpawn = 0;
-
-function moveBot() {
-    createBot();
-    for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-            movingBot(bot);
-            socket.emit("bot broadcast", { length: bots.length, bot: bot, x: bots[bot].getX(), y: bots[bot].getY() });
-        } else {
-            bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
-            bots[bot].whereNow = 0;
-        }
-    }
-}
-//add new bot to the array
-function createBot() {
-    if (whereSpawn == enemiesGroup.length) {
-        whereSpawn = 0;
-    }
-    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
-        // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x;
-        y = enemiesGroup[whereSpawn].y;
-        newBot = new Bot(x, y, botRandomPath(x, y), 0);
-        // Add new player to the remote players array
-        bots.push(newBot);
-        whereSpawn++;
-    }
-}
-//input: current location
-//output: array of path to a random point
-function botRandomPath(x, y) {
-    var check = true;
-    while (check) {
-        pathStart = [Math.floor(x / 32), Math.floor(y / 32)];
-        var randomNumber = Math.floor(Math.random() * botDestination.length);
-        pathEnd = [Math.floor(botDestination[randomNumber].x / 32), Math.floor(botDestination[randomNumber].y / 32)];
-        if (pathStart[0] != pathEnd[0] || pathStart[1] != pathEnd[1]) {
-            check = false;
-        }
-    }
-    return pathFinder(world, pathStart, pathEnd);
-}
-function movingBot(bot) {
-    var pixelX = bots[bot].pathFound[bots[bot].whereNow + 1][0] * tmxloader.map.tileWidth,
-        pixelY = bots[bot].pathFound[bots[bot].whereNow + 1][1] * tmxloader.map.tileHeight,
-        differenceX = bots[bot].getX() - pixelX,
-        differenceY = bots[bot].getY() - pixelY;
-    //go vertically
-    if (differenceX == 0 && differenceY != 0) {
-        //down or up
-        if (differenceY > 0) {
-            bots[bot].setY(bots[bot].getY() - enemySpeed);
-        } else {
-            bots[bot].setY(bots[bot].getY() + enemySpeed);
-        }
-        //go horizontally
-    } else if (differenceY == 0 && differenceX != 0) {
-        //right or left
-        if (differenceX > 0) {
-            bots[bot].setX(bots[bot].getX() - enemySpeed);
-        } else {
-            bots[bot].setX(bots[bot].getX() + enemySpeed);
-        }
-    } else {
-        bots[bot].whereNow++;
-    }
-}
-
-
-function hitTestBot() {
-    var enemy_xw,
-        enemy_yh,
-        check = false;
-
-    for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
-
-            enemy_xw = bots[obj][0] + enemy_w;
-            enemy_yh = bots[obj][1] + enemy_h;
-
-            if (lasers[i][0] < enemy_xw && lasers[i][1] < enemy_yh && lasers[i][0] > bots[obj][0] && lasers[i][1] > bots[obj][1]) {
-                check = true;
-                bots.splice(obj, 1);
-                lasers.splice(i, 1);
-            }
-        }
-    }
-}
-
 
 /**************************************************
 ** RUN THE GAME
