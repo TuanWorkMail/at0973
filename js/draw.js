@@ -14,7 +14,7 @@ function Viewport(x, y, width, height) {
 /**
  * Map drawing function
  */
-function draw() {
+function drawMap() {
 
     //clear(); 
     viewport.x = viewport_x //- viewport.halfWidth;

@@ -35,12 +35,10 @@ var canvas,
     upKey = false,
     downKey = false,
     //which direction the ship is facing
-    direction = 0,
+    direction,
     //Add the socket variable to the file
     socket,
     remotePlayers = [],
-    //check if gameLoop is over or not, for onBotBroadcast(Multiplayer)
-    checkGameLoop = false,
     //viewport for drawing map
     viewport,
     viewport_x = 0,
@@ -51,7 +49,6 @@ var canvas,
     lasersLength = 1,
     lasers = [],
     laserSpeed = 15,
-    lastKey = 'left',
     score = 0,
     alive = true,
     lives = 3,
@@ -118,8 +115,7 @@ function init() {
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
     clearCanvas();
-    //draw the map
-    draw();
+    drawMap();
     if (alive && gameStarted && lives > 0) {
         //shipCollision();
         hitTestBot();
