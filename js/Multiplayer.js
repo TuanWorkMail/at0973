@@ -100,12 +100,12 @@ function onBotBroadcast(data) {
     if (bot!=false) {
         bot.setX(data.x);
         bot.setY(data.y);
-        bot.setDirection = data.direction;
-        bot.setType = data.type;
+        bot.direction=data.direction;
+        bot.type = data.type;
         return;
     }
     var newBot = new Bot(data.count, data.x, data.y, data.type);
-    newBot.setDirection = data.direction;
+    newBot.direction = data.direction;
     remoteBots.push(newBot);
 };
 
@@ -114,7 +114,7 @@ function onBotDie(data) {
     var bot = botById(data.count);
     if (bot!=false) {
         for (var i = 0; i < remoteBots.length; i++) {
-            if (remoteBots[i].getID == data.count)
+            if (remoteBots[i].id == data.count)
                 remoteBots.splice(i, 1);
         };
         return;
@@ -128,11 +128,27 @@ function onBotDie(data) {
 // Find bot by ID
 function botById(id) {
     for (var i = 0; i < remoteBots.length; i++) {
-        if (remoteBots[i].getID == id)
+        if (remoteBots[i].id == id)
             return remoteBots[i];
     };
     return false;
 };
+
+//add new bot to the array
+function createRemoteBot() {
+    if (whereSpawn == enemiesGroup.length) {
+        whereSpawn = 0;
+    }
+    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
+        // Initialise the new bot
+        var x = enemiesGroup[whereSpawn].x;
+        y = enemiesGroup[whereSpawn].y;
+        newBot = new Bot(x, y, botRandomPath(x, y), 0);
+        // Add new player to the remote players array
+        bots.push(newBot);
+        whereSpawn++;
+    }
+}
 
 /**************************************************
 ** GAME FINDER FUNCTIONS

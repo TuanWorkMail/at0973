@@ -1,22 +1,30 @@
 
 //if host draw from bots, if guest draw from remoteBots
 function drawBot(host) {
-    var array;
-
-    if (host == true) {             //host
-        array = bots;
-    } else if (host == false) {     //client
-        array = remoteBots;
-    }
-    for (var i = 0; i < array.length; i++) {
-        drawingBot(array[i]);
+    if (host == true) {
+        for (var i = 0; i < bots.length; i++) {
+            //ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
+            drawingBot(bots[i]);
+        }
+    } else if (host == false) {
+        for (var i = 0; i < remoteBots.length; i++) {
+            //ctx.drawImage(bot, remoteBots[i].getX(), remoteBots[i].getY());
+            drawingBot(remoteBots[i]);
+        }
     }
     //drawPath();
 }
 
 function drawingBot(object) {
-    var halfWidth = object.getWidth() / 2,
-        halfHeight = object.getHeight() / 2;
+    var halfWidth = bot_w / 2,
+        halfHeight = bot_h / 2,
+        botImg;
+
+    if(object.type=='smart') {
+        botImg = bot2;
+    } else {
+        botImg = bot;
+    }
 
     // Backup before messing with the canvas
     ctx.save();
@@ -24,24 +32,24 @@ function drawingBot(object) {
     // Move registration point to the center of the canvas
     ctx.translate(object.getX() + halfWidth, object.getY() + halfHeight);
 
-    switch (object.getDirection()) {
+    switch (object.direction) {
         case 'up':
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'down':
             // Rotate 180 degree
             ctx.rotate((Math.PI / 180) * 180);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'left':
             // Rotate 270 degree
             ctx.rotate((Math.PI / 180) * 270);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
         case 'right':
             // Rotate 90 degree
             ctx.rotate((Math.PI / 180) * 90);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            ctx.drawImage(botImg, -halfWidth, -halfHeight);
             break;
     }
 
@@ -73,18 +81,17 @@ function moveBot() {
     if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].getType() == 'smart') {
-            if (bots[bot].getWhereNow() < bots[bot].getPathFound().length - 1) {
+        if (bots[bot].type == 'smart') {
+            if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
                 movingBot(bots[bot]);
             } else {
-                bots[bot].setPathFound(botRandomPath(bots[bot].getX(), bots[bot].getY()));
-                //bots[bot].setWhereNow(0);
+                bots[bot].pathFound = botRandomPath(bots[bot].getX(), bots[bot].getY());
                 bots[bot].whereNow = 0;
             }
-        } else if (bots[bot].getType() == 'dumb') {
+        } else if (bots[bot].type == 'dumb') {
             goStraight(bot);
         }
-        socket.emit("bot broadcast", { count: bots[bot].getID, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].getDirection(), type: bots[bot].getType() });
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
 
@@ -103,7 +110,7 @@ function createBot() {
         //every 3 bot is smart
         if (botCount % 4 == 0) {
             newBot = new Bot(botCount, x, y, 'smart');
-            newBot.setPathFound(botRandomPath(x, y));
+            newBot.pathFound = botRandomPath(x, y);
         } else {
             newBot = new Bot(botCount, x, y, 'dumb');
         }
@@ -118,19 +125,19 @@ function createBot() {
 
 function drawPath() {
     for (var i = 0; i < bots.length; i++) {
-        for (var rp = 0; rp < bots[i].getPathFound().length; rp++) {
+        for (var rp = 0; rp < bots[i].pathFound.length; rp++) {
             switch (rp) {
                 case 0:
                     spriteNum = 10; // start
                     break;
-                case bots[i].getPathFound().length -1:
+                case bots[i].pathFound.length -1:
                     spriteNum = 1; // end
                     break;
                 default:
                     spriteNum = 4; // path node
                     break;
             }
-            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, bots[i].getPathFound()[rp][0] * 32, bots[i].getPathFound()[rp][1] * 32, 32, 32);
+            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, bots[i].pathFound[rp][0] * 32, bots[i].pathFound[rp][1] * 32, 32, 32);
         }
     }
 }

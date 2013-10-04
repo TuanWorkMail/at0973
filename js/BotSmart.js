@@ -2,32 +2,31 @@
 //move the bot according to there foundPath
 function movingBot(bots) {
     //bot current coordianate is calculate base on ship_w/h, not tileWidth/height
-    var pixelX = bots.getPathFound()[bots.whereNow + 1][0] * bots.getWidth(),
-        pixelY = bots.getPathFound()[bots.whereNow + 1][1] * bots.getHeight(),
+    var pixelX = bots.pathFound[bots.whereNow + 1][0] * ship_w,
+        pixelY = bots.pathFound[bots.whereNow + 1][1] * ship_h,
         differenceX = bots.getX() - pixelX,
         differenceY = bots.getY() - pixelY;
     //go vertically
     if (differenceX == 0 && differenceY != 0) {
         //down or up
         if (differenceY > 0) {
-            bots.setY(bots.getY() - bots.getSpeed());
-            bots.setDirection('up');
+            bots.setY(bots.getY() - bots.speed);
+            bots.direction = 'up';
         } else {
-            bots.setY(bots.getY() + bots.getSpeed());
-            bots.setDirection('down');
+            bots.setY(bots.getY() + bots.speed);
+            bots.direction = 'down';
         }
         //go horizontally
     } else if (differenceY == 0 && differenceX != 0) {
         //right or left
         if (differenceX > 0) {
-            bots.setX(bots.getX() - bots.getSpeed());
-            bots.setDirection('left');
+            bots.setX(bots.getX() - bots.speed);
+            bots.direction = 'left';
         } else {
-            bots.setX(bots.getX() + bots.getSpeed());
-            bots.setDirection('right');
+            bots.setX(bots.getX() + bots.speed);
+            bots.direction = 'right';
         }
     } else {
-        //bots.setWhereNow(bots.getWhereNow() + 1);
         bots.whereNow++;
     }
 }
