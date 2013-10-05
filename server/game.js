@@ -16,7 +16,6 @@
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
-	Player = require("./Player").Player,	// Player class
     helper = require("./helper"),
     host = 'remote';                        //if server host or use remote host
     
@@ -32,15 +31,12 @@ if (host == 'remote') {
 ** GAME VARIABLES
 **************************************************/
 var socket,		            // Socket controller
-    players, 	            // Array of connected players
     host;                   // if there already a host or not
 
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
 function init() {
-    // Create an empty array to store players
-    players = [];
 
     host = false;
 
@@ -105,74 +101,28 @@ function onSocketConnection(client) {
 function onClientDisconnect() {
     util.log("Player has disconnected: " + this.id);
 
-    var removePlayer = playerById(this.id);
-
-    // Player not found
-    if (!removePlayer) {
-        util.log("Disconnect: Player not found: " + this.id);
-        return;
-    };
-
-    // Remove player from players array
-    players.splice(players.indexOf(removePlayer), 1);
-
     // Broadcast removed player to connected socket clients
     this.broadcast.emit("remove player", { id: this.id });
 };
 
 // New player has joined
 function onNewPlayer(data) {
-    // Create a new player
-    var newPlayer = new Player(data.x, data.y);
-    newPlayer.id = this.id;
-
     // Broadcast new player to connected socket clients
-    this.broadcast.emit("new player", { id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY() });
+    this.broadcast.emit("new player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 
-    // Send existing players to the new player
-    var i, existingPlayer;
-    for (i = 0; i < players.length; i++) {
-        existingPlayer = players[i];
-        this.emit("new player", { id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY() });
-    };
-
-    // Add new player to the players array
-    players.push(newPlayer);
 };
 
 // Player has moved
 function onMovePlayer(data) {
-    // Find player in array
-    var movePlayer = playerById(this.id);
-
-    // Player not found
-    if (!movePlayer) {
-        util.log("Move: Player not found: " + this.id);
-        return;
-    };
-
-    // Update player position
-    movePlayer.setX(data.x);
-    movePlayer.setY(data.y);
-    movePlayer.setDirection(data.direction);
 
     // Broadcast updated position to connected socket clients
-    this.broadcast.emit("move player", { id: movePlayer.id, x: movePlayer.getX(), y: movePlayer.getY(), direction: data.direction });
+    this.broadcast.emit("move player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 // Lasers has moved
 function onNewLasers(data) {
-    // Find player in array
-    var movePlayer = playerById(this.id);
-
-    // Player not found
-    if (!movePlayer) {
-        //util.log("Laser: Player not found: " + this.id);
-        return;
-    };
-
     // Broadcast updated position to connected socket clients
-    this.broadcast.emit("new lasers", { id: movePlayer.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.emit("new lasers", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 //broadcast bot
@@ -242,20 +192,6 @@ function onHost(data) {
     hostID = this.id;
     util.log('remote host connected with ID: ' + hostID);
 }
-
-/**************************************************
-** GAME HELPER FUNCTIONS
-**************************************************/
-// Find player by ID
-function playerById(id) {
-    var i;
-    for (i = 0; i < players.length; i++) {
-        if (players[i].id == id)
-            return players[i];
-    };
-
-    return false;
-};
 
 /**************************************************
 ** RUN THE GAME
