@@ -1,17 +1,4 @@
 
-//if host draw from bots, if guest draw from remoteBots
-function drawBot() {
-    var array;
-    if (host == true) {
-        array = bots;
-    } else if (host == false) {
-        array = remoteBots;
-    }
-    for (var i = 0; i < array.length; i++) {
-        drawByDirection(array[i]);
-    }
-    //drawPath();
-}
 
 
 

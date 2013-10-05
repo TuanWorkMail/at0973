@@ -17,11 +17,16 @@
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
 	Player = require("./Player").Player,	// Player class
-    helper = require("./helper");
+    helper = require("./helper"),
+    host = 'remote';                        //if server host or use remote host
     
-
-
-
+// if remote host server
+if (host == 'remote') {
+    var hostID;
+    util.log('remote host');
+} else {
+    util.log('local host');
+}
 
 /**************************************************
 ** GAME VARIABLES
@@ -91,6 +96,9 @@ function onSocketConnection(client) {
 
     // Listen for testing message
     client.on("test", onTest);
+
+    // if remote host listen for host ack
+    client.on("host", onHost);
 };
 
 // Socket client has disconnected
@@ -101,7 +109,7 @@ function onClientDisconnect() {
 
     // Player not found
     if (!removePlayer) {
-        util.log("Player not found: " + this.id);
+        util.log("Disconnect: Player not found: " + this.id);
         return;
     };
 
@@ -139,7 +147,7 @@ function onMovePlayer(data) {
 
     // Player not found
     if (!movePlayer) {
-        util.log("Player not found: " + this.id);
+        util.log("Move: Player not found: " + this.id);
         return;
     };
 
@@ -159,7 +167,7 @@ function onNewLasers(data) {
 
     // Player not found
     if (!movePlayer) {
-        util.log("Player not found: " + this.id);
+        //util.log("Laser: Player not found: " + this.id);
         return;
     };
 
@@ -220,6 +228,16 @@ function onLogin(data) {
 // Testing
 function onTest(data) {
     this.emit("test", { test: data.test });
+}
+
+// remote host, not locally
+function onHost(data) {
+    if (host == 'local') {
+        util.log('received rogue host message');
+        return;
+    }
+    hostID = this.id;
+    util.log('remote host connected with ID: ' + hostID);
 }
 
 /**************************************************

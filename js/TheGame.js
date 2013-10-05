@@ -116,9 +116,6 @@ function gameLoop() {
     } else {
         drawMap();
         if (alive && gameStarted && lives > 0) {
-
-
-
             //shipCollision();
 
             //COMBINE BOTS AND REMOTEBOTS, NOW DEPEND ON HOST

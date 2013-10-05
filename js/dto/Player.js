@@ -24,8 +24,11 @@ dto.Player = function(startX, startY, facing) {
         getWidth = function () { return width; },
         setWidth = function (para) { width = para; },
         getHeight = function () { return height; },
-        setHeight = function (para) { height = para; };
-
+        setHeight = function (para) { height = para; },
+        getSpeed = function () { return speed; },
+        setSpeed = function (para) { speed = para; },
+        getImage = function () { return image; },
+        setImage = function (para) { image = para; };
 
 	// Draw player
 	var draw = function(ctx) {
@@ -52,6 +55,10 @@ dto.Player = function(startX, startY, facing) {
 		setWidth: setWidth,
 		getHeight: getHeight,
 		setHeight: setHeight,
+		getSpeed: getSpeed,
+		setSpeed: setSpeed,
+		getImage: getImage,
+		setImage: setImage,
 		draw: draw
 	}
 }

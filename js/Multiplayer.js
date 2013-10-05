@@ -43,6 +43,9 @@ function onSocketConnected() {
 	console.log("Connected to socket server");
 	console.log("ID: " + this.socket.sessionid);
 
+    //if host send a message to server
+	if (host) socket.emit("host", { host: host });
+
 	// Send local player data to the game server
 	socket.emit("new player", {x: ship_x, y: ship_y, direction: direction});
 };
