@@ -78,3 +78,40 @@ function drawShip() {
     }
 }
 
+function drawByDirection(object) {
+    var halfWidth = object.getWidth() / 2,
+        halfHeight = object.getHeight() / 2;
+
+    // Backup before messing with the canvas
+    ctx.save();
+
+    // Move registration point to the center of the canvas
+    ctx.translate(object.getX() + halfWidth, object.getY() + halfHeight);
+
+    switch (object.direction) {
+        case 'up':
+            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            break;
+        case 'down':
+            // Rotate 180 degree
+            ctx.rotate((Math.PI / 180) * 180);
+            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            break;
+        case 'left':
+            // Rotate 270 degree
+            ctx.rotate((Math.PI / 180) * 270);
+            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            break;
+        case 'right':
+            // Rotate 90 degree
+            ctx.rotate((Math.PI / 180) * 90);
+            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
+            break;
+    }
+
+    // Move registration point back to the top left corner of canvas
+    //ctx.translate(-(object.getX() + halfWidth), -(object.getY() + halfHeight));
+
+    // restore
+    ctx.restore();
+}

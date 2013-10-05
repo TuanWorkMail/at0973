@@ -1,64 +1,19 @@
 
 //if host draw from bots, if guest draw from remoteBots
 function drawBot() {
+    var array;
     if (host == true) {
-        for (var i = 0; i < bots.length; i++) {
-            //ctx.drawImage(bot, bots[i].getX(), bots[i].getY());
-            drawingBot(bots[i]);
-        }
+        array = bots;
     } else if (host == false) {
-        for (var i = 0; i < remoteBots.length; i++) {
-            //ctx.drawImage(bot, remoteBots[i].getX(), remoteBots[i].getY());
-            drawingBot(remoteBots[i]);
-        }
+        array = remoteBots;
+    }
+    for (var i = 0; i < array.length; i++) {
+        drawByDirection(array[i]);
     }
     //drawPath();
 }
 
-function drawingBot(object) {
-    var halfWidth = bot_w / 2,
-        halfHeight = bot_h / 2,
-        botImg;
 
-    if(object.type=='smart') {
-        botImg = bot2;
-    } else {
-        botImg = bot;
-    }
-
-    // Backup before messing with the canvas
-    ctx.save();
-
-    // Move registration point to the center of the canvas
-    ctx.translate(object.getX() + halfWidth, object.getY() + halfHeight);
-
-    switch (object.direction) {
-        case 'up':
-            ctx.drawImage(botImg, -halfWidth, -halfHeight);
-            break;
-        case 'down':
-            // Rotate 180 degree
-            ctx.rotate((Math.PI / 180) * 180);
-            ctx.drawImage(botImg, -halfWidth, -halfHeight);
-            break;
-        case 'left':
-            // Rotate 270 degree
-            ctx.rotate((Math.PI / 180) * 270);
-            ctx.drawImage(botImg, -halfWidth, -halfHeight);
-            break;
-        case 'right':
-            // Rotate 90 degree
-            ctx.rotate((Math.PI / 180) * 90);
-            ctx.drawImage(botImg, -halfWidth, -halfHeight);
-            break;
-    }
-
-    // Move registration point back to the top left corner of canvas
-    //ctx.translate(-(object.getX() + halfWidth), -(object.getY() + halfHeight));
-
-    // restore
-    ctx.restore();
-}
 
 	
 var botCount = 0,

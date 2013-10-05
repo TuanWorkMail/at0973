@@ -122,7 +122,7 @@ function gameLoop() {
             hitTestBot();
             //shoot must behind check and move
             BotShootInterval(bots, 1);
-        } else {
+        }// else {
 
 
             //shipCollision();
@@ -144,7 +144,7 @@ function gameLoop() {
             updatePlayer();
             //debug
             //socket.emit("test", { test:'test' });
-        }
+        //}
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
