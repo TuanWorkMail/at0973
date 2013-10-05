@@ -114,15 +114,17 @@ function init() {
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
-    clearCanvas();
-    drawMap();
-    if (alive && gameStarted && lives > 0) {
-        if (host) {
-            moveBot();
-            hitTestBot();
-            //shoot must behind check and move
-            BotShootInterval(bots, 1);
-        }// else {
+    moveLaser();
+    if (host) {
+        moveBot();
+        hitTestBot();
+        //shoot must behind check and move
+        BotShootInterval(bots, 1);
+    } else {
+        clearCanvas();
+        drawMap();
+        if (alive && gameStarted && lives > 0) {
+
 
 
             //shipCollision();
@@ -130,7 +132,6 @@ function gameLoop() {
             //COMBINE BOTS AND REMOTEBOTS, NOW DEPEND ON HOST
             drawBot();
 
-            moveLaser();
             shootDestruction();
             hitTestPlayer();
             moveShip();
@@ -144,7 +145,7 @@ function gameLoop() {
             updatePlayer();
             //debug
             //socket.emit("test", { test:'test' });
-        //}
+        }
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
