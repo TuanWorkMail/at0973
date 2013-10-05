@@ -21,10 +21,6 @@ var canvas,
     botsLength = 8,
     bots = [],
     remoteBots = [],
-    bot_w = 40,
-    bot_h = 40,
-    bot,
-    bot2,
     //stupid bot shoot flag
     stupidShoot=false,
     //array of coordinate the bot can randomly go to
@@ -62,10 +58,6 @@ function init() {
     ctx = canvas.getContext('2d');
     canvas.setAttribute("width", width);
     canvas.setAttribute("height", height);
-    bot = new Image();
-    bot.src = 'images/8bit_enemy.png';
-    bot2 = new Image();
-    bot2.src = 'images/bot2.png';
     ship = new Image();
     ship.src = 'images/ship.png';
     ship_right = new Image();
@@ -114,6 +106,7 @@ function init() {
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
+    clearCanvas();
     moveLaser();
     if (host) {
         moveBot();
@@ -121,7 +114,6 @@ function gameLoop() {
         //shoot must behind check and move
         BotShootInterval(bots, 1);
     } else {
-        clearCanvas();
         drawMap();
         if (alive && gameStarted && lives > 0) {
 

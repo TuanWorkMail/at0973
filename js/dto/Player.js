@@ -5,12 +5,15 @@ dto.Player = function(startX, startY, facing) {
 	var x = startX,
 		y = startY,
 		id,
-		moveAmount = 5,
         width = 40,
         height = 40,
+        image = new Image(),
+        speed = 5,
 		//which way the ship is facing
 		direction = facing;
 	
+	image.src = 'images/ship.png';
+
 	// Getters and setters
 	var getX = function () { return x; },
         getY = function () { return y; },

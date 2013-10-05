@@ -35,8 +35,8 @@ function hitTestBot() {
     for (var i = 0; i < lasers.length; i++) {
         for (var obj = 0; obj < bots.length; ++obj) {
 
-            enemy_xw = bots[obj].getX() + bot_w;
-            enemy_yh = bots[obj].getY() + bot_h;
+            enemy_xw = bots[obj].getX() + bots[obj].getWidth();
+            enemy_yh = bots[obj].getY() + bots[obj].getHeight();
 
 
             if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
