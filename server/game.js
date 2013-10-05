@@ -22,7 +22,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     
 // if remote host server
 if (host == 'remote') {
-    var hostID;
+    var hostID = 'none';
     util.log('remote host');
 } else {
     util.log('local host');
@@ -234,6 +234,9 @@ function onTest(data) {
 function onHost(data) {
     if (host == 'local') {
         util.log('received rogue host message');
+        return;
+    } else if (hostID == 'none') {
+        util.log('received another host message, keep old, discard this one');
         return;
     }
     hostID = this.id;
