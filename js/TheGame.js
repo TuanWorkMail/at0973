@@ -148,7 +148,7 @@ function reset() {
     ship_x = objGroup[1].x;
     ship_y = objGroup[1].y;
 
-    var newPlayer = new dto.Player(objGroup[1].x, objGroup[1].y, 'up');
+    var newPlayer = new dto.Player(objGroup[1].x, objGroup[1].y, 'down');
 
 
     //debug
