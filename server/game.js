@@ -102,13 +102,13 @@ function onClientDisconnect() {
     util.log("Player has disconnected: " + this.id);
 
     // Broadcast removed player to connected socket clients
-    this.broadcast.emit("remove player", { id: this.id });
+    this.broadcast.to('authenticated').emit("remove player", { id: this.id });
 };
 
 // New player has joined
 function onNewPlayer(data) {
     // Broadcast new player to connected socket clients
-    this.broadcast.emit("new player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("new player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 
 };
 
@@ -116,24 +116,24 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
 
     // Broadcast updated position to connected socket clients
-    this.broadcast.emit("move player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("move player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 // Lasers has moved
 function onNewLasers(data) {
     // Broadcast updated position to connected socket clients
-    this.broadcast.emit("new lasers", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("new lasers", { id: this.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 //broadcast bot
 function onBotBroadcast(data) {
-    this.broadcast.emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, type: data.type });
+    this.broadcast.to('authenticated').emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, type: data.type });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 
 // Bot die
 function onBotDie(data) {
-    this.broadcast.emit("bot die", { count: data.count });
+    this.broadcast.to('authenticated').emit("bot die", { count: data.count });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 
@@ -159,20 +159,18 @@ function onLogin(data) {
         if (rows.length == 0) {
             //debug
             //util.log('wrong username or password');
-            result = 'failed';
-            that.emit("login", { uuid: result });
+            that.emit("login", { uuid: 'failed' });
         } else {
             //debug
             //util.log('user logon: ' + rows[0].Username);
             //util.log(helper.createUUID());
-            result = helper.createUUID();
-            that.emit("login", { uuid: result });
+            that.emit("login", { uuid: helper.createUUID() });
+            that.join('authenticated');
         }
     });
 
     connection.end();
 
-    //this.emit("login", { uuid: result });
 }
 
 // Testing
@@ -191,6 +189,7 @@ function onHost(data) {
     }
     hostID = this.id;
     util.log('remote host connected with ID: ' + hostID);
+    this.join('authenticated');
 }
 
 /**************************************************
