@@ -44,12 +44,10 @@ function onSocketConnected() {
 	console.log("ID: " + this.socket.sessionid);
 
     //if host send a message to server
-	if (host) {
-	    socket.emit("host", { hello: 'world' });
-	} else {
-	    // Send local player data to the game server
-	    socket.emit("new player", { hello: 'world' });
-	}
+	if (host) socket.emit("host", { host: host });
+
+	// Send local player data to the game server
+	socket.emit("new player", {x: ship_x, y: ship_y, direction: direction});
 };
 
 // Socket disconnected
@@ -59,15 +57,11 @@ function onSocketDisconnect() {
 
 // New player
 function onNewPlayer(data) {
-    if (!host) return;
-    if (playerById(data.id) != false) {
-        util.log('player ' + data.id + ' existed');
-        return;
-    } 
 	console.log("New player connected: "+data.id);
 
 	// Initialise the new player
-	var newPlayer = new dto.Player(data.id, data.x, data.y, data.direction);
+	var newPlayer = new dto.Player(data.x, data.y, data.direction);
+	newPlayer.id = data.id;
 
 	// Add new player to the remote players array
 	remotePlayers.push(newPlayer);
@@ -79,7 +73,7 @@ function onMovePlayer(data) {
 
 	// Player not found
 	if (!movePlayer) {
-		console.log("Move: Player not found: "+data.id);
+		console.log("Player not found: "+data.id);
 		return;
 	};
 
@@ -102,7 +96,7 @@ function onRemovePlayer(data) {
 
 	// Player not found
 	if (!removePlayer) {
-		console.log("Remove: Player not found: "+data.id);
+		console.log("Player not found: "+data.id);
 		return;
 	};
 
@@ -189,9 +183,10 @@ function createRemoteBot() {
 function playerById(id) {
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
-		if (remotePlayers[i].getID() == id)
+		if (remotePlayers[i].id == id)
 			return remotePlayers[i];
 	};
+	
 	return false;
 };
 
