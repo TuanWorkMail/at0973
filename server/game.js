@@ -68,7 +68,7 @@ var setEventHandlers = function () {
 // New socket connection
 function onSocketConnection(client) {
     util.log("New player has connected: " + client.id);
-
+    
     // Listen for client disconnected
     client.on("disconnect", onClientDisconnect);
 
@@ -101,15 +101,26 @@ function onSocketConnection(client) {
 function onClientDisconnect() {
     util.log("Player has disconnected: " + this.id);
 
-    // Broadcast removed player to connected socket clients
-    this.broadcast.emit("remove player", { id: this.id });
+    if (host == 'remote' && this.id == hostID) {
+        hostID = 'none';
+        util.log('host disconnected');
+        return;
+    }
+
+    // Broadcast removed player host
+    this(hostID).emit("remove player", { id: this.id });
 };
 
 // New player has joined
 function onNewPlayer(data) {
-    // Broadcast new player to connected socket clients
-    this.broadcast.emit("new player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
-
+    if (host == 'remote') {
+        if (hostID == 'none')
+            util.log('host is not presented to handle spawn request');
+        else {
+            // Broadcast new player to host
+            this(hostID).emit("new player", { id: this.id });
+        }
+    }
 };
 
 // Player has moved
@@ -185,7 +196,7 @@ function onHost(data) {
     if (host == 'local') {
         util.log('received rogue host message');
         return;
-    } else if (hostID == 'none') {
+    } else if (hostID != 'none') {
         util.log('received another host message, keep old, discard this one');
         return;
     }
