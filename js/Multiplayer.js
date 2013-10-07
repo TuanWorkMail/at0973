@@ -57,15 +57,20 @@ function onSocketDisconnect() {
 
 // New player
 function onNewPlayer(data) {
-	console.log("New player connected: "+data.id);
-
-	// Initialise the new player
-	var newPlayer = new dto.Player(data.x, data.y, data.direction);
-	newPlayer.id = data.id;
-
-	// Add new player to the remote players array
-	remotePlayers.push(newPlayer);
+    addNewPlayer(data.id,data.x,data.y,data.direction);
 };
+
+//add new player to array
+function addNewPlayer(id, x, y, direction) {
+    console.log("New player connected: " + id);
+
+    // Initialise the new player
+    var newPlayer = new dto.Player(x, y, direction);
+    newPlayer.setID(id);
+
+    // Add new player to the remote players array
+    remotePlayers.push(newPlayer);
+}
 
 // Move player
 function onMovePlayer(data) {
@@ -73,7 +78,7 @@ function onMovePlayer(data) {
 
 	// Player not found
 	if (!movePlayer) {
-		console.log("Player not found: "+data.id);
+	    addNewPlayer(data.id, data.x, data.y, data.direction);
 		return;
 	};
 
@@ -183,7 +188,7 @@ function createRemoteBot() {
 function playerById(id) {
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
-		if (remotePlayers[i].id == id)
+		if (remotePlayers[i].getID() == id)
 			return remotePlayers[i];
 	};
 	
