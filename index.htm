@@ -12,12 +12,19 @@
             margin: 0;
             background: #666;
         }
-
         canvas {
             display: block;
             margin: 30px auto 0;
             border: 1px dashed #ccc;
             background: #000;
+        }
+        .popup {
+            display: none;
+            margin: 30px auto 0;
+            position: absolute;
+            top: 200px;
+            right: 50%;
+            background: #666;
         }
     </style>
 
@@ -88,7 +95,11 @@
             <td><input type="button" value="register" onclick="register();" /></td>
         </tr>
     </table>
-    
+    <div class="popup" id="login">
+        <input type="text" id="Text1" value="acacacac" /><br />
+        <input type="password" id="password1" value="123456" /><br />
+        <input type="button" value="login" onclick="login();" />
+    </div>
     <!-- Let’s get started. We only need one line of HTML: -->
     <canvas id="canvas"></canvas>
 </body>
