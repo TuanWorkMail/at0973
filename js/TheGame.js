@@ -87,7 +87,8 @@ function init() {
 
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.
-    socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
+    //socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
+    socket = io.connect("125.212.217.58", { port: 8000, transports: ["websocket"] });
     // Start listening for events
     setSocketEventHandlers();
     //where to spawn ship

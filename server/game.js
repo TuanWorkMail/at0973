@@ -95,11 +95,19 @@ function onSocketConnection(client) {
 
     // if remote host listen for host ack
     client.on("host", onHost);
+
+    // Listen for bot die message
+    client.on("register", onRegister);
 };
 
 // Socket client has disconnected
 function onClientDisconnect() {
     util.log("Player has disconnected: " + this.id);
+
+    if (this.id == hostID) {
+        hostID = 'none';
+        util.log('host disconnected, waiting for another one');
+    }
 
     // Broadcast removed player to connected socket clients
     this.broadcast.to('authenticated').emit("remove player", { id: this.id });
@@ -137,7 +145,7 @@ function onBotDie(data) {
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 
-// Bot die
+// Login
 function onLogin(data) {
     var mysql = require('mysql'),
         connection = mysql.createConnection({
@@ -183,13 +191,36 @@ function onHost(data) {
     if (host == 'local') {
         util.log('received rogue host message');
         return;
-    } else if (hostID == 'none') {
+    } else if (hostID != 'none') {
         util.log('received another host message, keep old, discard this one');
         return;
     }
     hostID = this.id;
     util.log('remote host connected with ID: ' + hostID);
     this.join('authenticated');
+}
+
+// Login
+function onRegister(data) {
+    var mysql = require('mysql'),
+        connection = mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',
+            password: '',
+            database: 'tank5'
+        });
+
+    var that = this;
+
+    connection.connect();
+
+    var query = connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
+        if (err) that.emit("register", { result: 'username already existed' });
+        else
+            that.emit("register", { result: 'register successfully' });
+    });
+    connection.end();
 }
 
 /**************************************************

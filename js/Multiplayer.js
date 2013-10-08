@@ -36,6 +36,9 @@ var setSocketEventHandlers = function() {
 
     // Testing message received
 	socket.on("test", onTest);
+
+    // Bot die message received
+	socket.on("register", onRegister);
 };
 
 // Socket connected
@@ -137,7 +140,7 @@ function onBotDie(data) {
     console.log('bot '+data.count+' not found');
 }; 
 
-// Bot die
+// Login
 function onLogin(data) {
     var string = '<br/>';
     if (data.uuid == 'failed') {
@@ -151,6 +154,12 @@ function onLogin(data) {
 // Testing
 function onTest(data) {
     console.log(data.test);
+};
+
+// Register
+function onRegister(data) {
+    var string = '<br/>' + data.result;
+    document.getElementById('tile').innerHTML += string;
 };
 
 /**************************************************
