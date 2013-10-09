@@ -84,8 +84,8 @@ function init() {
     enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.
-    //socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
-    socket = io.connect("125.212.217.58", { port: 8000, transports: ["websocket"] });
+    socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
+    //socket = io.connect("125.212.217.58", { port: 8000, transports: ["websocket"] });
     // Start listening for events
     setSocketEventHandlers();
     //where to spawn ship
@@ -93,8 +93,6 @@ function init() {
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
 
-    //debug
-    //drawTileLayerRaw(combine16to1tile(combineTileLayer()));
 
     //stupid bot shooting
     setInterval(function() {stupidShoot=true;}, 1000 * 1);
@@ -121,92 +119,37 @@ function gameLoop() {
             drawBot();
 
             shootDestruction();
-            moveShip();
-            drawShip();
+            //moveShip();
+            //drawShip();
             drawLaser();
             // Draw the remote players
             for (var i = 0; i < remotePlayers.length; i++) {
                 remotePlayers[i].draw(ctx);
             }
             //call update function
-            updatePlayer();
-            //debug
-            //socket.emit("test", { test:'test' });
+            //updatePlayer();
+
         }
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
 }
 
+//This simply resets the ship and enemies to their starting positions
+function reset() {
+    //where to spawn ship
+    objGroup = tmxloader.map.objectgroup['spawn'].objects;
 
-//If an arrow key is being pressed, moves the ship in the right direction
-function moveShip() {
-    //if ship cross the map border, throw it back in
-    if (ship_x <= 0) ship_x = 0;
-    if ((ship_x + ship_w) >= width) ship_x = width - ship_w;
-    if (ship_y <= 0) ship_y = 0;
-    if ((ship_y + ship_h) >= height) ship_y = height - ship_h;
-    //THERE ALREADY DIRECTION NO NEED FOR LASTKEY, AND CHANGE DIRECTION TO STRING NOT SOME NUMBER
-    /*if (rightKey == false && leftKey == false && upKey == false && downKey == false) {
-        if (ship_x % (ship_w / 2) != 0 || ship_y % (ship_h / 2) != 0) {
-            //debug
-            //console.log(ship_x + ' ' + ship_x % (ship_w / 2) + ' ' + ship_y + ' ' + ship_y % (ship_h / 2));
-            switch (direction) {
-                case 'right':
-                    ship_x += shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_x -= shipSpeed;
-                    }
-                    break;
-                case 'left':
-                    ship_x -= shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_x += shipSpeed;
-                    }
-                    break;
-                case 'up':
-                    ship_y -= shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_y += shipSpeed;
-                    }
-                    break;
-                case 'down':
-                    ship_y += shipSpeed;
-                    if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-                        ship_y -= shipSpeed;
-                    }
-                    break;
-            }
-        }
-    }*/
-    if (rightKey) {
-        direction = 'right';
-        ship_x += shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_x -= shipSpeed;
-        }
-    } else if (leftKey) {
-        direction = 'left';
-        ship_x -= shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_x += shipSpeed;
-        }
-    } else if (upKey) {
-        direction = 'up';
-        ship_y -= shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_y += shipSpeed;
-        }
-    } else if (downKey) {
-        direction = 'down';
-        ship_y += shipSpeed;
-        if (mapCollision(ship_x, ship_y, ship_w, ship_h, 'tank')) {
-            ship_y -= shipSpeed;
-        }
-    }
+    ship_x = objGroup[1].x;
+    ship_y = objGroup[1].y;
+    direction = 'down';
 
+    var newPlayer = new dto.Player(objGroup[1].x, objGroup[1].y, 'down');
+
+    socket.emit("move player", { x: ship_x, y: ship_y, direction: direction });
 
 }
+
 
 
 

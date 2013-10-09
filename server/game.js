@@ -98,6 +98,9 @@ function onSocketConnection(client) {
 
     // Listen for bot die message
     client.on("register", onRegister);
+
+    // Listen for input message
+    client.on("input", onInput);
 };
 
 // Socket client has disconnected
@@ -124,7 +127,7 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
 
     // Broadcast updated position to connected socket clients
-    this.broadcast.to('authenticated').emit("move player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("move player", { id: data.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 // Lasers has moved
@@ -221,6 +224,12 @@ function onRegister(data) {
             that.emit("register", { result: 'register successfully' });
     });
     connection.end();
+}
+
+// Input
+function onInput(data) {
+    if (hostID == 'none') return;
+    this.broadcast.to('authenticated').emit("input", { id: this.id, move: data.move, shoot: data.shoot });
 }
 
 /**************************************************

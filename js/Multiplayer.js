@@ -39,18 +39,25 @@ var setSocketEventHandlers = function() {
 
     // Bot die message received
 	socket.on("register", onRegister);
+
+    // Input message received
+	socket.on("input", onInput);
 };
 
 // Socket connected
 function onSocketConnected() {
-	console.log("Connected to socket server");
-	console.log("ID: " + this.socket.sessionid);
+    console.log("Connected to socket server");
+    console.log("ID: " + this.socket.sessionid);
 
     //if host send a message to server
-	if (host) socket.emit("host", { host: host });
-
-	// Send local player data to the game server
-	socket.emit("new player", {x: ship_x, y: ship_y, direction: direction});
+    if (host)
+        socket.emit("host", { host: host });
+    else {
+        // Send local player data to the game server
+        socket.emit("new player", { x: ship_x, y: ship_y, direction: direction });
+        // add myself into remotePlayer
+        addNewPlayer(this.socket.sessionid, ship_x, ship_y, direction);
+    }
 };
 
 // Socket disconnected
@@ -77,7 +84,7 @@ function addNewPlayer(id, x, y, direction) {
 
 // Move player
 function onMovePlayer(data) {
-	var movePlayer = playerById(data.id);
+    var movePlayer = playerById(data.id);
 
 	// Player not found
 	if (!movePlayer) {
@@ -161,6 +168,47 @@ function onTest(data) {
 function onRegister(data) {
     var string = '<br/>' + data.result;
     document.getElementById('tile').innerHTML += string;
+};
+
+// Input
+function onInput(data) {
+    if (!host) return;
+    var player = playerById(data.id);
+    if (!player) {
+        console.log('Input: player not found');
+        return;
+    }
+    switch (data.move) {
+        case 'right':
+            player.setDirection('right');
+            player.setX(player.getX() + player.getSpeed());
+            if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
+                player.setX(player.getX() - player.getSpeed());
+            }
+            break;
+        case 'left':
+            player.setDirection('left');
+            player.setX(player.getX() - player.getSpeed());
+            if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
+                player.setX(player.getX() + player.getSpeed());
+            }
+            break;
+        case 'up':
+            player.setDirection('up');
+            player.setY(player.getY() - player.getSpeed());
+            if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
+                player.setY(player.getY() + player.getSpeed());
+            }
+            break;
+        case 'down':
+            player.setDirection('down');
+            player.setY(player.getY() + player.getSpeed());
+            if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
+                player.setY(player.getY() - player.getSpeed());
+            }
+            break;
+    }
+    socket.emit("move player", { id: data.id, x: player.getX(), y: player.getY(), direction: data.move });
 };
 
 /**************************************************

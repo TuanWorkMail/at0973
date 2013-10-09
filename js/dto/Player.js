@@ -71,6 +71,12 @@ dto.Player = function(startX, startY, direction) {
 		setSpeed: setSpeed,
 		getImage: getImage,
 		setImage: setImage,
-		draw: draw
+		getScore: getScore,
+		setScore: setScore,
+		getLive: getLive,
+		setLive: setLive,
+		getHitPoint: getHitPoint,
+		setHitPoint: setHitPoint,
+        draw: draw
 	}
 }

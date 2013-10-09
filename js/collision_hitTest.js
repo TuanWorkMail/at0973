@@ -37,7 +37,6 @@ function hitTestBot() {
             enemy_xw = bots[obj].getX() + bots[obj].getWidth();
             enemy_yh = bots[obj].getY() + bots[obj].getHeight();
 
-
             if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
                 //must emit before splice
                 socket.emit("bot die", { count: bots[obj].id });
