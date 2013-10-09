@@ -81,10 +81,7 @@ function init() {
     viewport = new Viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
     spriteSheet = new Image();
     spriteSheet.src = "map/" + tmxloader.map.tilesets[0].src;
-
     enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
-
-
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.
     //socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
@@ -114,6 +111,7 @@ function gameLoop() {
         hitTestBot();
         //shoot must behind check and move
         BotShootInterval(bots, 1);
+        hitTestPlayer();
     } else {
         drawMap();
         if (alive && gameStarted && lives > 0) {
@@ -123,7 +121,6 @@ function gameLoop() {
             drawBot();
 
             shootDestruction();
-            hitTestPlayer();
             moveShip();
             drawShip();
             drawLaser();
@@ -141,20 +138,6 @@ function gameLoop() {
     game = setTimeout(gameLoop, 1000 / fps);
 }
 
-//This simply resets the ship and enemies to their starting positions
-function reset() {
-    //where to spawn ship
-    objGroup = tmxloader.map.objectgroup['spawn'].objects;
-
-    ship_x = objGroup[1].x;
-    ship_y = objGroup[1].y;
-
-    var newPlayer = new dto.Player(objGroup[1].x, objGroup[1].y, 'down');
-
-
-    //debug
-    //console.log("Spawn: X=" + ship_x + "; Y=" + ship_y);
-}
 
 //If an arrow key is being pressed, moves the ship in the right direction
 function moveShip() {
@@ -274,58 +257,4 @@ function shipCollision() {
 }
 
 
-//This function runs whenever the player's ship hits an enemy and either subtracts a life or sets the alive variable to false if the player runs out of lives
-function checkLives() {
-  lives -= 1;
-  if (lives > 0) {
-    reset();
-  } else if (lives == 0) {
-    alive = false;
-  }
-}
 
-
-
-//After the player loses all their lives, the continue button is shown and if clicked, it resets the game and removes the event listener for the continue button
-function continueButton(e) {
-  var cursorPos = getCursorPos(e);
-  if (cursorPos.x > (width / 2) - 53 && cursorPos.x < (width / 2) + 47 && cursorPos.y > (height / 2) + 10 && cursorPos.y < (height / 2) + 50) {
-    alive = true;
-    lives = 3;
-    reset();
-    canvas.removeEventListener('click', continueButton, false);
-  }
-}
-
-
-
-//Draws the text for the score and lives on the canvas and if the player runs out of lives, it's draws the game over text and continue button as well as adding the event listener for the continue button
-function scoreTotal() {
-  ctx.font = 'bold 20px VT323';
-  ctx.fillStyle = '#fff';
-  ctx.fillText('Score: ', 10, 55);
-  ctx.fillText(score, 70, 55);
-  ctx.fillText('Lives:', 10, 30);
-  ctx.fillText(lives, 68, 30);
-		if (!gameStarted) {
-    ctx.font = 'bold 50px VT323';
-    ctx.fillText('Canvas Shooter', width / 2 - 150, height / 2);
-    ctx.font = 'bold 20px VT323';
-    ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
-    ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
-    ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
-  }
-  if (!alive) {
-    ctx.fillText('Game Over!', 245, height / 2);
-    ctx.fillRect((width / 2) - 60, (height / 2) + 10,100,40);
-    ctx.fillStyle = '#000';
-    ctx.fillText('Continue?', 250, (height / 2) + 35);
-    canvas.addEventListener('click', continueButton, false);
-  }
-}
-
-
-function gameStart() {
-  gameStarted = true;
-  canvas.removeEventListener('click', gameStart, false);
-}

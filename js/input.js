@@ -52,3 +52,14 @@ function getCursorPos(e) {
     var cursorPos = new cursorPosition(x, y);
     return cursorPos;
 }
+
+/**************************************************
+** PLAYER UPDATE
+**************************************************/
+function updatePlayer() {
+    // Update local player and check for change
+    if (rightKey || leftKey || upKey || downKey) {
+        // Send local player data to the game server
+        socket.emit("move player", { x: ship_x, y: ship_y, direction: direction });
+    }
+};

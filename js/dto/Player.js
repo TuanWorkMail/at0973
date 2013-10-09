@@ -1,16 +1,18 @@
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
-dto.Player = function(startX, startY, facing) {
-	var x = startX,
+dto.Player = function(startX, startY, direction) {
+    var x = startX,
 		y = startY,
 		id,
         width = 40,
         height = 40,
         image = new Image(),
         speed = 5,
-		//which way the ship is facing
-		direction = facing;
+		direction = direction,
+        hitPoint = 100,
+        live = 3,
+        score = 0;
 	
 	image.src = 'images/ship.png';
 
@@ -30,7 +32,13 @@ dto.Player = function(startX, startY, facing) {
         getSpeed = function () { return speed; },
         setSpeed = function (para) { speed = para; },
         getImage = function () { return image; },
-        setImage = function (para) { image = para; };
+        setImage = function (para) { image = para; },
+        getScore = function () { return score; },
+        setScore = function (para) { score = para; },
+        getLive = function () { return live; },
+        setLive = function (para) { live = para; },
+        getHitPoint = function () { return hitPoint; },
+        setHitPoint = function (para) { hitPoint = para; };
 
 	// Draw player
 	var draw = function(ctx) {

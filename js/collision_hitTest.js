@@ -29,8 +29,7 @@ function mapCollision(x, y, w, h, type) {
 
 function hitTestBot() {
     var enemy_xw,
-        enemy_yh,
-        check = false;
+        enemy_yh;
 
     for (var i = 0; i < lasers.length; i++) {
         for (var obj = 0; obj < bots.length; ++obj) {
@@ -40,7 +39,6 @@ function hitTestBot() {
 
 
             if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
-                check = true;
                 //must emit before splice
                 socket.emit("bot die", { count: bots[obj].id });
                 bots.splice(obj, 1);
@@ -50,8 +48,25 @@ function hitTestBot() {
     }
 }
 
-//Runs a couple of loops to see if any of the lasers have hit any of the enemies
 function hitTestPlayer() {
+    var ship_xw,
+        ship_yh;
+
+    for (var i = 0; i < lasers.length; i++) {
+        for (var obj = 0; obj < remotePlayers.length; ++obj) {
+
+            ship_xw = remotePlayers[obj].getX() + remotePlayers[obj].getWidth();
+            ship_yh = remotePlayers[obj].getY() + remotePlayers[obj].getHeight();
+
+            if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
+                remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - 4);
+            }
+        }
+    }
+}
+
+//Runs a couple of loops to see if any of the lasers have hit any of the enemies
+function hitTestPlayer_old() {
     var ship_xw = ship_x + ship_w,
         ship_yh = ship_y + ship_h,
         laserNewCor;

@@ -19,11 +19,10 @@
             background: #000;
         }
         .popup {
-            display: none;
-            margin: 30px auto 0;
-            position: absolute;
+            display: block;
+            position: relative;
             top: 200px;
-            right: 50%;
+            right: -50%;
             background: #666;
         }
     </style>
@@ -61,6 +60,8 @@
     <script src="js/bulletMain.js"></script>
     <script src="js/input.js"></script>
     <script src="js/lib/socket.io.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/score.js"></script>
     <script src="js/TheGame.js"></script>
     <script src="js/dto/Player.js"></script>
     <script src="js/TMX_Engine.js"></script>
@@ -95,10 +96,12 @@
             <td><input type="button" value="register" onclick="register();" /></td>
         </tr>
     </table>
-    <div class="popup" id="login">
-        <input type="text" id="Text1" value="acacacac" /><br />
-        <input type="password" id="password1" value="123456" /><br />
-        <input type="button" value="login" onclick="login();" />
+    <div style="position: absolute; right: 50%;">
+        <div class="popup" id="login">
+            <input type="text" id="Text1" value="acacacac" /><br />
+            <input type="password" id="password1" value="123456" /><br />
+            <input type="button" value="login" onclick="login();" />
+        </div>
     </div>
     <!-- Let’s get started. We only need one line of HTML: -->
     <canvas id="canvas"></canvas>

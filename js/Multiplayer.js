@@ -104,7 +104,7 @@ function onRemovePlayer(data) {
 
 	// Player not found
 	if (!removePlayer) {
-		console.log("Player not found: "+data.id);
+		console.log("Remove: Player not found: "+data.id);
 		return;
 	};
 
@@ -147,6 +147,7 @@ function onLogin(data) {
         string += 'wrong username or password';
     } else {
         string += 'UUID: ' + data.uuid;
+        document.getElementById('login').style.display = 'none';
     }
     document.getElementById('tile').innerHTML += string;
 };
@@ -204,16 +205,6 @@ function playerById(id) {
 	return false;
 };
 
-/**************************************************
-** GAME UPDATE
-**************************************************/
-function updatePlayer() {
-	// Update local player and check for change
-		if (rightKey || leftKey || upKey || downKey) {
-			// Send local player data to the game server
-			socket.emit("move player", {x: ship_x, y: ship_y, direction: direction});
-		}
-};
 
 
 
