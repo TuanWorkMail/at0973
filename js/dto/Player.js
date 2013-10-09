@@ -10,8 +10,8 @@ dto.Player = function(startX, startY, direction) {
         image = new Image(),
         speed = 5,
 		direction = direction,
-        hitPoint = 100,
-        live = 3,
+        hitPoint = 10,
+        live = 1,
         score = 0;
 	
 	image.src = 'images/ship.png';

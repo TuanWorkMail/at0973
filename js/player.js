@@ -1,8 +1,9 @@
 ﻿/// <reference path="dto/Player.js" />
 var checkHitPoint = function () {
     for (var i = 0; i < remotePlayers.length; ++i) {
-        if (remotePlayers[i].getHitPoint() < 0) {
-            checkLives(remotePlayers[i]);
+        if (remotePlayers[i].getHitPoint() < 0 && alive) {
+            console.log('player i=' + i + 'die');
+            checkLive(remotePlayers[i]);
         }
     }
 }
@@ -10,11 +11,46 @@ var checkHitPoint = function () {
 //This function runs whenever the player's ship hits an enemy and either subtracts a life or sets the alive variable to false if the player runs out of lives
 function checkLive(object) {
     object.setLive(object.getLive() - 1);
+    console.log('live: ' + object.getLive());
     if (object.getLive() > 0) {
         reset();
-    } else if (object.getLive() == 0) {
+    } else if (object.getLive() <= 0) {
         alive = false;
+        socket.emit("end", { hello: 'world' });
+        console.log('end emitted');
+
     }
+}
+
+function reset() {
+    for (var obj = 0; obj < bots.length; ++obj) {
+        socket.emit("bot die", { count: bots[obj].id });
+    }
+    bots.length = 0;
+    botCount = 0;
+    lasers.length = 0;
+    // respawn player
+    playerLength = 0;
+    var objGroup = tmxloader.map.objectgroup['spawn'].objects;
+    for (var i = 0; i < remotePlayers.length; i++) {
+        var x = objGroup[playerLength % objGroup.length].x,
+            y = objGroup[playerLength % objGroup.length].y,
+            direction;
+        if (playerLength % objGroup.length == 0)
+            direction = 'up';
+        else
+            direction = 'down';
+        remotePlayers[i].setX(x);
+        remotePlayers[i].setY(y);
+        remotePlayers[i].setDirection(direction);
+        remotePlayers[i].setHitPoint(10);
+        socket.emit("move player", { id: remotePlayers[i].getID(), x: x, y: y, direction: direction });
+        playerLength++;
+    }
+}
+
+function respawn() {
+
 }
 
 //If an arrow key is being pressed, moves the ship in the right direction

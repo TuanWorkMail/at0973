@@ -42,6 +42,9 @@ var setSocketEventHandlers = function() {
 
     // Input message received
 	socket.on("input", onInput);
+
+    // Input message received
+	socket.on("end", onEnd);
 };
 
 // Socket connected
@@ -68,7 +71,7 @@ function onNewPlayer(data) {
     if (!host) return;
 
     //where to spawn ship
-    objGroup = tmxloader.map.objectgroup['spawn'].objects;
+    var objGroup = tmxloader.map.objectgroup['spawn'].objects;
     var x = objGroup[playerLength % objGroup.length].x,
         y = objGroup[playerLength % objGroup.length].y,
         direction;
@@ -220,6 +223,11 @@ function onInput(data) {
             break;
     }
     socket.emit("move player", { id: data.id, x: player.getX(), y: player.getY(), direction: data.move });
+};
+
+// End
+function onEnd(data) {
+    alive = false;
 };
 
 /**************************************************

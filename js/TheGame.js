@@ -19,7 +19,7 @@ var canvas,
     height,
     playerLength = 0,
     tmxloader = {},
-    botsLength = 8,
+    botsLength = 2,
     bots = [],
     remoteBots = [],
     //stupid bot shoot flag
@@ -89,8 +89,10 @@ function init() {
     //socket = io.connect("125.212.217.58", { port: 8000, transports: ["websocket"] });
     // Start listening for events
     setSocketEventHandlers();
+
     //where to spawn ship
-    reset();
+    //reset();
+
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
 
@@ -111,6 +113,7 @@ function gameLoop() {
         //shoot must behind check and move
         BotShootInterval(bots, 1);
         hitTestPlayer();
+        checkHitPoint();
     } else {
         drawMap();
         if (alive && gameStarted && lives > 0) {
@@ -137,7 +140,7 @@ function gameLoop() {
 }
 
 //This simply resets the ship and enemies to their starting positions
-function reset() {
+function reset_old() {
     //where to spawn ship
     objGroup = tmxloader.map.objectgroup['spawn'].objects;
 

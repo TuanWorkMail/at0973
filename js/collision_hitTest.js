@@ -59,6 +59,8 @@ function hitTestPlayer() {
 
             if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
                 remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - 4);
+                lasers[i].isRemoved = true;
+                console.log('hp: ' + remotePlayers[obj].getHitPoint());
             }
         }
     }

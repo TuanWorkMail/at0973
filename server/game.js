@@ -101,6 +101,9 @@ function onSocketConnection(client) {
 
     // Listen for input message
     client.on("input", onInput);
+
+    // Listen for end message
+    client.on("end", onEnd);
 };
 
 // Socket client has disconnected
@@ -119,7 +122,7 @@ function onClientDisconnect() {
 // New player has joined
 function onNewPlayer(data) {
     // Broadcast new player to connected socket clients
-    this.broadcast.to('authenticated').emit("new player", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("new player", { id: this.id });
 
 };
 
@@ -230,6 +233,19 @@ function onRegister(data) {
 function onInput(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("input", { id: this.id, move: data.move, shoot: data.shoot });
+}
+
+// End
+function onEnd(data) {
+    this.broadcast.to('authenticated').emit("end", { hello: 'world' });
+
+}
+
+/**************************************************
+** PROCESS QUERY
+**************************************************/
+function queryDatabase(query, arrayOfPara) {
+
 }
 
 /**************************************************
