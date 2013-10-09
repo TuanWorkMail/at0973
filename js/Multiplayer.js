@@ -54,9 +54,7 @@ function onSocketConnected() {
         socket.emit("host", { host: host });
     else {
         // Send local player data to the game server
-        socket.emit("new player", { x: ship_x, y: ship_y, direction: direction });
-        // add myself into remotePlayer
-        addNewPlayer(this.socket.sessionid, ship_x, ship_y, direction);
+        socket.emit("new player", { hello: 'world' });
     }
 };
 
@@ -67,7 +65,20 @@ function onSocketDisconnect() {
 
 // New player
 function onNewPlayer(data) {
-    addNewPlayer(data.id,data.x,data.y,data.direction);
+    if (!host) return;
+
+    //where to spawn ship
+    objGroup = tmxloader.map.objectgroup['spawn'].objects;
+    var x = objGroup[playerLength % objGroup.length].x,
+        y = objGroup[playerLength % objGroup.length].y,
+        direction;
+    if (playerLength % objGroup.length == 0)
+        direction = 'up';
+    else
+        direction = 'down';
+    addNewPlayer(data.id, x, y, direction);
+    socket.emit("move player", { id: data.id, x: x, y: y, direction: direction });
+    playerLength++;
 };
 
 //add new player to array
