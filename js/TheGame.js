@@ -100,6 +100,9 @@ function init() {
     //stupid bot shooting
     setInterval(function() {stupidShoot=true;}, 1000 * 1);
 
+    document.getElementById('init').style.display = 'none';
+    document.getElementById('login').style.display = 'block';
+
     gameLoop();
 }
 

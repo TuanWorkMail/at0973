@@ -14,12 +14,11 @@
         }
         canvas {
             display: block;
-            margin: 30px auto 0;
-            border: 1px dashed #ccc;
+            margin: auto;
             background: #000;
         }
         .popup {
-            display: block;
+            display: none;
             position: relative;
             top: 200px;
             right: -50%;
@@ -78,6 +77,19 @@
 </head>
 
 <body>
+    <div style="position: absolute; right: 50%;">
+        <div style="position: relative; top: 50px; right: -50%; background: #fff;" id="init">
+            <input type="button" value="HOST" onclick="server();" />
+            <input type="button" value="CLIENT" onclick="client();" />
+        </div>
+        <div class="popup" id="login">
+            <input type="text" id="Text1" value="acacacac" /><br />
+            <input type="password" id="password1" value="123456" /><br />
+            <input type="button" value="login" onclick="login();" />
+        </div>
+    </div>
+    <!-- Let’s get started. We only need one line of HTML: -->
+    <canvas id="canvas"></canvas>
     <table>
         <tr>
             <td rowspan="2"><div id="tile"></div></td>
@@ -96,14 +108,5 @@
             <td><input type="button" value="register" onclick="register();" /></td>
         </tr>
     </table>
-    <div style="position: absolute; right: 50%;">
-        <div class="popup" id="login">
-            <input type="text" id="Text1" value="acacacac" /><br />
-            <input type="password" id="password1" value="123456" /><br />
-            <input type="button" value="login" onclick="login();" />
-        </div>
-    </div>
-    <!-- Let’s get started. We only need one line of HTML: -->
-    <canvas id="canvas"></canvas>
 </body>
 </html>

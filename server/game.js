@@ -167,19 +167,21 @@ function onLogin(data) {
     connection.connect();
 
     var query = connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
-        if (err) throw err;
-        //debug
-        //util.log(query.sql);
-        if (rows.length == 0) {
+        if (err) util.log(err);
+        else {
             //debug
-            //util.log('wrong username or password');
-            that.emit("login", { uuid: 'failed' });
-        } else {
-            //debug
-            //util.log('user logon: ' + rows[0].Username);
-            //util.log(helper.createUUID());
-            that.emit("login", { uuid: helper.createUUID() });
-            that.join('authenticated');
+            //util.log(query.sql);
+            if (rows.length == 0) {
+                //debug
+                //util.log('wrong username or password');
+                that.emit("login", { uuid: 'failed' });
+            } else {
+                //debug
+                //util.log('user logon: ' + rows[0].Username);
+                //util.log(helper.createUUID());
+                that.emit("login", { uuid: helper.createUUID() });
+                that.join('authenticated');
+            }
         }
     });
 
