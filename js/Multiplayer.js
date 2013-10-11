@@ -43,8 +43,13 @@ var setSocketEventHandlers = function() {
     // Input message received
 	socket.on("input", onInput);
 
-    // Input message received
-	socket.on("end", onEnd);
+    // End message received
+	socket.on("end match", onEndMatch);
+
+    // Host message received
+    socket.on("host", onHost);
+
+    socket.on("temporary message", onTemp);
 };
 
 // Socket connected
@@ -53,12 +58,14 @@ function onSocketConnected() {
     console.log("ID: " + this.socket.sessionid);
 
     //if host send a message to server
+    /*
     if (host)
         socket.emit("host", { host: host });
     else {
         // Send local player data to the game server
         socket.emit("new player", { hello: 'world' });
     }
+    */
 };
 
 // Socket disconnected
@@ -79,21 +86,28 @@ function onNewPlayer(data) {
         direction = 'up';
     else
         direction = 'down';
-    addNewPlayer(data.id, x, y, direction);
-    socket.emit("move player", { id: data.id, x: x, y: y, direction: direction });
+    var player = addNewPlayer(data.id, data.username, x, y, direction);
+    player.setUserID(data.userID);
+    console.log('new player userID: '+data.userID+' and username: '+data.username);
+    socket.emit("move player", { id: data.id, username: data.username, x: x, y: y, direction: direction });
     playerLength++;
 };
 
 //add new player to array
-function addNewPlayer(id, x, y, direction) {
+function addNewPlayer(id, username, x, y, direction) {
     console.log("New player connected: " + id);
 
     // Initialise the new player
     var newPlayer = new dto.Player(x, y, direction);
-    newPlayer.setID(id);
+    newPlayer.setSocketID(id);
+    newPlayer.setUsername(username);
 
     // Add new player to the remote players array
     remotePlayers.push(newPlayer);
+
+    for(var i=0;i<remotePlayers.length;i++)
+        if(remotePlayers[i].getUsername()==username)
+            return remotePlayers[i];
 }
 
 // Move player
@@ -102,7 +116,7 @@ function onMovePlayer(data) {
 
 	// Player not found
 	if (!movePlayer) {
-	    addNewPlayer(data.id, data.x, data.y, data.direction);
+	    addNewPlayer(data.id, data.username, data.x, data.y, data.direction);
 		return;
 	};
 
@@ -167,7 +181,8 @@ function onLogin(data) {
     if (data.uuid == 'failed') {
         string += 'wrong username or password';
     } else {
-        string += 'UUID: ' + data.uuid;
+        if(!host) socket.emit("new player", { username: data.username, userID: data.userID });
+        string += 'login successfully';
         document.getElementById('login').style.display = 'none';
     }
     document.getElementById('tile').innerHTML += string;
@@ -222,12 +237,24 @@ function onInput(data) {
             }
             break;
     }
-    socket.emit("move player", { id: data.id, x: player.getX(), y: player.getY(), direction: data.move });
+    socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: data.move });
 };
 
 // End
-function onEnd(data) {
+function onEndMatch(data) {
     alive = false;
+};
+
+// Host
+function onHost(data) {
+    if(host != 'none') return;
+    host = data.host;
+    gameLoop();
+};
+
+function onTemp(data) {
+    if(!host) return;
+
 };
 
 /**************************************************
@@ -265,11 +292,21 @@ function createRemoteBot() {
 function playerById(id) {
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
-		if (remotePlayers[i].getID() == id)
+		if (remotePlayers[i].getSocketID() == id)
 			return remotePlayers[i];
 	};
 	
 	return false;
+};
+// Find player by username
+function playerByUsername(username) {
+    var i;
+    for (i = 0; i < remotePlayers.length; i++) {
+        if (remotePlayers[i].getUsername() == username)
+            return remotePlayers[i];
+    };
+
+    return false;
 };
 
 

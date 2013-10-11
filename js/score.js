@@ -5,6 +5,7 @@ function continueButton(e) {
     var cursorPos = getCursorPos(e);
     if (cursorPos.x > (width / 2) - 53 && cursorPos.x < (width / 2) + 47 && cursorPos.y > (height / 2) + 10 && cursorPos.y < (height / 2) + 50) {
         alive = true;
+        continueLoop = true;
         lives = 3;
         reset();
         canvas.removeEventListener('click', continueButton, false);
@@ -30,10 +31,10 @@ function scoreTotal() {
         ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
     }
     if (!alive) {
-        ctx.fillText('Game Over!', 245, height / 2);
+        ctx.fillText('Game Over!', (width / 2) - 60, height / 2);
         ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
         ctx.fillStyle = '#000';
-        ctx.fillText('Continue?', 250, (height / 2) + 35);
+        ctx.fillText('Continue?', (width / 2) - 60, (height / 2) + 35);
         canvas.addEventListener('click', continueButton, false);
     }
 }

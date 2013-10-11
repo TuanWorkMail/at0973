@@ -1,8 +1,7 @@
-﻿/// <reference path="dto/Player.js" />
-var checkHitPoint = function () {
+﻿var checkHitPoint = function () {
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() < 0 && alive) {
-            console.log('player i=' + i + 'die');
+            console.log('player ' + remotePlayers[i].getUsername() + ' die');
             checkLive(remotePlayers[i]);
         }
     }
@@ -16,9 +15,14 @@ function checkLive(object) {
         reset();
     } else if (object.getLive() <= 0) {
         alive = false;
-        socket.emit("end", { hello: 'world' });
-        console.log('end emitted');
-
+        continueLoop = false;
+        var id = [], score = [];
+        for(var i=0;i<2;i++) {
+            id[i]=remotePlayers[i].getUserID();
+            score[i]=remotePlayers[i].getLive();
+        }
+        socket.emit("end match", { id1: id[0], id2:id[1], score1: score[0], score2: score[1] });
+        console.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
     }
 }
 
@@ -44,7 +48,7 @@ function reset() {
         remotePlayers[i].setY(y);
         remotePlayers[i].setDirection(direction);
         remotePlayers[i].setHitPoint(10);
-        socket.emit("move player", { id: remotePlayers[i].getID(), x: x, y: y, direction: direction });
+        socket.emit("move player", { id: remotePlayers[i].getSocketID(), username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
         playerLength++;
     }
 }

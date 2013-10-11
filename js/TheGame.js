@@ -1,7 +1,7 @@
 //Now, let�s get onto the part that will make this game run, the JavaScript. 
 //First, we�ll get our ship working, so we need to set up some variables.
 
-//window.onload = init;
+window.onload = init;
 
 /************************
 **** NAMESPACE
@@ -15,6 +15,8 @@ var canvas,
     enemySpeed = 5,
     fps = 60,
     ship_w = 40, ship_h = 40,
+    host = 'none',
+    continueLoop = true,
     width,
     height,
     playerLength = 0,
@@ -103,21 +105,24 @@ function init() {
     document.getElementById('init').style.display = 'none';
     document.getElementById('login').style.display = 'block';
 
-    gameLoop();
+    //gameLoop();
 }
 
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
+    if (continueLoop) {
+
     clearCanvas();
     moveLaser();
-    if (host) {
+    if (host && remotePlayers.length==2) {
         moveBot();
         hitTestBot();
         //shoot must behind check and move
         BotShootInterval(bots, 1);
         hitTestPlayer();
         checkHitPoint();
-    } else {
+    }
+    if(!host) {
         drawMap();
         if (alive && gameStarted && lives > 0) {
             //shipCollision();
@@ -140,6 +145,7 @@ function gameLoop() {
     }
     scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
+    }
 }
 
 //This simply resets the ship and enemies to their starting positions

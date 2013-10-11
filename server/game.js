@@ -67,7 +67,15 @@ var setEventHandlers = function () {
 
 // New socket connection
 function onSocketConnection(client) {
-    util.log("New player has connected: " + client.id);
+    if(hostID=='none') {
+        hostID = client.id;
+        this.emit("host", { host: true });
+        client.join('authenticated');
+        util.log('remote host connected, id: '+client.id);
+    } else {
+        this.emit("host", { host: false });
+        util.log("New player has connected: " + client.id);
+    }
 
     // Listen for client disconnected
     client.on("disconnect", onClientDisconnect);
@@ -103,7 +111,7 @@ function onSocketConnection(client) {
     client.on("input", onInput);
 
     // Listen for end message
-    client.on("end", onEnd);
+    client.on("end match", onEndMatch);
 };
 
 // Socket client has disconnected
@@ -122,15 +130,15 @@ function onClientDisconnect() {
 // New player has joined
 function onNewPlayer(data) {
     // Broadcast new player to connected socket clients
-    this.broadcast.to('authenticated').emit("new player", { id: this.id });
+    this.broadcast.to('authenticated').emit("new player", { id: this.id, userID: data.userID, username: data.username });
 
 };
 
 // Player has moved
 function onMovePlayer(data) {
-
+    if(hostID!=this.id) util.log('warning: move player send by player, not host');
     // Broadcast updated position to connected socket clients
-    this.broadcast.to('authenticated').emit("move player", { id: data.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("move player", { id: data.id, username: data.username, x: data.x, y: data.y, direction: data.direction });
 };
 
 // Lasers has moved
@@ -174,12 +182,13 @@ function onLogin(data) {
             if (rows.length == 0) {
                 //debug
                 //util.log('wrong username or password');
-                that.emit("login", { uuid: 'failed' });
+                that.emit("login", { username: 'failed' });
             } else {
                 //debug
                 //util.log('user logon: ' + rows[0].Username);
                 //util.log(helper.createUUID());
-                that.emit("login", { uuid: helper.createUUID() });
+                that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
+                //that.broadcast.to('authenticated').emit("temporary message", { userID: rows[0].ID, uuid: helper.createUUID() });
                 that.join('authenticated');
             }
         }
@@ -238,9 +247,37 @@ function onInput(data) {
 }
 
 // End
-function onEnd(data) {
-    this.broadcast.to('authenticated').emit("end", { hello: 'world' });
+function onEndMatch(data) {
+    this.broadcast.to('authenticated').emit("end match", { hello: 'world' });
+    var mysql = require('mysql'),
+        connection = mysql.createConnection({
+            host: 'localhost',
+            port: '3306',
+            user: 'root',
+            password: '',
+            database: 'tank5'
+        });
 
+    var that = this,
+        wonID,
+        point = data.score1-data.score2;
+
+    connection.connect();
+
+    if(data.score1-data.score2>0)
+        wonID= data.id1;
+    else
+        wonID=data.id2;
+
+    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+
+    connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+
+    connection.end();
 }
 
 /**************************************************
