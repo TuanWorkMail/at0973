@@ -16,6 +16,7 @@ var canvas,
     fps = 60,
     ship_w = 40, ship_h = 40,
     host = 'none',
+    session = [],
     continueLoop = true,
     width,
     height,
@@ -112,7 +113,6 @@ function init() {
 function gameLoop() {
     if (continueLoop) {
 
-    clearCanvas();
     moveLaser();
     if (host && remotePlayers.length==2) {
         moveBot();
@@ -123,6 +123,7 @@ function gameLoop() {
         checkHitPoint();
     }
     if(!host) {
+        clearCanvas();
         drawMap();
         if (alive && gameStarted && lives > 0) {
             //shipCollision();
@@ -142,8 +143,8 @@ function gameLoop() {
             //updatePlayer();
 
         }
+        scoreTotal();
     }
-    scoreTotal();
     game = setTimeout(gameLoop, 1000 / fps);
     }
 }
