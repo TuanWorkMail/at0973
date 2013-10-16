@@ -12,10 +12,10 @@ function checkLive(object) {
     object.setLive(object.getLive() - 1);
     console.log('live: ' + object.getLive());
     if (object.getLive() > 0) {
-        reset();
+        reset('');
     } else if (object.getLive() <= 0) {
-        alive = false;
-        continueLoop = false;
+        //alive = false;
+        //continueLoop = false;
         var id = [], score = [];
         for(var i=0;i<2;i++) {
             id[i]=remotePlayers[i].getUserID();
@@ -23,15 +23,16 @@ function checkLive(object) {
         }
         socket.emit("end match", { id1: id[0], id2:id[1], score1: score[0], score2: score[1] });
         console.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
+        reset('end match');
     }
 }
 
-function reset() {
+function reset(para) {
     for (var obj = 0; obj < bots.length; ++obj) {
         socket.emit("bot die", { count: bots[obj].id });
     }
     bots.length = 0;
-    botCount = 0;
+    whereSpawn = 0;
     lasers.length = 0;
     // respawn player
     playerLength = 0;
@@ -48,6 +49,7 @@ function reset() {
         remotePlayers[i].setY(y);
         remotePlayers[i].setDirection(direction);
         remotePlayers[i].setHitPoint(10);
+        if(para=='end match') remotePlayers[i].reset();
         socket.emit("move player", { id: remotePlayers[i].getSocketID(), username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
         playerLength++;
     }

@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-function Bullet(x, y, direction, isRemoved) {
+function Bullet(id, x, y, direction, isRemoved) {
     /*
     this.x = x;
     this.y = y;
@@ -18,6 +18,8 @@ function Bullet(x, y, direction, isRemoved) {
         direction = direction,
         isRemoved = isRemoved;
 
+    function getID() { return id; }
+    function setID(para) { id = para; }
     function getX() { return x; }
     function setX(para) { x = para; }
     function getY() { return y; }
@@ -28,6 +30,8 @@ function Bullet(x, y, direction, isRemoved) {
     function setIsRemoved(para) { isRemoved = para; }
 
     return {
+        getID: getID,
+        setID: setID,
         getX: getX,
         setX: setX,
         getY: getY,

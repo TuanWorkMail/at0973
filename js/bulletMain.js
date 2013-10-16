@@ -9,9 +9,10 @@
 //input: x,y,direction of the bullet
 //push new bullet into array and emit to server
 function shooting(x,y,direction) {
-    var newBullet = new Bullet(x, y, direction, false);
+    var id = createUUID('xxxx');
+    var newBullet = new Bullet(id, x, y, direction, false);
     lasers.push(newBullet);
-    socket.emit("new lasers", { x: x, y: y, direction: direction });
+    socket.emit("new lasers", { id: id, x: x, y: y, direction: direction });
 }
 
 //If there are lasers in the lasers array, then this will draw them on the canvas

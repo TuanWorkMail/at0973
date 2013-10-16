@@ -74,7 +74,6 @@ function onSocketConnection(client) {
         util.log('remote host connected, id: '+client.id);
     } else {
         this.emit("host", { host: false });
-        util.log("New player has connected: " + client.id);
     }
 
     // Listen for client disconnected
@@ -116,7 +115,6 @@ function onSocketConnection(client) {
 
 // Socket client has disconnected
 function onClientDisconnect() {
-    util.log("Player has disconnected: " + this.id);
 
     if (this.id == hostID) {
         hostID = 'none';
@@ -144,7 +142,7 @@ function onMovePlayer(data) {
 // Lasers has moved
 function onNewLasers(data) {
     // Broadcast updated position to connected socket clients
-    this.broadcast.to('authenticated').emit("new lasers", { id: this.id, x: data.x, y: data.y, direction: data.direction });
+    this.broadcast.to('authenticated').emit("new lasers", { id: data.id, x: data.x, y: data.y, direction: data.direction });
 };
 
 //broadcast bot
@@ -248,7 +246,7 @@ function onInput(data) {
 
 // End
 function onEndMatch(data) {
-    this.broadcast.to('authenticated').emit("end match", { hello: 'world' });
+    //this.broadcast.to('authenticated').emit("end match", { hello: 'world' });
     var mysql = require('mysql'),
         connection = mysql.createConnection({
             host: 'localhost',
@@ -266,8 +264,12 @@ function onEndMatch(data) {
 
     if(data.score1-data.score2>0)
         wonID= data.id1;
-    else
+    else if(data.score2-data.score1>0)
         wonID=data.id2;
+    else {
+        util.log('no winner specify, app error, not stored on database');
+        return;
+    }
 
     connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
         if (err) util.log(err);

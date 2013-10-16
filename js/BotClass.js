@@ -3,7 +3,7 @@
 
 
 	
-var botCount = 0,
+var
     pathStart,
     pathStartX,
     pathStartY,
@@ -45,16 +45,15 @@ function createBot() {
         whereSpawn = 0;
     }
     while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
-        botCount++;
         // Initialise the new bot
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (botCount % 4 == 0) {
-            newBot = new Bot(botCount, x, y, 'smart');
+        if (whereSpawn % 4 == 0) {
+            newBot = new Bot(whereSpawn, x, y, 'smart');
             newBot.pathFound = botRandomPath(newBot);
         } else {
-            newBot = new Bot(botCount, x, y, 'dumb');
+            newBot = new Bot(whereSpawn, x, y, 'dumb');
         }
         // Add new player to the remote players array
         bots.push(newBot);

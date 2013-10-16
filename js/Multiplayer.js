@@ -129,7 +129,7 @@ function onMovePlayer(data) {
 // Move lasers
 function onNewLasers(data) {
 	//add new lasers
-    var newBullet = new Bullet(data.x, data.y, data.direction, false);
+    var newBullet = new Bullet(data.id, data.x, data.y, data.direction, false);
     lasers.push(newBullet);
 };
 

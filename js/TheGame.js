@@ -114,7 +114,8 @@ function gameLoop() {
     if (continueLoop) {
 
     moveLaser();
-    if (host && remotePlayers.length==2) {
+    if (host && remotePlayers.length>1) {
+
         moveBot();
         hitTestBot();
         //shoot must behind check and move

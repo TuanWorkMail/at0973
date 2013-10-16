@@ -61,6 +61,10 @@ dto.Player = function(startX, startY, direction) {
 			ctx.drawImage(ship_down, x, y);
 		}
 	};
+    // reset live
+    var reset = function() {
+        live = 2;
+    }
 
 	// Define which variables and methods can be accessed
 	return {
@@ -92,6 +96,7 @@ dto.Player = function(startX, startY, direction) {
 		setLive: setLive,
 		getHitPoint: getHitPoint,
 		setHitPoint: setHitPoint,
-        draw: draw
+        draw: draw,
+        reset: reset,
 	}
 }
