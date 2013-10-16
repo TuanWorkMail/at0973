@@ -55,6 +55,40 @@ function reset(para) {
     }
 }
 
+function movingPlayer() {
+    for(var i = 0;i < remotePlayers.length; i++) {
+        if(remotePlayers[i].getMoving())
+        switch (remotePlayers[i].getDirection()) {
+            case 'right':
+                remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                    remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
+                }
+                break;
+            case 'left':
+                remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                    remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
+                }
+                break;
+            case 'up':
+                remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                    remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
+                }
+                break;
+            case 'down':
+                remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                    remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
+                }
+                break;
+            default :
+                console.log('movingPlayer: un-recognized direction');
+        }
+    }
+}
+
 function respawn() {
 
 }

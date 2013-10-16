@@ -111,6 +111,15 @@ function onSocketConnection(client) {
 
     // Listen for end message
     client.on("end match", onEndMatch);
+
+    // Listen for key down message
+    client.on("key down", onKeyDown);
+
+    // Listen for moving player message
+    client.on("moving player", onMovingPlayer);
+
+    // Listen for key up message
+    client.on("key up", onKeyUp);
 };
 
 // Socket client has disconnected
@@ -280,6 +289,23 @@ function onEndMatch(data) {
     });
 
     connection.end();
+}
+
+// Key Down
+function onKeyDown(data) {
+    if (hostID == 'none') return;
+    this.broadcast.to('authenticated').emit("key down", { id: this.id, move: data.move, shoot: data.shoot });
+}
+
+// Moving player
+function onMovingPlayer(data) {
+    this.broadcast.to('authenticated').emit("moving player", { id: data.id, direction: data.direction });
+}
+
+// Key Down
+function onKeyUp(data) {
+    if (hostID == 'none') return;
+    this.broadcast.to('authenticated').emit("key up", { id: this.id });
 }
 
 /**************************************************

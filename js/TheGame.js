@@ -109,11 +109,39 @@ function init() {
     //gameLoop();
 }
 
+//BEGIN requestAnimationFrame polyfill
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+            || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+//END requestAnimationFrame polyfill
+
 //The main function of the game, it calls all the other functions needed to make the game run
 function gameLoop() {
     if (continueLoop) {
 
     moveLaser();
+    movingPlayer();
     if (host && remotePlayers.length>1) {
 
         moveBot();
@@ -133,7 +161,6 @@ function gameLoop() {
             drawBot();
 
             shootDestruction();
-            //moveShip();
             //drawShip();
             drawLaser();
             // Draw the remote players
@@ -146,8 +173,9 @@ function gameLoop() {
         }
         scoreTotal();
     }
-    game = setTimeout(gameLoop, 1000 / fps);
     }
+    //var game = setTimeout(gameLoop, 1000 / fps);
+    requestAnimationFrame(gameLoop);
 }
 
 //This simply resets the ship and enemies to their starting positions

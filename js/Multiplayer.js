@@ -49,6 +49,15 @@ var setSocketEventHandlers = function() {
     // Host message received
     socket.on("host", onHost);
 
+    // Key down message received
+    socket.on("key down", onKeyDown);
+
+    // Moving player message received
+    socket.on("moving player", onMovingPlayer);
+
+    // Key up message received
+    socket.on("key up", onKeyUp);
+
     socket.on("temporary message", onTemp);
 };
 
@@ -124,6 +133,7 @@ function onMovePlayer(data) {
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
 	movePlayer.setDirection(data.direction);
+    movePlayer.setMoving(false);
 };
 
 // Move lasers
@@ -250,6 +260,56 @@ function onHost(data) {
     if(host != 'none') return;
     host = data.host;
     gameLoop();
+};
+
+// Key Down
+function onKeyDown(data) {
+    if (!host) return;
+    var player = playerById(data.id);
+    if (!player) {
+        console.log('key down: player not found');
+        return;
+    }
+    switch (data.move) {
+        case 'right':
+            player.setDirection('right');
+            break;
+        case 'left':
+            player.setDirection('left');
+            break;
+        case 'up':
+            player.setDirection('up');
+            break;
+        case 'down':
+            player.setDirection('down');
+            break;
+    }
+    player.setMoving(true);
+    socket.emit("moving player", { id: data.id, direction: data.move });
+};
+
+// Moving player
+function onMovingPlayer(data) {
+    if(host) return;
+    var player = playerById(data.id);
+    if (!player) {
+        console.log('Moving: player not found');
+        return;
+    }
+    player.setDirection(data.direction);
+    player.setMoving(true);
+};
+
+// Key Up
+function onKeyUp(data) {
+    if (!host) return;
+    var player = playerById(data.id);
+    if (!player) {
+        console.log('key up: player not found');
+        return;
+    }
+    player.setMoving(false);
+    socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: player.getDirection() });
 };
 
 function onTemp(data) {

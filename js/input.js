@@ -1,6 +1,6 @@
 ﻿//Checks to see which key has been pressed and either to move the ship or fire a laser
 function keyDown(e) {
-    var move, shoot;
+    var move, shoot = false;
     if (e.keyCode == 39) {
         rightKey = true;
         move = 'right';
@@ -26,7 +26,8 @@ function keyDown(e) {
             shooting(ship_x - 1, ship_y + ship_h / 2, direction);
         }
     }
-    socket.emit("input", { move: move, shoot: shoot });
+    //socket.emit("input", { move: move, shoot: shoot });
+    socket.emit("key down", { move: move, shoot: shoot });
 }
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
@@ -40,6 +41,7 @@ function keyUp(e) {
     } else if (e.keyCode == 40) {
         downKey = false;
     }
+    socket.emit("key up");
 }
 
 //holds the cursors position

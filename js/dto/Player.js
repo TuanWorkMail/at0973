@@ -15,6 +15,7 @@ dto.Player = function(startX, startY, direction) {
         speed = 5,
         hitPoint = 10,
         live = 2,
+        moving = false;
         score = 0;
 	
 	image.src = 'images/ship.png';
@@ -46,6 +47,8 @@ dto.Player = function(startX, startY, direction) {
         setScore = function (para) { score = para; },
         getLive = function () { return live; },
         setLive = function (para) { live = para; },
+        getMoving = function () { return moving; },
+        setMoving = function (para) { moving = para; },
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para; };
 
@@ -68,6 +71,9 @@ dto.Player = function(startX, startY, direction) {
 
 	// Define which variables and methods can be accessed
 	return {
+        draw: draw,
+        reset: reset,
+
 		getX: getX,
 		getY: getY,
 		setX: setX,
@@ -96,7 +102,7 @@ dto.Player = function(startX, startY, direction) {
 		setLive: setLive,
 		getHitPoint: getHitPoint,
 		setHitPoint: setHitPoint,
-        draw: draw,
-        reset: reset,
+        getMoving: getMoving,
+        setMoving: setMoving,
 	}
 }
