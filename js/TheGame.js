@@ -10,7 +10,7 @@ window.dto = {};
 
 var canvas,
     ctx,
-    whichMap = "classic1",
+    whichMap = "classic2",
     shipSpeed = 5,
     enemySpeed = 5,
     fps = 60,
@@ -18,6 +18,7 @@ var canvas,
     host = 'none',
     session = [],
     continueLoop = true,
+    lastTick = Date.now(),
     width,
     height,
     playerLength = 0,
@@ -109,6 +110,14 @@ function init() {
     //gameLoop();
 }
 
+(function() {
+    if (!Date.now) {
+        Date.now = function now() {
+            return new Date().getTime();
+        };
+    }
+}());
+
 //BEGIN requestAnimationFrame polyfill
 (function() {
     var lastTime = 0;
@@ -121,7 +130,7 @@ function init() {
 
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
+            var currTime = Date.now();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
             var id = window.setTimeout(function() { callback(currTime + timeToCall); },
                 timeToCall);
@@ -141,7 +150,23 @@ function gameLoop() {
     if (continueLoop) {
 
     moveLaser();
-    movingPlayer();
+    var now = Date.now(),
+        delta = now - lastTick,
+        fixedDelta = 1000/60,
+        loop;
+    //console.log('number of loop: '+Math.floor(delta/fixedDelta));
+    //console.log('fps: '+1000/delta);
+    var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
+    if(number>0.5)
+        loop = Math.floor(delta/fixedDelta) + 1;
+    else
+        loop = Math.floor(delta/fixedDelta);
+    for(var i=0;i<loop;i++) {
+        movingPlayer();
+    }
+    //console.log('delta: '+delta);
+    lastTick = Date.now();
+    shootDestruction();
     if (host && remotePlayers.length>1) {
 
         moveBot();
@@ -160,8 +185,7 @@ function gameLoop() {
             //COMBINE BOTS AND REMOTEBOTS, NOW DEPEND ON HOST
             drawBot();
 
-            shootDestruction();
-            //drawShip();
+            drawShip();
             drawLaser();
             // Draw the remote players
             for (var i = 0; i < remotePlayers.length; i++) {
