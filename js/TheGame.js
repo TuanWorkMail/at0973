@@ -10,6 +10,10 @@ window.dto = {};
 
 var canvas,
     ctx,
+    canvasBg,
+    contextBg,
+    canvasOverhead,
+    contextOverhead,
     whichMap = "classic2",
     shipSpeed = 5,
     enemySpeed = 5,
@@ -59,10 +63,30 @@ function init() {
     tmxloader.load("map/" + whichMap + ".tmx");
     width = tmxloader.map.width * tmxloader.map.tileWidth;
     height = tmxloader.map.height * tmxloader.map.tileHeight;
-    canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
-    canvas.setAttribute("width", width);
-    canvas.setAttribute("height", height);
+    // Create a canvas and draw something in it.
+    canvas = document.createElement("canvas");
+    ctx = canvas.getContext("2d");
+    document.body.appendChild(canvas);
+    canvas.style.position = 'absolute';
+    canvas.style.zIndex = 1;
+    canvas.width = width;
+    canvas.height = height;
+    canvasBg = document.createElement("canvas");
+    contextBg = canvasBg.getContext("2d");
+    document.body.appendChild(canvasBg);
+    canvasBg.style.position = 'absolute';
+    canvasBg.style.zIndex = 0;
+    canvasBg.width = width;
+    canvasBg.height = height;
+    contextBg.fillStyle = "#000";
+    contextBg.fillRect(0, 0, width, height);
+    canvasOverhead = document.createElement("canvas");
+    contextOverhead = canvasOverhead.getContext("2d");
+    document.body.appendChild(canvasOverhead);
+    canvasOverhead.style.position = 'absolute';
+    canvasOverhead.style.zIndex = 2;
+    canvasOverhead.width = width;
+    canvasOverhead.height = height;
     ship = new Image();
     ship.src = 'images/ship.png';
     ship_right = new Image();
@@ -82,7 +106,7 @@ function init() {
     //user input event listener
     document.addEventListener('keydown', keyDown, false);
     document.addEventListener('keyup', keyUp, false);
-    canvas.addEventListener('click', gameStart, false);
+    canvasOverhead.addEventListener('click', gameStart, false);
     viewport = new Viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
     spriteSheet = new Image();
     spriteSheet.src = "map/" + tmxloader.map.tilesets[0].src;
@@ -99,14 +123,10 @@ function init() {
 
     ////array of coordinate the bot can randomly go to
     botDestination = tmxloader.map.objectgroup['destination'].objects;
-
-
     //stupid bot shooting
     setInterval(function() {stupidShoot=true;}, 1000 * 1);
-
-    document.getElementById('init').style.display = 'none';
-    document.getElementById('login').style.display = 'block';
-
+    drawMap();
+    temporaryDrawOverhead();
     //gameLoop();
 }
 
@@ -155,7 +175,7 @@ function gameLoop() {
         fixedDelta = 1000/60,
         loop;
     //console.log('number of loop: '+Math.floor(delta/fixedDelta));
-    //console.log('fps: '+1000/delta);
+    document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
     var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
     if(number>0.5)
         loop = Math.floor(delta/fixedDelta) + 1;
@@ -178,7 +198,7 @@ function gameLoop() {
     }
     if(!host) {
         clearCanvas();
-        drawMap();
+        //drawMap();
         if (alive && gameStarted && lives > 0) {
             //shipCollision();
 

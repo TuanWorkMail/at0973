@@ -7,22 +7,18 @@
     <link href="http://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <!-- And a little bit of CSS so we can see what’s going on: -->
     <style>
-        body {
-            padding: 0;
-            margin: 0;
-            background: #666;
-        }
-        canvas {
-            display: block;
-            margin: auto;
-            background: #000;
+        .centerPlaceholder {
+            position: absolute;
+            top: 0px;
+            right: 50%;
         }
         .popup {
-            display: none;
             position: relative;
             top: 200px;
             right: -50%;
             background: #666;
+            z-index: 10;
+            display: block;
         }
     </style>
 
@@ -77,20 +73,15 @@
 </head>
 
 <body>
-    <div style="position: absolute; right: 50%;">
-        <div style="position: relative; top: 50px; right: -50%; background: #fff;" id="init">
-            <input type="button" value="HOST" onclick="server();" />
-            <input type="button" value="CLIENT" onclick="client();" />
-        </div>
+    <div class="centerPlaceholder">
         <div class="popup" id="login">
             <input type="text" id="username" value="u1" /><br />
             <input type="password" id="password" value="12" /><br />
             <input type="button" value="login" onclick="login();" />
         </div>
     </div>
-    <!-- Let’s get started. We only need one line of HTML: -->
-    <canvas id="canvas"></canvas>
-    <table>
+    <span id="showfps" style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10">fps: 60</span>
+    <table style="display: none; position: absolute">
         <tr>
             <td rowspan="2"><div id="tile"></div></td>
             <td></td>
