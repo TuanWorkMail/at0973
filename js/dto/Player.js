@@ -15,8 +15,9 @@ dto.Player = function(startX, startY, direction) {
         speed = 5,
         hitPoint = 10,
         live = 2,
-        moving = false;
-        score = 0;
+        moving = false,
+        score = 0,
+        imageUp, imageDown, imageLeft, imageRight;
 	
 	image.src = 'images/ship.png';
 

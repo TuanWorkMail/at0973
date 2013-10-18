@@ -169,7 +169,6 @@ function init() {
 function gameLoop() {
     if (continueLoop) {
 
-    moveLaser();
     var now = Date.now(),
         delta = now - lastTick,
         fixedDelta = 1000/60,
@@ -183,6 +182,7 @@ function gameLoop() {
         loop = Math.floor(delta/fixedDelta);
     for(var i=0;i<loop;i++) {
         movingPlayer();
+        moveLaser();
     }
     //console.log('delta: '+delta);
     lastTick = Date.now();
