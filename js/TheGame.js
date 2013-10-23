@@ -48,6 +48,8 @@ var canvas,
     viewport,
     viewport_x = 0,
     viewport_y = 0,
+    spriteSheet,
+    spriteSheet2,
     ship, ship_right, ship_left, ship_down,
     bullet, bullet_right, bullet_left, bullet_down,
     ship_x, ship_y, 
@@ -110,6 +112,8 @@ function init() {
     viewport = new Viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
     spriteSheet = new Image();
     spriteSheet.src = "map/" + tmxloader.map.tilesets[0].src;
+    spriteSheet2 = new Image();
+    spriteSheet2.src = "images/tank5.png";
     enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
     //io.connect will connect you to a Socket.IO server by using 
     //the first parameter as the server address.

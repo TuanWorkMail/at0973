@@ -56,13 +56,17 @@ dto.Player = function(startX, startY, direction) {
 	// Draw player
 	var draw = function(ctx) {
 		if (direction=='right') {
-			ctx.drawImage(ship_right, x, y);
+			//ctx.drawImage(ship_right, x, y);
+            drawTile(1, x, y);
 		} else if (direction=='left') {
-			ctx.drawImage(ship_left, x, y);
+			//ctx.drawImage(ship_left, x, y);
+            drawTile(4, x, y);
 		} if (direction=='up') {
-			ctx.drawImage(ship, x, y);
+			//ctx.drawImage(ship, x, y);
+            drawTile(3, x, y);
 		} else if (direction=='down') {
-			ctx.drawImage(ship_down, x, y);
+			//ctx.drawImage(ship_down, x, y);
+            drawTile(2, x, y);
 		}
 	};
     // reset live

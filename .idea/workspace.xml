@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="e1dad627-bca4-4bb4-b158-6a1866026876" name="Default" comment="">
+      <change type="DELETED" beforePath="D:\stuff\svn\at0973\trunk\js\dto\sessionState.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/images/tank5.png" afterPath="$PROJECT_DIR$/images/tank5.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/dto/Player.js" afterPath="$PROJECT_DIR$/js/dto/Player.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/TheGame.js" afterPath="$PROJECT_DIR$/js/TheGame.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/draw.js" afterPath="$PROJECT_DIR$/js/draw.js" />
     </list>
@@ -10,8 +13,8 @@
     <file path="/player.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381899897066" ignored="false" />
     <file path="/game.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381898221577" ignored="false" />
     <file path="/Multiplayer.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381907416208" ignored="false" />
-    <file path="/TheGame.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382068077901" ignored="false" />
-    <file path="/Player.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382082102927" ignored="false" />
+    <file path="/TheGame.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382496760467" ignored="false" />
+    <file path="/Player.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382496900782" ignored="false" />
     <file path="/index.htm" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381467301422" ignored="false" />
     <file path="/score.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381478397601" ignored="false" />
     <file path="/session.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381813404384" ignored="false" />
@@ -20,7 +23,7 @@
     <file path="/bulletMain.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381826981780" ignored="false" />
     <file path="/input.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382068020737" ignored="false" />
     <file path="/index.html" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382066830266" ignored="false" />
-    <file path="/draw.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382435167733" ignored="false" />
+    <file path="/draw.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382502445835" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +46,7 @@
       <file leaf-file-name="game.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/game.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="298" column="0" selection-start="8600" selection-end="8600" vertical-scroll-proportion="0.0">
+            <state line="253" column="1" selection-start="7330" selection-end="7330" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -61,7 +64,7 @@
       <file leaf-file-name="TheGame.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/TheGame.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="187" column="35" selection-start="6386" selection-end="6386" vertical-scroll-proportion="0.0">
+            <state line="133" column="4" selection-start="4586" selection-end="4586" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -70,7 +73,43 @@
       <file leaf-file-name="draw.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/draw.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="120" column="40" selection-start="6537" selection-end="6537" vertical-scroll-proportion="-1.0680628">
+            <state line="50" column="59" selection-start="2333" selection-end="2333" vertical-scroll-proportion="1.6283525">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Bot.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/dto/Bot.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="18" column="25" selection-start="424" selection-end="424" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BotClass.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/BotClass.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="51" column="26" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Player.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/dto/Player.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="59" column="30" selection-start="2290" selection-end="2308" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="session.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/js/dto/session.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="52" selection-start="434" selection-end="434" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -92,20 +131,20 @@
         <option value="$PROJECT_DIR$/js/dto/bullet.js" />
         <option value="$PROJECT_DIR$/js/util.js" />
         <option value="$PROJECT_DIR$/js/bulletMain.js" />
-        <option value="$PROJECT_DIR$/js/BotClass.js" />
         <option value="$PROJECT_DIR$/server/game.js" />
         <option value="$PROJECT_DIR$/js/player.js" />
         <option value="$PROJECT_DIR$/js/Multiplayer.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/input.js" />
-        <option value="$PROJECT_DIR$/js/TheGame.js" />
         <option value="$PROJECT_DIR$/js/dto/Player.js" />
+        <option value="$PROJECT_DIR$/js/BotClass.js" />
+        <option value="$PROJECT_DIR$/js/TheGame.js" />
         <option value="$PROJECT_DIR$/js/draw.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="183" />
+    <option name="x" value="306" />
     <option name="width" value="1060" />
     <option name="height" value="768" />
   </component>
@@ -239,16 +278,16 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="options.lastSelected" value="editor" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="editor" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FullScreen" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PublishConfig" serverName="xampp tank5" serverId="82b63770-7f55-4686-bace-13c96db76f60" autoUpload="true" uploadOnSaveAll="true" showNewOnSourceInSync="false" showNewOnTargetInSync="false">
     <servers>
@@ -349,9 +388,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="183" y="0" width="1060" height="768" extended-state="0" />
+    <frame x="306" y="0" width="1060" height="768" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24863175" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -362,7 +402,6 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -435,21 +474,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/dto/session.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="49" selection-start="255" selection-end="332" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/score.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="73" selection-start="1647" selection-end="1647" vertical-scroll-proportion="0.67364746" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/collision_hitTest.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="1301" selection-end="1301" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/dto/bullet.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="33" column="16" selection-start="894" selection-end="894" vertical-scroll-proportion="0.39078498" />
@@ -475,18 +499,11 @@
         <state line="72" column="7" selection-start="2515" selection-end="2515" vertical-scroll-proportion="2.1857142" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/game.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="298" column="0" selection-start="8600" selection-end="8600" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/BotSmart.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="54" selection-start="804" selection-end="804" vertical-scroll-proportion="0.56369984">
           <folding>
-            <element signature="n#!!doc" expanded="true" />
+            <element signature="n#!!doc" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -500,27 +517,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/dto/Bot.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/dto/Player.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="41" selection-start="666" selection-end="666" vertical-scroll-proportion="0.029010238">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/TheGame.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="187" column="35" selection-start="6386" selection-end="6386" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/Multiplayer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="298" column="40" selection-start="8178" selection-end="8178" vertical-scroll-proportion="0.0">
@@ -528,9 +524,58 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/dto/session.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="52" selection-start="434" selection-end="434" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/TMX_Engine.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="25" selection-start="459" selection-end="459" vertical-scroll-proportion="-0.059336822">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/dto/Player.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="30" selection-start="2290" selection-end="2308" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/dto/Bot.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="25" selection-start="424" selection-end="424" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/BotClass.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="51" column="26" selection-start="1448" selection-end="1448" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/TheGame.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="133" column="4" selection-start="4586" selection-end="4586" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/game.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="253" column="1" selection-start="7330" selection-end="7330" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/draw.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="40" selection-start="6537" selection-end="6537" vertical-scroll-proportion="-1.0680628">
+        <state line="50" column="59" selection-start="2333" selection-end="2333" vertical-scroll-proportion="1.6283525">
           <folding />
         </state>
       </provider>
