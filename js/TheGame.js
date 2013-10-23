@@ -115,6 +115,7 @@ function init() {
     //the first parameter as the server address.
     socket = io.connect("http://localhost", { port: 8000, transports: ["websocket"] });
     //socket = io.connect("125.212.217.58", { port: 8000, transports: ["websocket"] });
+    //socket = io.connect("tuan.sytes.net", { port: 8000, transports: ["websocket"] });
     // Start listening for events
     setSocketEventHandlers();
 
