@@ -35,7 +35,10 @@ function moveLaser() {
         } else if (lasers[i].direction == 'left') {
             lasers[i].x -= laserSpeed;
         }
-        if (mapCollision(lasers[i].x, lasers[i].y, 4, 4, 'bullet') || lasers[i].y < 0 || lasers[i].y > height || lasers[i].x < 0 || lasers[i].x > width) {
+        if (mapCollision(lasers[i].x, lasers[i].y, 4, 4, 'bullet')) {
+            renderBulletDestroyed(lasers[i]);
+            lasers[i].isRemoved = true;
+        } else if (lasers[i].y < 0 || lasers[i].y > height || lasers[i].x < 0 || lasers[i].x > width) {
             lasers[i].isRemoved = true;
         }
     }
@@ -113,6 +116,10 @@ function shootDestruction() {
                 break;
         }
     }
+}
+
+function renderBulletDestroyed(bulletObject) {
+    
 }
 
 function removeBullet(lasers) {

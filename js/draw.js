@@ -108,7 +108,7 @@ function temporaryDrawOverhead() {
 
 }
 
-function drawTile(gid, x, y) {
+function drawTile(gid, x, y, width, height) {
     //number of tiles per row of tilesheet
     var NoOfTiles = 320 / 40;
 
@@ -119,8 +119,12 @@ function drawTile(gid, x, y) {
     //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
     var spriteY = Math.floor(gid / NoOfTiles) * 40;
 
-    //draw the sprite at X Y, place it at its place according to the viewport
-    ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);
+    if(width===undefined || height === undefined) {
+        //draw the sprite at X Y, place it at its place according to the viewport
+        ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);
+    } else {
+        ctx.drawImage(spriteSheet2, spriteX, spriteY, width, height, x, y, width, height);
+    }
 }
 
 //Clears the canvas so it can be updated
@@ -143,6 +147,42 @@ function drawBot() {
         drawingBot(array[i]);
     }
     //drawPath();
+}
+
+function drawingBot(object) {
+    if(object.getType() == 'dumb') {
+        if (object.direction == 'right') {
+            drawTile(5, object.getX(), object.getY());
+        } else if (object.direction == 'left') {
+            drawTile(8, object.getX(), object.getY());
+        } if (object.direction == 'up') {
+            drawTile(7, object.getX(), object.getY());
+        } else if (object.direction == 'down') {
+            drawTile(6, object.getX(), object.getY());
+        }
+    } else {
+        if (object.direction == 'right') {
+            drawTile(22, object.getX(), object.getY());
+        } else if (object.direction == 'left') {
+            drawTile(24, object.getX(), object.getY());
+        } if (object.direction == 'up') {
+            drawTile(23, object.getX(), object.getY());
+        } else if (object.direction == 'down') {
+            drawTile(21, object.getX(), object.getY());
+        }
+    }
+}
+
+function drawShip() {
+    if (direction == 'right') {
+        ctx.drawImage(ship_right, ship_x, ship_y);
+    } else if (direction == 'left') {
+        ctx.drawImage(ship_left, ship_x, ship_y);
+    } if (direction == 'up') {
+        ctx.drawImage(ship, ship_x, ship_y);
+    } else if (direction == 'down') {
+        ctx.drawImage(ship_down, ship_x, ship_y);
+    }
 }
 
 function drawByDirection(object) {
@@ -181,40 +221,4 @@ function drawByDirection(object) {
 
     // restore
     ctx.restore();
-}
-
-function drawingBot(object) {
-    if(object.getType() == 'dumb') {
-        if (object.direction == 'right') {
-            drawTile(5, object.getX(), object.getY());
-        } else if (object.direction == 'left') {
-            drawTile(8, object.getX(), object.getY());
-        } if (object.direction == 'up') {
-            drawTile(7, object.getX(), object.getY());
-        } else if (object.direction == 'down') {
-            drawTile(6, object.getX(), object.getY());
-        }
-    } else {
-        if (object.direction == 'right') {
-            drawTile(22, object.getX(), object.getY());
-        } else if (object.direction == 'left') {
-            drawTile(24, object.getX(), object.getY());
-        } if (object.direction == 'up') {
-            drawTile(23, object.getX(), object.getY());
-        } else if (object.direction == 'down') {
-            drawTile(21, object.getX(), object.getY());
-        }
-    }
-}
-
-function drawShip() {
-    if (direction == 'right') {
-        ctx.drawImage(ship_right, ship_x, ship_y);
-    } else if (direction == 'left') {
-        ctx.drawImage(ship_left, ship_x, ship_y);
-    } if (direction == 'up') {
-        ctx.drawImage(ship, ship_x, ship_y);
-    } else if (direction == 'down') {
-        ctx.drawImage(ship_down, ship_x, ship_y);
-    }
 }
