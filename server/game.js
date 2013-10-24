@@ -1,9 +1,7 @@
 // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART
-//                      RESTART for changes to applied
+//RESTART for changes to applied                                        RESTART for changes to applied                                  RESTART for changes to applied
 // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART
-/**************************************************
-** NODE.JS REQUIREMENTS
-**************************************************/
+
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
     helper = require("./helper"),
@@ -19,8 +17,6 @@ if (host == 'remote') {
 } else {
     util.log('local host');
 }
-
-var result2;
 var parser = new xml2js.Parser();
 fs.readFile(__dirname + '/classic2.tmx', function(err, data) {
     parser.parseString(data, function (err, result) {
@@ -30,23 +26,32 @@ fs.readFile(__dirname + '/classic2.tmx', function(err, data) {
 function what(object) {
     util.log(object);
 }
-tmxloader.load(__dirname + '/classic2.tmx');
+function init() {
+    tmxloader.load(__dirname + '/classic2.tmx', loop);
+    host = true;
+    // Set up Socket.IO to listen on port 8000
+    socket = io.listen(8000);
+    // Configure Socket.IO
+    socket.configure(function () {
+        // Only use WebSockets
+        socket.set("transports", ["websocket"]);
 
-/**************************************************
-** GAME VARIABLES
-**************************************************/
+        // Restrict log output
+        socket.set("log level", 2);
+    });
+    // Start listening for events
+    socket.sockets.on("connection", onSocketConnection);
+    //loop();
+}
+function loop() {
+    var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
+    botClass.moveBot(enemiesGroup);
+
+    setTimeout(loop(), 1000/60);
+}
 var socket,		            // Socket controller
     host;                   // if there already a host or not
 
-/**************************************************
-** GAME EVENT HANDLERS
-**************************************************/
-var setEventHandlers = function () {
-    // Socket.IO
-    socket.sockets.on("connection", onSocketConnection);
-};
-
-// New socket connection
 function onSocketConnection(client) {
     if(hostID=='none') {
         hostID = client.id;
@@ -56,54 +61,22 @@ function onSocketConnection(client) {
     } else {
         this.emit("host", { host: false });
     }
-
-    // Listen for client disconnected
     client.on("disconnect", onClientDisconnect);
-
-    // Listen for new player message
     client.on("new player", onNewPlayer);
-
-    // Listen for move player message
     client.on("move player", onMovePlayer);
-
-    // Listen for new lasers message
     client.on("new lasers", onNewLasers);
-
-    // Listen for bot broadcast message
     client.on("bot broadcast", onBotBroadcast);
-
-    // Listen for bot die message
     client.on("bot die", onBotDie);
-
-    // Listen for bot die message
     client.on("login", onLogin);
-
-    // Listen for testing message
     client.on("test", onTest);
-
-    // if remote host listen for host ack
     client.on("host", onHost);
-
-    // Listen for bot die message
     client.on("register", onRegister);
-
-    // Listen for input message
     client.on("input", onInput);
-
-    // Listen for end message
     client.on("end match", onEndMatch);
-
-    // Listen for key down message
     client.on("key down", onKeyDown);
-
-    // Listen for moving player message
     client.on("moving player", onMovingPlayer);
-
-    // Listen for key up message
     client.on("key up", onKeyUp);
 };
-
-// Socket client has disconnected
 function onClientDisconnect() {
 
     if (this.id == hostID) {
@@ -113,41 +86,29 @@ function onClientDisconnect() {
 
     // Broadcast removed player to connected socket clients
     this.broadcast.to('authenticated').emit("remove player", { id: this.id });
-};
-
-// New player has joined
+}
 function onNewPlayer(data) {
     // Broadcast new player to connected socket clients
     this.broadcast.to('authenticated').emit("new player", { id: this.id, userID: data.userID, username: data.username });
 
-};
-
-// Player has moved
+}
 function onMovePlayer(data) {
     if(hostID!=this.id) util.log('warning: move player send by player, not host');
     // Broadcast updated position to connected socket clients
     this.broadcast.to('authenticated').emit("move player", { id: data.id, username: data.username, x: data.x, y: data.y, direction: data.direction });
-};
-
-// Lasers has moved
+}
 function onNewLasers(data) {
     // Broadcast updated position to connected socket clients
     this.broadcast.to('authenticated').emit("new lasers", { id: data.id, x: data.x, y: data.y, direction: data.direction });
-};
-
-//broadcast bot
+}
 function onBotBroadcast(data) {
     this.broadcast.to('authenticated').emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, type: data.type });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
-
-// Bot die
 function onBotDie(data) {
     this.broadcast.to('authenticated').emit("bot die", { count: data.count });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
-
-// Login
 function onLogin(data) {
     var mysql = require('mysql'),
         connection = mysql.createConnection({
@@ -185,13 +146,9 @@ function onLogin(data) {
     connection.end();
 
 }
-
-// Testing
 function onTest(data) {
     this.emit("test", { test: data.test });
 }
-
-// remote host, not locally
 function onHost(data) {
     if (host == 'local') {
         util.log('received rogue host message');
@@ -204,8 +161,6 @@ function onHost(data) {
     util.log('remote host connected with ID: ' + hostID);
     this.join('authenticated');
 }
-
-// Login
 function onRegister(data) {
     var mysql = require('mysql'),
         connection = mysql.createConnection({
@@ -227,14 +182,10 @@ function onRegister(data) {
     });
     connection.end();
 }
-
-// Input
 function onInput(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("input", { id: this.id, move: data.move, shoot: data.shoot });
 }
-
-// End
 function onEndMatch(data) {
     //this.broadcast.to('authenticated').emit("end match", { hello: 'world' });
     var mysql = require('mysql'),
@@ -271,59 +222,16 @@ function onEndMatch(data) {
 
     connection.end();
 }
-
-// Key Down
 function onKeyDown(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("key down", { id: this.id, move: data.move, shoot: data.shoot });
 }
-
-// Moving player
 function onMovingPlayer(data) {
     this.broadcast.to('authenticated').emit("moving player", { id: data.id, direction: data.direction });
 }
-
-// Key Down
 function onKeyUp(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("key up", { id: this.id });
 }
 
-/**************************************************
-** PROCESS QUERY
-**************************************************/
-function queryDatabase(query, arrayOfPara) {
-
-}
-
-/**************************************************
-** RUN THE GAME
-**************************************************/
-var init = (function () {
-
-    host = false;
-
-    // Set up Socket.IO to listen on port 8000
-    socket = io.listen(8000);
-
-    // Configure Socket.IO
-    socket.configure(function () {
-        // Only use WebSockets
-        socket.set("transports", ["websocket"]);
-
-        // Restrict log output
-        socket.set("log level", 2);
-    });
-
-    // Start listening for events
-    setEventHandlers();
-
-    //loop();
-
-}());
-
-function loop() {
-    botClass.moveBot();
-
-    setTimeout(loop(), 1000/60);
-}
+init();

@@ -10,8 +10,9 @@
  *
  */
 var fs = require('fs'),
-    xml2js = require('xml2js');
-tmxloader = {};
+    xml2js = require('xml2js'),
+    util = require("util"),
+    tmxloader = {};
 tmxloader.trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 };
@@ -77,16 +78,16 @@ tmxloader.ObjectGroup = function (groupname, width, height) {
 
 };
 ///classic2.tmx
-tmxloader.load = function (url) {
+tmxloader.load = function (url, loaded) {
     var parser = new xml2js.Parser();
     fs.readFile(url, function(err, data) {
         parser.parseString(data, function (err, result) {
-            loadCallback(result);
+            loadCallback(result, loaded);
         });
     });
 };
-function loadCallback(result) {
-    console.log('Parsing...' + result.map.$.version);
+function loadCallback(result, loaded) {
+    //console.log('Parsing...' + result.map.$.version);
 
     var $width = result.map.$.width;
     var $height = result.map.$.height;
@@ -94,13 +95,13 @@ function loadCallback(result) {
     var $tileheight = result.map.$.tileheight;
     tmxloader.map = new tmxloader.Map($width, $height, $tilewidth, $tileheight, result.map.layer.length);
 
-    console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
-    console.log("Found " + result.map.layer.length + " Layers");
+    //console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
+    //console.log("Found " + result.map.layer.length + " Layers");
 
     var $layer = result.map.layer;
     for (i = 0; i < $layer.length; i++) {
 
-        console.log("Processing Layer: " + ($layer[i].$.name));
+        //console.log("Processing Layer: " + ($layer[i].$.name));
 
         var $data = $layer[i].data[0];
         var $lwidth = $layer[i].$.width;
@@ -108,11 +109,11 @@ function loadCallback(result) {
         tmxloader.map.layers[i] = new tmxloader.Layer($layer[i].$.name, $lwidth, $lheight);
         if ($data.$.encoding == "csv") {
 
-            console.log("Processing CSV");
+            //console.log("Processing CSV");
 
             tmxloader.map.layers[i].loadCSV($data._);
         } else {
-            console.log("Unsupported Encoding Scheme");
+            //console.log("Unsupported Encoding Scheme");
         }
     }
     var $tileset = result.map.tileset;
@@ -135,7 +136,7 @@ function loadCallback(result) {
         var $numobjects = $objectgroup[i].object.length;
         var $objectGroupName = $objectgroup[i].$.name;
 
-        console.log("Processing Object Group: " + $objectGroupName + " with " + $numobjects + " Objects");
+        //console.log("Processing Object Group: " + $objectGroupName + " with " + $numobjects + " Objects");
 
         tmxloader.map.objectgroup['' + $objectGroupName + ''] = new tmxloader.ObjectGroup($objectGroupName, $lwidth, $lheight);
         var $objects = $objectgroup[i].object;
@@ -147,10 +148,12 @@ function loadCallback(result) {
             var $objectwidth = $objects[j].$.width;
             var $objectheight = $objects[j].$.height;
 
-            console.log("Processing Object: " + $objectname);
+            //console.log("Processing Object: " + $objectname);
 
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new tmxloader.Object($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
+    util.log('map loaded');
+    loaded();
 }
 exports.tmxloader = tmxloader;

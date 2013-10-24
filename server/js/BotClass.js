@@ -19,9 +19,8 @@ var
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0;
 
-var moveBot=function () {
-    //if (host == false) return;
-    createBot();
+var moveBot=function (enemiesGroup) {
+    createBot(enemiesGroup);
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].type == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
@@ -40,17 +39,17 @@ exports.moveBot = moveBot;
 var bots = [],
     botsLength = 2;
 //add new bot to the array
-function createBot() {
+function createBot(enemiesGroup) {
     //reset spawn point when reach the last point
-    if (whereSpawn == 2) {
+    if (whereSpawn == enemiesGroup.length) {
         whereSpawn = 0;
     }
-    while (bots.length < botsLength && whereSpawn < 2) {
+    while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
         // Initialise the new bot
-        var x = 0,
-            y = 0;
+        var x = enemiesGroup[whereSpawn].x,
+            y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (whereSpawn % 99 == 0) {
+        if (whereSpawn % 4 == 0) {
             newBot = new Bot(whereSpawn, x, y, 'smart');
             newBot.pathFound = botRandomPath(newBot);
         } else {
