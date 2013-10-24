@@ -2,7 +2,7 @@
 ** CLIENT BOT CLASS
 **************************************************/
 
-function Bot(id, startX, startY, type) {
+var Bot = function(id, startX, startY, type) {
     var id = id,
         x = startX,
 	    y = startY,
@@ -12,7 +12,7 @@ function Bot(id, startX, startY, type) {
         to,
         direction,
         speed,
-        image = new Image(),
+        //image = new Image(),
         width = 40,
         height = 40;
 
@@ -32,10 +32,10 @@ function Bot(id, startX, startY, type) {
                 break;
         }
         speed = 2;
-        image.src = 'images/8bit_enemy.png';
+        //image.src = 'images/8bit_enemy.png';
     } else if (type == 'smart') {
         speed = 5;
-        image.src = 'images/bot2.png';
+        //image.src = 'images/bot2.png';
     }
 
     // Getters and setters
@@ -96,9 +96,10 @@ function Bot(id, startX, startY, type) {
         to: to,
         direction: direction,
         speed: speed,
-        image: image,
+        //image: image,
         width: width,
         height: height
         
     }
 };
+exports.Bot = Bot;

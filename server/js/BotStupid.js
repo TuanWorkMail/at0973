@@ -5,7 +5,8 @@
  * Time: 9:40 PM
  * To change this template use File | Settings | File Templates.
  */
-
+exports.goStraight=goStraight;
+exports.BotShootInterval=BotShootInterval;
 //stupid bot just go straight, if stuck turn randomly
 function goStraight(bot) {
     //flag to check if hit the wall

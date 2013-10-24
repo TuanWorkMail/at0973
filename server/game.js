@@ -1,27 +1,17 @@
-
-
-
-
-
-
-//                      RESTART for changes to applied                RESTART THE SERVER
-
-
-
-
-
-
+// RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART
+//                      RESTART for changes to applied
+// RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
     helper = require("./helper"),
-    //botClass = require('./js/BotClass');
     fs = require('fs'),
     xml2js = require('xml2js'),
-    host = 'remote';                        //if server host or use remote host
-    
+    host = 'remote',                        //if server host or use remote host
+    botClass = require('./js/BotClass.js'),
+    tmxloader = require('./js/TMX_Engine.js').tmxloader;
 // if remote host server
 if (host == 'remote') {
     var hostID = 'none';
@@ -30,15 +20,17 @@ if (host == 'remote') {
     util.log('local host');
 }
 
-var result2,data2;
+var result2;
 var parser = new xml2js.Parser();
-fs.readFile(__dirname + '/classic2.xml', function(err, data) {
-    data2 = data;
+fs.readFile(__dirname + '/classic2.tmx', function(err, data) {
     parser.parseString(data, function (err, result) {
-        result2 = result;
-        util.log(result2);
+        what(result);
     });
 });
+function what(object) {
+    util.log(object);
+}
+tmxloader.load(__dirname + '/classic2.tmx');
 
 /**************************************************
 ** GAME VARIABLES
@@ -326,4 +318,12 @@ var init = (function () {
     // Start listening for events
     setEventHandlers();
 
+    //loop();
+
 }());
+
+function loop() {
+    botClass.moveBot();
+
+    setTimeout(loop(), 1000/60);
+}

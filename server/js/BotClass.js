@@ -1,8 +1,8 @@
 
+var botRandomPath = require('./BotSmart').botRandomPath,
+    botStupid = require('./BotStupid'),
+    Bot = require('./Bot').Bot;
 
-
-
-	
 var
     pathStart,
     pathStartX,
@@ -19,37 +19,38 @@ var
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0;
 
-function moveBot() {
+var moveBot=function () {
     //if (host == false) return;
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].type == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
-                movingBot(bots[bot]);
+                botSmart.movingBot(bots[bot]);
             } else {
-                bots[bot].pathFound = botRandomPath(bots[bot]);
+                bots[bot].pathFound = botSmart.botRandomPath(bots[bot]);
                 bots[bot].whereNow = 0;
             }
         } else if (bots[bot].type == 'dumb') {
-            goStraight(bot);
+            botStupid.goStraight(bot);
         }
         socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
-
-
+exports.moveBot = moveBot;
+var bots = [],
+    botsLength = 2;
 //add new bot to the array
 function createBot() {
     //reset spawn point when reach the last point
-    if (whereSpawn == enemiesGroup.length) {
+    if (whereSpawn == 2) {
         whereSpawn = 0;
     }
-    while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
+    while (bots.length < botsLength && whereSpawn < 2) {
         // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x,
-            y = enemiesGroup[whereSpawn].y;
+        var x = 0,
+            y = 0;
         //every 3 bot is smart
-        if (whereSpawn % 4 == 0) {
+        if (whereSpawn % 99 == 0) {
             newBot = new Bot(whereSpawn, x, y, 'smart');
             newBot.pathFound = botRandomPath(newBot);
         } else {
@@ -81,60 +82,6 @@ function drawPath() {
             ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, bots[i].pathFound[rp][0] * 32, bots[i].pathFound[rp][1] * 32, 32, 32);
         }
     }
-}
-
-//combine all the tile layers together for pathfinding
-//output: 1 combined layer
-function combineTileLayer() {
-    var combined = [];
-    for (var layer = 0; layer < tmxloader.map.layers.length; layer++) {
-        if (tmxloader.map.layers[layer].name == 'overhead')
-            continue;
-        //first use 1 layer as the start
-        //var new = old[] will create a REFERENCE, not a clone
-        //have to manually clone each array in multi-dimentional array
-        if (combined.length == 0) {
-            for (var i = 0; i < tmxloader.map.width; i++) {
-                combined[i] = tmxloader.map.layers[layer].data[i].slice(0);
-            }
-            continue;
-        }
-        //if combined is 0 and layer is not 0, combined = 1 (unwalkable)
-        for (var i = 0; i < tmxloader.map.width; i++) {
-            for (var j = 0; j < tmxloader.map.height; j++) {
-                if (combined[i][j] == 0 && tmxloader.map.layers[layer].data[i][j] != 0) {
-                    combined[i][j] = 1;
-                }
-            }
-        }
-    }
-    return combined;
-}
-//input: the small tile layer
-//combine 4x4 into 1 big tile
-//check if any tile in 4x4 is unwalkable, make the big tile unwalkable too
-//output: the big tile layer
-function combine16to1tile(combined) {
-    var combinedBig = [];
-    for (var width = 0; width < tmxloader.map.width / 4; width++) {
-        combinedBig[width] = [];
-        for (var height = 0; height < tmxloader.map.height / 4; height++) {
-            //if any of 4x4 is unwalkable, flag it unwalkable
-            var flag = false;
-            for (var i = 0; i < 4; i++) {
-                for (var j = 0; j < 4; j++) {
-                    if (combined[width * 4 + i][height * 4 + j] != 0)
-                        flag = true;
-                }
-            }
-            if (flag) {
-                combinedBig[width][height] = 1;
-            } else {
-                combinedBig[width][height] = 0;
-            }
-        }
-    }
-    return combinedBig;
 }
 
 function drawTileLayerRaw(combinedBig) {
