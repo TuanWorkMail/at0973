@@ -17,6 +17,8 @@
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
     helper = require("./helper"),
+    fs = require('fs'),
+    xml2js = require('xml2js'),
     host = 'remote';                        //if server host or use remote host
     
 // if remote host server
@@ -27,35 +29,21 @@ if (host == 'remote') {
     util.log('local host');
 }
 
+var result2,data2;
+var parser = new xml2js.Parser();
+fs.readFile(__dirname + '/classic2.xml', function(err, data) {
+    data2 = data;
+    parser.parseString(data, function (err, result) {
+        result2 = result;
+        util.log(result2);
+    });
+});
+
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
 var socket,		            // Socket controller
     host;                   // if there already a host or not
-
-/**************************************************
-** GAME INITIALISATION
-**************************************************/
-function init() {
-
-    host = false;
-
-    // Set up Socket.IO to listen on port 8000
-    socket = io.listen(8000);
-
-    // Configure Socket.IO
-    socket.configure(function () {
-        // Only use WebSockets
-        socket.set("transports", ["websocket"]);
-
-        // Restrict log output
-        socket.set("log level", 2);
-    });
-
-    // Start listening for events
-    setEventHandlers();
-
-};
 
 /**************************************************
 ** GAME EVENT HANDLERS
@@ -318,4 +306,23 @@ function queryDatabase(query, arrayOfPara) {
 /**************************************************
 ** RUN THE GAME
 **************************************************/
-init();
+var init = (function () {
+
+    host = false;
+
+    // Set up Socket.IO to listen on port 8000
+    socket = io.listen(8000);
+
+    // Configure Socket.IO
+    socket.configure(function () {
+        // Only use WebSockets
+        socket.set("transports", ["websocket"]);
+
+        // Restrict log output
+        socket.set("log level", 2);
+    });
+
+    // Start listening for events
+    setEventHandlers();
+
+}());

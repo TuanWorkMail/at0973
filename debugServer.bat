@@ -1,2 +1,2 @@
-node --debug server\game.js
+node --debug-brk server\game.js
 pause
