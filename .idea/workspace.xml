@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="e1dad627-bca4-4bb4-b158-6a1866026876" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/js/Bot.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/js/BotClass.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/js/BotSmart.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/js/BotStupid.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/document/tank5designDocument.docx" afterPath="$PROJECT_DIR$/document/tank5designDocument.docx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/document/.~lock.tank5designDocument.docx#" afterPath="$PROJECT_DIR$/document/.~lock.tank5designDocument.docx#" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/BotClass.js" afterPath="$PROJECT_DIR$/js/BotClass.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/bulletMain.js" afterPath="$PROJECT_DIR$/js/bulletMain.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/collision_hitTest.js" afterPath="$PROJECT_DIR$/js/collision_hitTest.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/debugServer.bat" afterPath="$PROJECT_DIR$/debugServer.bat" />
@@ -12,7 +19,7 @@
     <ignored path="trunk.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/player.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381899897066" ignored="false" />
-    <file path="/game.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382579031196" ignored="false" />
+    <file path="/game.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382580574291" ignored="false" />
     <file path="/Multiplayer.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1381907416208" ignored="false" />
     <file path="/TheGame.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382513988636" ignored="false" />
     <file path="/Player.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382496900782" ignored="false" />
@@ -25,6 +32,7 @@
     <file path="/input.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382068020737" ignored="false" />
     <file path="/index.html" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382066830266" ignored="false" />
     <file path="/draw.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382513695428" ignored="false" />
+    <file path="/BotClass.js" changelist="e1dad627-bca4-4bb4-b158-6a1866026876" time="1382580532914" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +55,25 @@
       <file leaf-file-name="game.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/game.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="61" selection-start="1165" selection-end="1165" vertical-scroll-proportion="0.0">
+            <state line="19" column="6" selection-start="404" selection-end="404" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BotClass.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/js/BotClass.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Bot.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/js/Bot.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="20" selection-start="397" selection-end="397" vertical-scroll-proportion="0.73913044">
               <folding />
             </state>
           </provider>
@@ -56,7 +82,7 @@
       <file leaf-file-name="Multiplayer.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/Multiplayer.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="298" column="40" selection-start="8178" selection-end="8178" vertical-scroll-proportion="0.0">
+            <state line="265" column="26" selection-start="7328" selection-end="7328" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -65,34 +91,7 @@
       <file leaf-file-name="TheGame.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/TheGame.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="72" column="39" selection-start="2065" selection-end="2065" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="collision_hitTest.js" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/js/collision_hitTest.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="100" column="1" selection-start="6070" selection-end="6070" vertical-scroll-proportion="2.5531561">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="bulletMain.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/bulletMain.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="1" selection-start="1585" selection-end="1585" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BotClass.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/BotClass.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="49" selection-start="474" selection-end="474" vertical-scroll-proportion="0.0">
+            <state line="210" column="61" selection-start="6992" selection-end="6992" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -116,22 +115,21 @@
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/input.js" />
         <option value="$PROJECT_DIR$/js/dto/Player.js" />
-        <option value="$PROJECT_DIR$/js/BotClass.js" />
         <option value="$PROJECT_DIR$/js/TheGame.js" />
         <option value="$PROJECT_DIR$/js/draw.js" />
         <option value="$PROJECT_DIR$/js/dto/session.js" />
         <option value="$PROJECT_DIR$/js/TMX_Engine.js" />
-        <option value="$PROJECT_DIR$/server/game.js" />
         <option value="$PROJECT_DIR$/js/bulletMain.js" />
         <option value="$PROJECT_DIR$/js/collision_hitTest.js" />
+        <option value="$PROJECT_DIR$/js/BotClass.js" />
+        <option value="$PROJECT_DIR$/server/game.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="54" />
-    <option name="y" value="-8" />
-    <option name="width" value="1320" />
-    <option name="height" value="784" />
+    <option name="x" value="86" />
+    <option name="width" value="1278" />
+    <option name="height" value="745" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -154,7 +152,7 @@
     <OptionsSetting value="true" id="Update" />
     <OptionsSetting value="true" id="Status" />
     <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="2" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectReloadState">
@@ -215,6 +213,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="at0973" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -261,18 +277,42 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth1" value="85" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth0" value="85" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth3" value="75" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth2" value="85" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder0" value="0" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder3" value="3" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="options.lastSelected" value="editor" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth2" value="85" />
     <property name="recentsLimit" value="5" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder5" value="5" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth1" value="78" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth0" value="90" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth5" value="764" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth4" value="90" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth3" value="89" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth4" value="107" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth5" value="759" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder5" value="5" />
+    <property name="options.lastSelected" value="editor.preferences.tabs" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder3" value="3" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder4" value="4" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder1" value="1" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder2" value="2" />
+    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder0" value="0" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
   </component>
   <component name="PublishConfig" serverName="xampp tank5" serverId="82b63770-7f55-4686-bace-13c96db76f60" autoUpload="true" uploadOnSaveAll="true" showNewOnSourceInSync="false" showNewOnTargetInSync="false">
     <servers>
@@ -287,6 +327,11 @@
         <serverdata />
       </server>
     </servers>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\stuff\svn\at0973\trunk\server\js" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
@@ -373,24 +418,25 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-8" width="1320" height="784" extended-state="6" />
+    <frame x="86" y="0" width="1278" height="745" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="File Transfer" active="false" anchor="bottom" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.3280255" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24863175" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.1936073" sideWeight="0.67156863" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.19468334" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879046" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.1936073" sideWeight="0.67156863" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293718" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32879046" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32843137" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24858756" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.1945117" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -459,34 +505,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/js/util.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="19" selection-start="211" selection-end="211" vertical-scroll-proportion="0.17406143" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="72" column="7" selection-start="2515" selection-end="2515" vertical-scroll-proportion="2.1857142" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/BotSmart.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="54" selection-start="804" selection-end="804" vertical-scroll-proportion="0.56369984">
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/lib/Pathfinding.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="73" selection-start="3968" selection-end="3968" vertical-scroll-proportion="2.6109214">
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/dto/Player.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="59" column="30" selection-start="2290" selection-end="2308" vertical-scroll-proportion="0.0">
@@ -496,12 +514,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/dto/bullet.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="19" selection-start="959" selection-end="959" vertical-scroll-proportion="0.5221843" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/dto/Bot.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="25" selection-start="424" selection-end="424" vertical-scroll-proportion="0.0">
+        <state line="36" column="19" selection-start="959" selection-end="959" vertical-scroll-proportion="0.5221843">
           <folding />
         </state>
       </provider>
@@ -527,44 +540,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/game.js">
+    <entry file="file://$PROJECT_DIR$/server/helper.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="61" selection-start="1165" selection-end="1165" vertical-scroll-proportion="0.0">
+        <state line="7" column="32" selection-start="255" selection-end="255" vertical-scroll-proportion="0.21136767">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/BotClass.js">
+    <entry file="file://$PROJECT_DIR$/server/Player.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="49" selection-start="474" selection-end="474" vertical-scroll-proportion="0.0">
+        <state line="19" column="31" selection-start="404" selection-end="404" vertical-scroll-proportion="-0.060390763">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/Multiplayer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="298" column="40" selection-start="8178" selection-end="8178" vertical-scroll-proportion="0.0">
+        <state line="265" column="26" selection-start="7328" selection-end="7328" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/dto/Bot.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="28" selection-start="356" selection-end="356" vertical-scroll-proportion="0.24242425">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/BotClass.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="4" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/bulletMain.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="1" selection-start="1585" selection-end="1585" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/TheGame.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="72" column="39" selection-start="2065" selection-end="2065" vertical-scroll-proportion="0.0">
+        <state line="45" column="1" selection-start="1585" selection-end="1585" vertical-scroll-proportion="1.0909091">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/collision_hitTest.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="100" column="1" selection-start="6070" selection-end="6070" vertical-scroll-proportion="2.5531561">
+        <state line="23" column="5" selection-start="1060" selection-end="1060" vertical-scroll-proportion="0.6969697">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/TheGame.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="210" column="61" selection-start="6992" selection-end="6992" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/game.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="6" selection-start="404" selection-end="404" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/js/BotClass.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/js/Bot.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="20" selection-start="397" selection-end="397" vertical-scroll-proportion="0.73913044">
           <folding />
         </state>
       </provider>

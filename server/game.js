@@ -17,6 +17,7 @@
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
     helper = require("./helper"),
+    //botClass = require('./js/BotClass');
     fs = require('fs'),
     xml2js = require('xml2js'),
     host = 'remote';                        //if server host or use remote host
