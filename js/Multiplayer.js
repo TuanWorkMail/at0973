@@ -259,6 +259,7 @@ function onEndMatch(data) {
 function onHost(data) {
     if(host != 'none') return;
     host = data.host;
+    console.log('host message received! running game loop');
     gameLoop();
 };
 

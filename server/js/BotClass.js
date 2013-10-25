@@ -29,7 +29,8 @@ exports.moveBot=function () {
         } else if (bots[bot].type == 'dumb') {
             require('./BotStupid').goStraight(bots[bot]);
         }
-        require('./socket').socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
+        var socket = require('./socket').socket;
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
 var bots = [],

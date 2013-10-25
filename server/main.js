@@ -19,7 +19,7 @@ function init() {
         util.log('local host');
     }
     // Start listening for events
-    socket.sockets.on("connection", onSocketConnection);
+    socket.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
     setTimeout(loop, 1000/60);
 }
