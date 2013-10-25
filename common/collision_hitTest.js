@@ -1,9 +1,13 @@
-﻿var tmxloader = require('./TMX_Engine').tmxloader;
+﻿if (typeof require !== 'undefined' || typeof exports !== 'undefined') {
+    var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
+    exports.mapCollision = mapCollision;
+    exports.shootDestruction = shootDestruction;
+}
 //iput:x,y,w,h,type(bullet/tank)
-exports.mapCollision=function (x, y, w, h, type) {
+function mapCollision(x, y, w, h, type) {
     var xTile = Math.floor(x / tmxloader.map.tileWidth),
         yTile = Math.floor(y / tmxloader.map.tileHeight),
-        //NOT(number of tiles) horizontally(w) or vertically(h)
+    //NOT(number of tiles) horizontally(w) or vertically(h)
         wNOT = w / tmxloader.map.tileWidth,
         hNOT = h / tmxloader.map.tileHeight,
         width = tmxloader.map.width * tmxloader.map.tileWidth,
@@ -30,7 +34,7 @@ exports.mapCollision=function (x, y, w, h, type) {
     return false;
 }
 
-exports.shootDestruction=function () {
+function shootDestruction() {
     var foundID = findLayerByName('destructible');
     for (var i = 0; i < lasers.length; i++) {
         var justanumber = 2;
@@ -175,47 +179,47 @@ function hitTestPlayer_old() {
 }
 
 /*	
-//check ship collide with map
-function mapCollision_old() {
-var ship_xw = ship_x + ship_w,
-    ship_yh = ship_y + ship_h,
-    object_xw,
-    object_yh;
-var objectGroup = tmxloader.map.objectgroup['colision'].objects;
-for (var obj = 0; obj < objectGroup.length; ++obj) {
-    object_xw = objectGroup[obj].x + objectGroup[obj].width;
-    object_yh = objectGroup[obj].y + objectGroup[obj].height;
+ //check ship collide with map
+ function mapCollision_old() {
+ var ship_xw = ship_x + ship_w,
+ ship_yh = ship_y + ship_h,
+ object_xw,
+ object_yh;
+ var objectGroup = tmxloader.map.objectgroup['colision'].objects;
+ for (var obj = 0; obj < objectGroup.length; ++obj) {
+ object_xw = objectGroup[obj].x + objectGroup[obj].width;
+ object_yh = objectGroup[obj].y + objectGroup[obj].height;
 
-    var layerID = findLayerByName('obstacle');
+ var layerID = findLayerByName('obstacle');
 
-    if (ship_x < object_xw && ship_y < object_yh && ship_xw > objectGroup[obj].x && ship_yh > objectGroup[obj].y) {
-        return true;
-    }
-}
+ if (ship_x < object_xw && ship_y < object_yh && ship_xw > objectGroup[obj].x && ship_yh > objectGroup[obj].y) {
+ return true;
+ }
+ }
 
-return false;
-}
+ return false;
+ }
 
-function laserCollision() {
-var object_xw,
-    object_yh,
-    check = false;
+ function laserCollision() {
+ var object_xw,
+ object_yh,
+ check = false;
 
-var objectGroup = tmxloader.map.objectgroup['colision'].objects;
-for (var i = 0; i < lasers.length; i++) {
-    for (var obj = 0; obj < objectGroup.length; ++obj) {
+ var objectGroup = tmxloader.map.objectgroup['colision'].objects;
+ for (var i = 0; i < lasers.length; i++) {
+ for (var obj = 0; obj < objectGroup.length; ++obj) {
 
-        object_xw = objectGroup[obj].x + objectGroup[obj].width;
-        object_yh = objectGroup[obj].y + objectGroup[obj].height;
+ object_xw = objectGroup[obj].x + objectGroup[obj].width;
+ object_yh = objectGroup[obj].y + objectGroup[obj].height;
 
-        if (lasers[i][0] < object_xw && lasers[i][1] < object_yh && lasers[i][0] + 4 > objectGroup[obj].x && lasers[i][1] + 4 > objectGroup[obj].y) {
-            check = true;
-        }
-    }
-    if (check) {
-        lasers.splice(i, 1);
-        check = false;
-    }
-}
-}
-*/
+ if (lasers[i][0] < object_xw && lasers[i][1] < object_yh && lasers[i][0] + 4 > objectGroup[obj].x && lasers[i][1] + 4 > objectGroup[obj].y) {
+ check = true;
+ }
+ }
+ if (check) {
+ lasers.splice(i, 1);
+ check = false;
+ }
+ }
+ }
+ */

@@ -193,16 +193,6 @@ function gameLoop() {
     //console.log('delta: '+delta);
     lastTick = Date.now();
     shootDestruction();
-    if (host && remotePlayers.length>1) {
-        /*
-        moveBot();
-        hitTestBot();
-        //shoot must behind check and move
-        BotShootInterval(bots, 1);
-        hitTestPlayer();
-        checkHitPoint();
-        */
-    }
     if(!host) {
         clearCanvas();
         //drawMap();

@@ -5,7 +5,7 @@
  * Time: 9:40 PM
  * To change this template use File | Settings | File Templates.
  */
-var mapCollision = require('./collision_hitTest').mapCollision;
+var mapCollision = require('./../../common/collision_hitTest').mapCollision;
 exports.goStraight=goStraight;
 exports.BotShootInterval=BotShootInterval;
 //stupid bot just go straight, if stuck turn randomly
