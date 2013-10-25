@@ -32,7 +32,7 @@ var moveBot=function () {
                 bots[bot].whereNow = 0;
             }
         } else if (bots[bot].type == 'dumb') {
-            botStupid.goStraight(bot);
+            botStupid.goStraight(bots[bot]);
         }
         socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
@@ -40,6 +40,7 @@ var moveBot=function () {
 exports.moveBot = moveBot;
 var bots = [],
     botsLength = 2;
+exports.bots = bots;
 //add new bot to the array
 function createBot() {
     var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;

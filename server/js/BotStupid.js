@@ -8,35 +8,35 @@
 exports.goStraight=goStraight;
 exports.BotShootInterval=BotShootInterval;
 //stupid bot just go straight, if stuck turn randomly
-function goStraight(bot) {
+function goStraight(object) {
     //flag to check if hit the wall
     var flag = false;
-    switch (bots[bot].direction) {
+    switch (object.direction) {
         case 'up':
-            bots[bot].setY(bots[bot].getY() - bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
-                bots[bot].setY(bots[bot].getY() + bots[bot].speed);
+            object.setY(object.getY() - object.speed);
+            if (mapCollision(object.getX(), object.getY(), object.getWidth(), object.getHeight(), 'tank')) {
+                object.setY(object.getY() + object.speed);
                 flag = true;
             }
             break;
         case 'down':
-            bots[bot].setY(bots[bot].getY() + bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
-                bots[bot].setY(bots[bot].getY() - bots[bot].speed);
+            object.setY(object.getY() + object.speed);
+            if (mapCollision(object.getX(), object.getY(), object.getWidth(), object.getHeight(), 'tank')) {
+                object.setY(object.getY() - object.speed);
                 flag = true;
             }
             break;
         case 'left':
-            bots[bot].setX(bots[bot].getX() - bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
-                bots[bot].setX(bots[bot].getX() + bots[bot].speed);
+            object.setX(object.getX() - object.speed);
+            if (mapCollision(object.getX(), object.getY(), object.getWidth(), object.getHeight(), 'tank')) {
+                object.setX(object.getX() + object.speed);
                 flag = true;
             }
             break;
         case 'right':
-            bots[bot].setX(bots[bot].getX() + bots[bot].speed);
-            if (mapCollision(bots[bot].getX(), bots[bot].getY(), bots[bot].getWidth(), bots[bot].getHeight(), 'tank')) {
-                bots[bot].setX(bots[bot].getX() - bots[bot].speed);
+            object.setX(object.getX() + object.speed);
+            if (mapCollision(object.getX(), object.getY(), object.getWidth(), object.getHeight(), 'tank')) {
+                object.setX(object.getX() - object.speed);
                 flag = true;
             }
             break;
@@ -44,16 +44,16 @@ function goStraight(bot) {
     if(flag)
         switch (randomNumber(1, 4)) {
             case 1:
-                bots[bot].direction = 'up';
+                object.direction = 'up';
                 break;
             case 2:
-                bots[bot].direction = 'down';
+                object.direction = 'down';
                 break;
             case 3:
-                bots[bot].direction = 'left';
+                object.direction = 'left';
                 break;
             case 4:
-                bots[bot].direction = 'right';
+                object.direction = 'right';
                 break;
         }
 
