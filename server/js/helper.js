@@ -4,5 +4,9 @@
         return v.toString(16);
     })
 }
-
+//input: interval in which random number come from
+//output: random number between interval
+exports.randomNumber = function(from, to) {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+}
 exports.createUUID = createUUID;

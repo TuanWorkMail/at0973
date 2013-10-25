@@ -2,7 +2,7 @@
 ** CLIENT BOT CLASS
 **************************************************/
 
-var Bot = function(id, startX, startY, type) {
+exports.Bot = function(id, startX, startY, type) {
     var id = id,
         x = startX,
 	    y = startY,
@@ -17,6 +17,7 @@ var Bot = function(id, startX, startY, type) {
         height = 40;
 
     if (type == 'dumb') {
+        var randomNumber = require('./helper').randomNumber;
         switch (randomNumber(1, 4)) {
             case 1:
                 direction = 'up';
@@ -102,4 +103,3 @@ var Bot = function(id, startX, startY, type) {
         
     }
 };
-exports.Bot = Bot;

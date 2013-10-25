@@ -1,9 +1,7 @@
-exports.movingBot = movingBot;
-exports.botRandomPath = botRandomPath;
-
+var tmxloader = require('./TMX_Engine').tmxloader;
 //input: bot array
 //move the bot according to there foundPath
-function movingBot(bots) {
+exports.movingBot = function (bots) {
     //bot current coordianate is calculate base on ship_w/h, not tileWidth/height
     var pixelX = bots.pathFound[bots.whereNow + 1][0] * bots.getWidth(),
         pixelY = bots.pathFound[bots.whereNow + 1][1] * bots.getHeight(),
@@ -36,8 +34,11 @@ function movingBot(bots) {
 
 //input: current location
 //output: array of path to a random point
-function botRandomPath(object) {
-    var check = true;
+exports.botRandomPath = function (object) {
+    var check = true,
+        randomNumber = require('./helper').randomNumber,
+        pathFinder = require('./BotPathFinder').pathFinder,
+        botDestination = tmxloader.map.objectgroup['destination'].objects;
     while (check) {
         //pathStart/end calculate base on ship_w/h, not tileWidth/Height
         pathStart = [Math.floor(object.getX() / object.getWidth()), Math.floor(object.getY() / object.getHeight())];

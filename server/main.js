@@ -3,13 +3,12 @@
 // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART // RESTART
 
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
-	io = require("socket.io"), 			    // Socket.IO
     helper = require("./js/helper"),
     host = 'local',                        //if server host or use remote host
     hostID = '',
     botClass = require('./js/BotClass.js'),
     tmxloader = require('./js/TMX_Engine.js').tmxloader,
-    socket;		                            // Socket controller
+    socket = require('./js/socket').socket;		                            // Socket controller
 //initializing.........
 function init() {
     // if remote host server
@@ -19,25 +18,15 @@ function init() {
     } else {
         util.log('local host');
     }
-    // Set up Socket.IO to listen on port 8000
-    socket = io.listen(8000);
-    // Configure Socket.IO
-    socket.configure(function () {
-        // Only use WebSockets
-        socket.set("transports", ["websocket"]);
-
-        // Restrict log output
-        socket.set("log level", 2);
-    });
     // Start listening for events
     socket.sockets.on("connection", onSocketConnection);
-    tmxloader.load(__dirname + '\\map\\classic2.tmx', loop);
+    tmxloader.load(__dirname + '\\map\\classic2.tmx');
+    setTimeout(loop, 1000/60);
 }
 function loop() {
-    var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
     botClass.moveBot();
 
-    setTimeout(loop(), 1000/60);
+    setTimeout(loop, 1000/60);
 }
 
 function onSocketConnection(client) {
@@ -221,5 +210,5 @@ function onKeyUp(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("key up", { id: this.id });
 }
-
+//run init when everything is loaded
 init();

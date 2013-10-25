@@ -1,7 +1,8 @@
 
-var
-    botRandomPath = require('./BotSmart').botRandomPath,
+var tmxloader = require('./TMX_Engine').tmxloader,
+    botSmart = require('./BotSmart'),
     botStupid = require('./BotStupid'),
+    socket = require('./socket').socket,
     Bot = require('./Bot').Bot;
 
 var
@@ -40,7 +41,8 @@ exports.moveBot = moveBot;
 var bots = [],
     botsLength = 2;
 //add new bot to the array
-function createBot(enemiesGroup) {
+function createBot() {
+    var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
     //reset spawn point when reach the last point
     if (whereSpawn == enemiesGroup.length) {
         whereSpawn = 0;
@@ -52,7 +54,7 @@ function createBot(enemiesGroup) {
         //every 3 bot is smart
         if (whereSpawn % 4 == 0) {
             newBot = new Bot(whereSpawn, x, y, 'smart');
-            newBot.pathFound = botRandomPath(newBot);
+            newBot.pathFound = botSmart.botRandomPath(newBot);
         } else {
             newBot = new Bot(whereSpawn, x, y, 'dumb');
         }

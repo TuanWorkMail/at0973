@@ -13,7 +13,7 @@ var fs = require('fs'),
     xml2js = require('xml2js'),
     util = require("util");
 var tmxloader = {};
-tmxloader.trim = function (str) {
+var trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 };
 var Map = function (width, height, tileWidth, tileHeight, layersLength) {
@@ -47,10 +47,10 @@ var Layer = function (layerName, width, height) {
     }
     this.loadCSV = function (data) {
         //array hold each row
-        var layerData = tmxloader.trim(data).split('\n');
+        var layerData = trim(data).split('\n');
         //each row
         for (var y = 0; y < layerData.length; ++y) {
-            var line = tmxloader.trim(layerData[y]);
+            var line = trim(layerData[y]);
             //array hold every tile in a row
             var entries = line.split(',');
             //each tile
@@ -78,16 +78,15 @@ var ObjectGroup = function (groupname, width, height) {
 
 };
 ///classic2.tmx
-tmxloader.load = function (url, loaded) {
+tmxloader.load = function (url) {
     var parser = new xml2js.Parser();
     fs.readFile(url, function(err, data) {
         parser.parseString(data, function (err, result) {
             loadCallback(result);
-            loaded();
         });
     });
 };
-function loadCallback(result, loaded) {
+function loadCallback(result) {
     //console.log('Parsing...' + result.map.$.version);
 
     var $width = result.map.$.width;
@@ -154,5 +153,6 @@ function loadCallback(result, loaded) {
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
+    util.log('map loaded');
 }
 exports.tmxloader = tmxloader;
