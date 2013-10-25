@@ -1,12 +1,7 @@
 
-var tmxloader = require('./TMX_Engine').tmxloader,
-    botSmart = require('./BotSmart'),
-    botStupid = require('./BotStupid'),
-    socket = require('./socket').socket,
-    Bot = require('./Bot').Bot;
+var botSmart = require('./BotSmart');
 
-var
-    pathStart,
+var pathStart,
     pathStartX,
     pathStartY,
     pathEnd,
@@ -21,7 +16,7 @@ var
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0;
 
-var moveBot=function () {
+exports.moveBot=function () {
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].type == 'smart') {
@@ -32,18 +27,18 @@ var moveBot=function () {
                 bots[bot].whereNow = 0;
             }
         } else if (bots[bot].type == 'dumb') {
-            botStupid.goStraight(bots[bot]);
+            require('./BotStupid').goStraight(bots[bot]);
         }
-        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
+        require('./socket').socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
-exports.moveBot = moveBot;
 var bots = [],
     botsLength = 2;
 exports.bots = bots;
 //add new bot to the array
 function createBot() {
-    var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
+    var enemiesGroup = require('./TMX_Engine').tmxloader.map.objectgroup['bot'].objects,
+        Bot = require('./Bot').Bot;
     //reset spawn point when reach the last point
     if (whereSpawn == enemiesGroup.length) {
         whereSpawn = 0;

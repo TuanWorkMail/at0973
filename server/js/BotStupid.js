@@ -5,6 +5,7 @@
  * Time: 9:40 PM
  * To change this template use File | Settings | File Templates.
  */
+var mapCollision = require('./collision_hitTest').mapCollision;
 exports.goStraight=goStraight;
 exports.BotShootInterval=BotShootInterval;
 //stupid bot just go straight, if stuck turn randomly
@@ -42,7 +43,7 @@ function goStraight(object) {
             break;
     }
     if(flag)
-        switch (randomNumber(1, 4)) {
+        switch (require('./helper').randomNumber(1, 4)) {
             case 1:
                 object.direction = 'up';
                 break;
