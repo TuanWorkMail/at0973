@@ -11,12 +11,12 @@
  */
 var fs = require('fs'),
     xml2js = require('xml2js'),
-    util = require("util"),
-    tmxloader = {};
+    util = require("util");
+var tmxloader = {};
 tmxloader.trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 };
-tmxloader.Map = function (width, height, tileWidth, tileHeight, layersLength) {
+var Map = function (width, height, tileWidth, tileHeight, layersLength) {
     this.width = width;
     this.height = height;
     this.tileWidth = tileWidth;
@@ -25,7 +25,7 @@ tmxloader.Map = function (width, height, tileWidth, tileHeight, layersLength) {
     this.layers = new Array(layersLength);
 
 };
-tmxloader.Tileset = function (firstgid, name, tileWidth, tileHeight, src, width, height) {
+var Tileset = function (firstgid, name, tileWidth, tileHeight, src, width, height) {
     this.firstGid = firstgid;
     this.name = name;
     this.tileWidth = tileWidth;
@@ -35,7 +35,7 @@ tmxloader.Tileset = function (firstgid, name, tileWidth, tileHeight, src, width,
     this.height = height;
 
 };
-tmxloader.Layer = function (layerName, width, height) {
+var Layer = function (layerName, width, height) {
     this.name = layerName;
     this.width = width;
     this.height = height;
@@ -61,7 +61,7 @@ tmxloader.Layer = function (layerName, width, height) {
         }
     }
 };
-tmxloader.Object = function (objectname, type, x, y, width, height) {
+var TmxObject = function (objectname, type, x, y, width, height) {
     this.name = objectname;
     this.width = parseInt(width);
     this.height = parseInt(height);
@@ -70,7 +70,7 @@ tmxloader.Object = function (objectname, type, x, y, width, height) {
     this.type = type;
 
 };
-tmxloader.ObjectGroup = function (groupname, width, height) {
+var ObjectGroup = function (groupname, width, height) {
     this.name = groupname;
     this.width = width;
     this.height = height;
@@ -82,7 +82,8 @@ tmxloader.load = function (url, loaded) {
     var parser = new xml2js.Parser();
     fs.readFile(url, function(err, data) {
         parser.parseString(data, function (err, result) {
-            loadCallback(result, loaded);
+            loadCallback(result);
+            loaded();
         });
     });
 };
@@ -93,7 +94,7 @@ function loadCallback(result, loaded) {
     var $height = result.map.$.height;
     var $tilewidth = result.map.$.tilewidth;
     var $tileheight = result.map.$.tileheight;
-    tmxloader.map = new tmxloader.Map($width, $height, $tilewidth, $tileheight, result.map.layer.length);
+    tmxloader.map = new Map($width, $height, $tilewidth, $tileheight, result.map.layer.length);
 
     //console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
     //console.log("Found " + result.map.layer.length + " Layers");
@@ -106,7 +107,7 @@ function loadCallback(result, loaded) {
         var $data = $layer[i].data[0];
         var $lwidth = $layer[i].$.width;
         var $lheight = $layer[i].$.height;
-        tmxloader.map.layers[i] = new tmxloader.Layer($layer[i].$.name, $lwidth, $lheight);
+        tmxloader.map.layers[i] = new Layer($layer[i].$.name, $lwidth, $lheight);
         if ($data.$.encoding == "csv") {
 
             //console.log("Processing CSV");
@@ -126,7 +127,7 @@ function loadCallback(result, loaded) {
         var $src = $image.$.source;
         var $width = $image.$.width;
         var $height = $image.$.height;
-        tmxloader.map.tilesets.push(new tmxloader.Tileset($firstgid, $name, $tilewidth, $tileheight, $src, $width, $height));
+        tmxloader.map.tilesets.push(new Tileset($firstgid, $name, $tilewidth, $tileheight, $src, $width, $height));
     }
     tmxloader.map.objectgroup = {};
     var $objectgroup = result.map.objectgroup;
@@ -138,7 +139,7 @@ function loadCallback(result, loaded) {
 
         //console.log("Processing Object Group: " + $objectGroupName + " with " + $numobjects + " Objects");
 
-        tmxloader.map.objectgroup['' + $objectGroupName + ''] = new tmxloader.ObjectGroup($objectGroupName, $lwidth, $lheight);
+        tmxloader.map.objectgroup['' + $objectGroupName + ''] = new ObjectGroup($objectGroupName, $lwidth, $lheight);
         var $objects = $objectgroup[i].object;
         for (var j = 0; j < $objects.length; j++) {
             var $objectname = $objects[j].$.name;
@@ -150,10 +151,8 @@ function loadCallback(result, loaded) {
 
             //console.log("Processing Object: " + $objectname);
 
-            tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new tmxloader.Object($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
+            tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
-    util.log('map loaded');
-    loaded();
 }
 exports.tmxloader = tmxloader;

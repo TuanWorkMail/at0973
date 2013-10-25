@@ -1,5 +1,6 @@
 
-var botRandomPath = require('./BotSmart').botRandomPath,
+var
+    botRandomPath = require('./BotSmart').botRandomPath,
     botStupid = require('./BotStupid'),
     Bot = require('./Bot').Bot;
 
@@ -19,8 +20,8 @@ var
     //where bot will spawn, each map have a number of predefined point
     whereSpawn = 0;
 
-var moveBot=function (enemiesGroup) {
-    createBot(enemiesGroup);
+var moveBot=function () {
+    createBot();
     for (var bot = 0; bot < bots.length; bot++) {
         if (bots[bot].type == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {

@@ -4,31 +4,21 @@
 
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
 	io = require("socket.io"), 			    // Socket.IO
-    helper = require("./helper"),
-    fs = require('fs'),
-    xml2js = require('xml2js'),
-    host = 'remote',                        //if server host or use remote host
+    helper = require("./js/helper"),
+    host = 'local',                        //if server host or use remote host
+    hostID = '',
     botClass = require('./js/BotClass.js'),
-    tmxloader = require('./js/TMX_Engine.js').tmxloader;
-// if remote host server
-if (host == 'remote') {
-    var hostID = 'none';
-    util.log('remote host');
-} else {
-    util.log('local host');
-}
-var parser = new xml2js.Parser();
-fs.readFile(__dirname + '/classic2.tmx', function(err, data) {
-    parser.parseString(data, function (err, result) {
-        what(result);
-    });
-});
-function what(object) {
-    util.log(object);
-}
+    tmxloader = require('./js/TMX_Engine.js').tmxloader,
+    socket;		                            // Socket controller
+//initializing.........
 function init() {
-    tmxloader.load(__dirname + '/classic2.tmx', loop);
-    host = true;
+    // if remote host server
+    if (host == 'remote') {
+        hostID = 'none';
+        util.log('remote host');
+    } else {
+        util.log('local host');
+    }
     // Set up Socket.IO to listen on port 8000
     socket = io.listen(8000);
     // Configure Socket.IO
@@ -41,16 +31,14 @@ function init() {
     });
     // Start listening for events
     socket.sockets.on("connection", onSocketConnection);
-    //loop();
+    tmxloader.load(__dirname + '\\map\\classic2.tmx', loop);
 }
 function loop() {
     var enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
-    botClass.moveBot(enemiesGroup);
+    botClass.moveBot();
 
     setTimeout(loop(), 1000/60);
 }
-var socket,		            // Socket controller
-    host;                   // if there already a host or not
 
 function onSocketConnection(client) {
     if(hostID=='none') {
