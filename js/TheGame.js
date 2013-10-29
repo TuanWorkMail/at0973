@@ -19,7 +19,8 @@ var canvas,
     enemySpeed = 5,
     fps = 60,
     ship_w = 40, ship_h = 40,
-    host = 'none',
+    //host = 'none',
+    host = false,
     session = [],
     continueLoop = true,
     lastTick = Date.now(),
@@ -131,7 +132,9 @@ function init() {
     //botDestination = tmxloader.map.objectgroup['destination'].object;
     drawMap();
     temporaryDrawOverhead();
-    //gameLoop();
+
+    //START THE GAME
+    gameLoop();
 }
 
 (function() {

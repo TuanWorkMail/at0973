@@ -87,6 +87,7 @@ function addNewPlayer(id, username, x, y, direction) {
     for(var i=0;i<remotePlayers.length;i++)
         if(remotePlayers[i].getUsername()==username)
             return remotePlayers[i];
+    return false;
 }
 
 // Move player

@@ -12,7 +12,15 @@ var util = require("util"),					// Utility resources (logging, object inspection
     hitTest = require('../common/collision_hitTest'),
     socket = require('./js/socket').socket,		                            // Socket controller
     bots = require('./js/BotClass').bots,
-    checkHitPoint = require('../common/player').checkHitPoint;
+    checkHitPoint = require('../common/player').checkHitPoint,
+    mysql = require('mysql'),
+    connection = mysql.createConnection({
+        host: 'localhost',
+        port: '3306',
+        user: 'root',
+        password: '',
+        database: 'tank5'
+    });
 //initializing.........
 function init() {
     // if remote host server
@@ -41,14 +49,14 @@ function loop() {
 }
 
 function onSocketConnection(client) {
-    if(hostID=='none') {
+    /*if(hostID=='none') {
         hostID = client.id;
         this.emit("host", { host: true });
         client.join('authenticated');
         util.log('remote host connected, id: '+client.id);
     } else {
         this.emit("host", { host: false });
-    }
+    }*/
     client.on("disconnect", onClientDisconnect);
     client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
@@ -98,14 +106,6 @@ function onBotDie(data) {
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 function onLogin(data) {
-    var mysql = require('mysql'),
-        connection = mysql.createConnection({
-            host: 'localhost',
-            port: '3306',
-            user: 'root',
-            password: '',
-            database: 'tank5'
-        });
 
     var that = this;
 
@@ -130,9 +130,39 @@ function onLogin(data) {
             }
         }
     });
-
     connection.end();
+}
+function onRegister(data) {
+    var that = this;
+    connection.connect();
+    var query = connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
+        if (err) that.emit("register", { result: 'username already existed' });
+        else
+            that.emit("register", { result: 'register successfully' });
+    });
+    connection.end();
+}
+function onEndMatch(data) {
+    var that = this,
+        wonID,
+        point = data.score1-data.score2;
 
+    if(data.score1-data.score2>0)
+        wonID= data.id1;
+    else if(data.score2-data.score1>0)
+        wonID=data.id2;
+    else {
+        util.log('no winner specify, app error, not stored on database');
+        return;
+    }
+    connection.connect();
+    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+    connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+    connection.end();
 }
 function onTest(data) {
     this.emit("test", { test: data.test });
@@ -149,66 +179,9 @@ function onHost(data) {
     util.log('remote host connected with ID: ' + hostID);
     this.join('authenticated');
 }
-function onRegister(data) {
-    var mysql = require('mysql'),
-        connection = mysql.createConnection({
-            host: 'localhost',
-            port: '3306',
-            user: 'root',
-            password: '',
-            database: 'tank5'
-        });
-
-    var that = this;
-
-    connection.connect();
-
-    var query = connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
-        if (err) that.emit("register", { result: 'username already existed' });
-        else
-            that.emit("register", { result: 'register successfully' });
-    });
-    connection.end();
-}
 function onInput(data) {
     if (hostID == 'none') return;
     this.broadcast.to('authenticated').emit("input", { id: this.id, move: data.move, shoot: data.shoot });
-}
-function onEndMatch(data) {
-    //this.broadcast.to('authenticated').emit("end match", { hello: 'world' });
-    var mysql = require('mysql'),
-        connection = mysql.createConnection({
-            host: 'localhost',
-            port: '3306',
-            user: 'root',
-            password: '',
-            database: 'tank5'
-        });
-
-    var that = this,
-        wonID,
-        point = data.score1-data.score2;
-
-    connection.connect();
-
-    if(data.score1-data.score2>0)
-        wonID= data.id1;
-    else if(data.score2-data.score1>0)
-        wonID=data.id2;
-    else {
-        util.log('no winner specify, app error, not stored on database');
-        return;
-    }
-
-    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
-        if (err) util.log(err);
-    });
-
-    connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
-        if (err) util.log(err);
-    });
-
-    connection.end();
 }
 function onKeyDown(data) {
     if (hostID == 'none') return;
