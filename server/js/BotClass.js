@@ -1,6 +1,9 @@
-
 var botSmart = require('./BotSmart');
-
+//where bot will spawn, each map have a number of predefined point
+var whereSpawn = 0,
+    bots = [],
+    botsLength = 2;
+/*
 var pathStart,
     pathStartX,
     pathStartY,
@@ -13,8 +16,7 @@ var pathStart,
 
     //grid = new PF.Grid(20, 20, world),
     //finder = new PF.AStarFinder(),
-    //where bot will spawn, each map have a number of predefined point
-    whereSpawn = 0;
+*/
 
 exports.moveBot=function () {
     createBot();
@@ -33,9 +35,6 @@ exports.moveBot=function () {
         socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
-var bots = [],
-    botsLength = 2;
-exports.bots = bots;
 //add new bot to the array
 function createBot() {
     var enemiesGroup = require('./TMX_Engine').tmxloader.map.objectgroup['bot'].objects,
@@ -119,6 +118,4 @@ function moving(object, direction, speed, type) {
             break;
     }
 }
-/*
-
-*/
+exports.bots = bots;

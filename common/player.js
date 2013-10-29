@@ -1,4 +1,12 @@
-﻿var checkHitPoint = function () {
+﻿var remotePlayers = [];
+
+if (typeof require !== 'undefined' || typeof exports !== 'undefined') {
+    exports.checkHitPoint = checkHitPoint;
+    exports.movingPlayer = movingPlayer;
+    exports.remotePlayers = remotePlayers;
+}
+
+function checkHitPoint () {
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() < 0 && alive) {
             console.log('player ' + remotePlayers[i].getUsername() + ' die');
@@ -89,10 +97,6 @@ function movingPlayer() {
     }
 }
 
-function respawn() {
-
-}
-
 //If an arrow key is being pressed, moves the ship in the right direction
 function moveShip() {
     //if ship cross the map border, throw it back in
@@ -158,6 +162,4 @@ function moveShip() {
             ship_y -= shipSpeed;
         }
     }
-
-
 }

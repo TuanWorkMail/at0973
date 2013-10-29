@@ -7,8 +7,12 @@ var util = require("util"),					// Utility resources (logging, object inspection
     host = 'local',                        //if server host or use remote host
     hostID = '',
     botClass = require('./js/BotClass.js'),
+    botStupid = require('./js/BotStupid'),
     tmxloader = require('./js/TMX_Engine.js').tmxloader,
-    socket = require('./js/socket').socket;		                            // Socket controller
+    hitTest = require('../common/collision_hitTest'),
+    socket = require('./js/socket').socket,		                            // Socket controller
+    bots = require('./js/BotClass').bots,
+    checkHitPoint = require('../common/player').checkHitPoint;
 //initializing.........
 function init() {
     // if remote host server
@@ -21,10 +25,17 @@ function init() {
     // Start listening for events
     socket.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
-    setTimeout(loop, 1000/60);
+    setTimeout(loop, 1000);
+    //stupid bot shooting every 2s
+    setInterval(function() {botStupid.stupidShoot=true;}, 1000 * 2);
 }
 function loop() {
     botClass.moveBot();
+    hitTest.hitTestBot();
+    //shoot must behind check and move
+    botStupid.BotShootInterval(bots, 1);
+    hitTest.hitTestPlayer();
+    checkHitPoint();
 
     setTimeout(loop, 1000/60);
 }

@@ -44,7 +44,7 @@ var canvas,
     direction,
     //Add the socket variable to the file
     socket,
-    remotePlayers = [],
+    //remotePlayers = [],
     //viewport for drawing map
     viewport,
     viewport_x = 0,
@@ -55,8 +55,8 @@ var canvas,
     bullet, bullet_right, bullet_left, bullet_down,
     ship_x, ship_y, 
     lasersLength = 1,
-    lasers = [],
-    laserSpeed = 15,
+    //lasers = [],
+    //laserSpeed = 15,
     score = 0,
     alive = true,
     lives = 3,
@@ -128,9 +128,7 @@ function init() {
     //reset();
 
     ////array of coordinate the bot can randomly go to
-    botDestination = tmxloader.map.objectgroup['destination'].objects;
-    //stupid bot shooting
-    setInterval(function() {stupidShoot=true;}, 1000 * 1);
+    //botDestination = tmxloader.map.objectgroup['destination'].object;
     drawMap();
     temporaryDrawOverhead();
     //gameLoop();
@@ -193,6 +191,16 @@ function gameLoop() {
     //console.log('delta: '+delta);
     lastTick = Date.now();
     shootDestruction();
+    if (host && remotePlayers.length>1) {
+        /*
+        moveBot();
+        hitTestBot();
+        //shoot must behind check and move
+        BotShootInterval(bots, 1);
+        hitTestPlayer();
+        checkHitPoint();
+        */
+    }
     if(!host) {
         clearCanvas();
         //drawMap();

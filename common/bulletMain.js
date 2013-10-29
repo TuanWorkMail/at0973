@@ -1,14 +1,9 @@
-/**
- * Created with JetBrains WebStorm.
- * User: AnhTuan
- * Date: 9/26/13
- * Time: 1:57 PM
- * To change this template use File | Settings | File Templates.
- */
+var lasers = [],
+    laserSpeed = 15;
 
 //input: x,y,direction of the bullet
 //push new bullet into array and emit to server
-function shooting(x,y,direction) {
+ function shooting(x,y,direction) {
     var id = createUUID('xxxx');
     var newBullet = new Bullet(id, x, y, direction, false);
     lasers.push(newBullet);
@@ -64,4 +59,10 @@ function removeBullet(lasers) {
             }
         }
     }
+}
+
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.lasers = lasers;
+    exports.shooting = shooting;
+    var socket = require('../server/js/socket').socket;
 }

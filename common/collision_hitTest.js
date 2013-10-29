@@ -1,7 +1,10 @@
-﻿if (typeof require !== 'undefined' || typeof exports !== 'undefined') {
-    var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
+﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    var tmxloader = require('./../server/js/TMX_Engine').tmxloader,
+        lasers = require('./bulletMain').lasers;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
+    exports.hitTestBot = hitTestBot;
+    exports.hitTestPlayer = hitTestPlayer;
 }
 //iput:x,y,w,h,type(bullet/tank)
 function mapCollision(x, y, w, h, type) {

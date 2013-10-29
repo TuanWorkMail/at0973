@@ -7,58 +7,28 @@ var setSocketEventHandlers = function() {
 	//window.addEventListener("keydown", onKeydown, false);
 	//window.addEventListener("keyup", onKeyup, false);
 
-	// Socket connection successful
+    // CLIENT ONLY
 	socket.on("connect", onSocketConnected);
-
-	// Socket disconnection
 	socket.on("disconnect", onSocketDisconnect);
-
-	// New player message received
-	socket.on("new player", onNewPlayer);
-
-	// Player move message received
 	socket.on("move player", onMovePlayer);
-	
-	// Lasers move message received
 	socket.on("new lasers", onNewLasers);
-
-	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
-
-    // Bot broadcast message received
 	socket.on("bot broadcast", onBotBroadcast);
-
-    // Bot die message received
 	socket.on("bot die", onBotDie);
-
-    // Bot die message received
 	socket.on("login", onLogin);
-
-    // Testing message received
 	socket.on("test", onTest);
-
-    // Bot die message received
 	socket.on("register", onRegister);
-
-    // Input message received
-	socket.on("input", onInput);
-
-    // End message received
 	socket.on("end match", onEndMatch);
-
-    // Host message received
     socket.on("host", onHost);
-
-    // Key down message received
-    socket.on("key down", onKeyDown);
-
-    // Moving player message received
     socket.on("moving player", onMovingPlayer);
-
-    // Key up message received
-    socket.on("key up", onKeyUp);
-
     socket.on("temporary message", onTemp);
+
+    //SERVER ONLY
+    socket.on("new player", onNewPlayer);
+    //addNewPlayer()
+    socket.on("input", onInput);
+    socket.on("key down", onKeyDown);
+    socket.on("key up", onKeyUp);
 };
 
 // Socket connected
@@ -75,12 +45,12 @@ function onSocketConnected() {
         socket.emit("new player", { hello: 'world' });
     }
     */
-};
+}
 
 // Socket disconnected
 function onSocketDisconnect() {
 	console.log("Disconnected from socket server");
-};
+}
 
 // New player
 function onNewPlayer(data) {
@@ -100,7 +70,7 @@ function onNewPlayer(data) {
     console.log('new player userID: '+data.userID+' and username: '+data.username);
     socket.emit("move player", { id: data.id, username: data.username, x: x, y: y, direction: direction });
     playerLength++;
-};
+}
 
 //add new player to array
 function addNewPlayer(id, username, x, y, direction) {
@@ -127,21 +97,21 @@ function onMovePlayer(data) {
 	if (!movePlayer) {
 	    addNewPlayer(data.id, data.username, data.x, data.y, data.direction);
 		return;
-	};
+	}
 
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
 	movePlayer.setDirection(data.direction);
     movePlayer.setMoving(false);
-};
+}
 
 // Move lasers
 function onNewLasers(data) {
 	//add new lasers
     var newBullet = new Bullet(data.id, data.x, data.y, data.direction, false);
     lasers.push(newBullet);
-};
+}
 
 // Remove player
 function onRemovePlayer(data) {
@@ -151,11 +121,11 @@ function onRemovePlayer(data) {
 	if (!removePlayer) {
 		console.log("Remove: Player not found: "+data.id);
 		return;
-	};
+	}
 
 	// Remove player from array
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
-};
+}
 
 // Bot broadcast
 function onBotBroadcast(data) {
@@ -170,7 +140,7 @@ function onBotBroadcast(data) {
     var newBot = new Bot(data.count, data.x, data.y, data.type);
     newBot.direction = data.direction;
     remoteBots.push(newBot);
-};
+}
 
 // Bot die
 function onBotDie(data) {
@@ -179,11 +149,11 @@ function onBotDie(data) {
         for (var i = 0; i < remoteBots.length; i++) {
             if (remoteBots[i].id == data.count)
                 remoteBots.splice(i, 1);
-        };
+        }
         return;
     }
     console.log('bot '+data.count+' not found');
-}; 
+}
 
 // Login
 function onLogin(data) {
@@ -196,18 +166,18 @@ function onLogin(data) {
         document.getElementById('login').style.display = 'none';
     }
     document.getElementById('tile').innerHTML += string;
-};
+}
 
 // Testing
 function onTest(data) {
     console.log(data.test);
-};
+}
 
 // Register
 function onRegister(data) {
     var string = '<br/>' + data.result;
     document.getElementById('tile').innerHTML += string;
-};
+}
 
 // Input
 function onInput(data) {
@@ -248,12 +218,12 @@ function onInput(data) {
             break;
     }
     socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: data.move });
-};
+}
 
 // End
 function onEndMatch(data) {
     alive = false;
-};
+}
 
 // Host
 function onHost(data) {
@@ -261,7 +231,7 @@ function onHost(data) {
     host = data.host;
     console.log('host message received! running game loop');
     gameLoop();
-};
+}
 
 // Key Down
 function onKeyDown(data) {
@@ -287,7 +257,7 @@ function onKeyDown(data) {
     }
     player.setMoving(true);
     socket.emit("moving player", { id: data.id, direction: data.move });
-};
+}
 
 // Moving player
 function onMovingPlayer(data) {
@@ -299,7 +269,7 @@ function onMovingPlayer(data) {
     }
     player.setDirection(data.direction);
     player.setMoving(true);
-};
+}
 
 // Key Up
 function onKeyUp(data) {
@@ -311,12 +281,12 @@ function onKeyUp(data) {
     }
     player.setMoving(false);
     socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: player.getDirection() });
-};
+}
 
 function onTemp(data) {
     if(!host) return;
 
-};
+}
 
 /**************************************************
  ** BOT FINDER FUNCTION
@@ -326,9 +296,9 @@ function botById(id) {
     for (var i = 0; i < remoteBots.length; i++) {
         if (remoteBots[i].id == id)
             return remoteBots[i];
-    };
+    }
     return false;
-};
+}
 
 //add new bot to the array
 function createRemoteBot() {
@@ -355,20 +325,20 @@ function playerById(id) {
 	for (i = 0; i < remotePlayers.length; i++) {
 		if (remotePlayers[i].getSocketID() == id)
 			return remotePlayers[i];
-	};
+	}
 	
 	return false;
-};
+}
 // Find player by username
 function playerByUsername(username) {
     var i;
     for (i = 0; i < remotePlayers.length; i++) {
         if (remotePlayers[i].getUsername() == username)
             return remotePlayers[i];
-    };
+    }
 
     return false;
-};
+}
 
 
 

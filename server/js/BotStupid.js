@@ -5,11 +5,10 @@
  * Time: 9:40 PM
  * To change this template use File | Settings | File Templates.
  */
-var mapCollision = require('./../../common/collision_hitTest').mapCollision;
-exports.goStraight=goStraight;
-exports.BotShootInterval=BotShootInterval;
+var mapCollision = require('./../../common/collision_hitTest').mapCollision,
+    stupidShoot=false;
 //stupid bot just go straight, if stuck turn randomly
-function goStraight(object) {
+exports.goStraight = function (object) {
     //flag to check if hit the wall
     var flag = false;
     switch (object.direction) {
@@ -63,7 +62,7 @@ function goStraight(object) {
 //input: bot array, interval in SECOND
 //call this function outside of gameLoop
 //every predefine time, stupid bot will shoot
-function BotShootInterval(bots, interval) {
+exports.BotShootInterval=function (bots, interval) {
     if(stupidShoot) {
         for(var i=0;i<bots.length;i++) {
             if(bots[i].type=='dumb') {
@@ -86,3 +85,5 @@ function BotShootInterval(bots, interval) {
     }
     stupidShoot=false;
 }
+
+exports.stupidShoot=stupidShoot;
