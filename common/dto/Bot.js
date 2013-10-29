@@ -1,7 +1,10 @@
-﻿/**************************************************
+﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.Bot = Bot;
+    var randomNumber = require('../../server/js/helper').randomNumber;
+}
+/**************************************************
 ** CLIENT BOT CLASS
 **************************************************/
-
 function Bot(id, startX, startY, type) {
     var id = id,
         x = startX,
@@ -12,9 +15,18 @@ function Bot(id, startX, startY, type) {
         to,
         direction,
         speed,
-        image = new Image(),
+        image,
         width = 40,
         height = 40;
+
+    if (typeof require === 'undefined' && typeof exports === 'undefined') {
+        image = new Image();
+        if (type == 'dumb') {
+            image.src = 'images/8bit_enemy.png';
+        } else if (type == 'smart') {
+            image.src = 'images/bot2.png';
+        }
+    }
 
     if (type == 'dumb') {
         switch (randomNumber(1, 4)) {
@@ -32,11 +44,10 @@ function Bot(id, startX, startY, type) {
                 break;
         }
         speed = 2;
-        image.src = 'images/8bit_enemy.png';
     } else if (type == 'smart') {
         speed = 5;
-        image.src = 'images/bot2.png';
     }
+
 
     // Getters and setters
     function getX() { return x; }

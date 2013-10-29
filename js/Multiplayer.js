@@ -26,7 +26,7 @@ var setSocketEventHandlers = function() {
     //SERVER ONLY
     socket.on("new player", onNewPlayer);
     //addNewPlayer()
-    socket.on("input", onInput);
+    //socket.on("input", onInput);
     socket.on("key down", onKeyDown);
     socket.on("key up", onKeyUp);
 };
@@ -57,7 +57,7 @@ function onNewPlayer(data) {
     if (!host) return;
 
     //where to spawn ship
-    var objGroup = tmxloader.map.objectgroup['spawn'].objects;
+    /*var objGroup = tmxloader.map.objectgroup['spawn'].objects;
     var x = objGroup[playerLength % objGroup.length].x,
         y = objGroup[playerLength % objGroup.length].y,
         direction;
@@ -69,11 +69,11 @@ function onNewPlayer(data) {
     player.setUserID(data.userID);
     console.log('new player userID: '+data.userID+' and username: '+data.username);
     socket.emit("move player", { id: data.id, username: data.username, x: x, y: y, direction: direction });
-    playerLength++;
+    playerLength++;*/
 }
 
 //add new player to array
-function addNewPlayer(id, username, x, y, direction) {
+/*function addNewPlayer(id, username, x, y, direction) {
     console.log("New player connected: " + id);
 
     // Initialise the new player
@@ -88,7 +88,7 @@ function addNewPlayer(id, username, x, y, direction) {
         if(remotePlayers[i].getUsername()==username)
             return remotePlayers[i];
     return false;
-}
+}*/
 
 // Move player
 function onMovePlayer(data) {
@@ -162,7 +162,8 @@ function onLogin(data) {
     if (data.uuid == 'failed') {
         string += 'wrong username or password';
     } else {
-        if(!host) socket.emit("new player", { username: data.username, userID: data.userID });
+        //cannot let client authenticate them self
+        //if(!host) socket.emit("new player", { username: data.username, userID: data.userID });
         string += 'login successfully';
         document.getElementById('login').style.display = 'none';
     }
@@ -181,7 +182,7 @@ function onRegister(data) {
 }
 
 // Input
-function onInput(data) {
+/*function onInput(data) {
     if (!host) return;
     var player = playerById(data.id);
     if (!player) {
@@ -219,7 +220,7 @@ function onInput(data) {
             break;
     }
     socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: data.move });
-}
+}*/
 
 // End
 function onEndMatch(data) {

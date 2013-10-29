@@ -38,7 +38,7 @@ exports.moveBot=function () {
 //add new bot to the array
 function createBot() {
     var enemiesGroup = require('./TMX_Engine').tmxloader.map.objectgroup['bot'].objects,
-        Bot = require('./Bot').Bot;
+        Bot = require('./../../common/dto/Bot').Bot;
     //reset spawn point when reach the last point
     if (whereSpawn == enemiesGroup.length) {
         whereSpawn = 0;

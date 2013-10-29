@@ -11,8 +11,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     tmxloader = require('./js/TMX_Engine.js').tmxloader,
     hitTest = require('../common/collision_hitTest'),
     socket = require('./js/socket').socket,		                            // Socket controller
-    bots = require('./js/BotClass').bots,
-    checkHitPoint = require('../common/player').checkHitPoint,
+    player = require('../common/player'),
     mysql = require('mysql'),
     connection = mysql.createConnection({
         host: 'localhost',
@@ -41,9 +40,9 @@ function loop() {
     botClass.moveBot();
     hitTest.hitTestBot();
     //shoot must behind check and move
-    botStupid.BotShootInterval(bots, 1);
+    botStupid.BotShootInterval(botClass.bots, 1);
     hitTest.hitTestPlayer();
-    checkHitPoint();
+    player.checkHitPoint();
 
     setTimeout(loop, 1000/60);
 }
@@ -58,7 +57,7 @@ function onSocketConnection(client) {
         this.emit("host", { host: false });
     }*/
     client.on("disconnect", onClientDisconnect);
-    client.on("new player", onNewPlayer);
+    //client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
     client.on("new lasers", onNewLasers);
     client.on("bot broadcast", onBotBroadcast);
@@ -127,6 +126,7 @@ function onLogin(data) {
                 that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
                 //that.broadcast.to('authenticated').emit("temporary message", { userID: rows[0].ID, uuid: helper.createUUID() });
                 that.join('authenticated');
+                player.addPlayer(that.id, rows[0].Username, rows[0].ID);
             }
         }
     });

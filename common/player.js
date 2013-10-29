@@ -1,8 +1,14 @@
-﻿var remotePlayers = [];
+﻿var playerLength = 0,
+    remotePlayers = [];
 
-if (typeof require !== 'undefined' || typeof exports !== 'undefined') {
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    var util = require('util'),
+        socket = require('../server/js/socket').socket,
+        tmxloader = require('../server/js/TMX_Engine').tmxloader,
+        hitTest = require('./collision_hitTest');
     exports.checkHitPoint = checkHitPoint;
     exports.movingPlayer = movingPlayer;
+    exports.addPlayer = addPlayer;
     exports.remotePlayers = remotePlayers;
 }
 
@@ -69,25 +75,25 @@ function movingPlayer() {
         switch (remotePlayers[i].getDirection()) {
             case 'right':
                 remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
-                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
                 }
                 break;
             case 'left':
                 remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
-                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
                 }
                 break;
             case 'up':
                 remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
-                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
                 }
                 break;
             case 'down':
                 remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
-                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
                 }
                 break;
@@ -95,6 +101,42 @@ function movingPlayer() {
                 console.log('movingPlayer: un-recognized direction');
         }
     }
+}
+
+function addPlayer(sessionID, username, userID) {
+    //copied from Multiplayer.js
+    //where to spawn ship
+    var spawn = tmxloader.map.objectgroup['spawn'].objects;
+    var x = spawn[playerLength % spawn.length].x,
+        y = spawn[playerLength % spawn.length].y,
+        direction;
+    if (playerLength % spawn.length == 0)
+        direction = 'up';
+    else
+        direction = 'down';
+    var player = addNewPlayer(sessionID, username, x, y, direction);
+    player.setUserID(userID);
+    util.log('new player userID: '+userID+' and username: '+username);
+    socket.emit("move player", { id: sessionID, username: username, x: x, y: y, direction: direction });
+    playerLength++;
+}
+
+//add new player to array
+function addNewPlayer(id, username, x, y, direction) {
+    console.log("New player connected: " + id);
+
+    // Initialise the new player
+    var newPlayer = new dto.Player(x, y, direction);
+    newPlayer.setSocketID(id);
+    newPlayer.setUsername(username);
+
+    // Add new player to the remote players array
+    remotePlayers.push(newPlayer);
+
+    for(var i=0;i<remotePlayers.length;i++)
+        if(remotePlayers[i].getUsername()==username)
+            return remotePlayers[i];
+    return false;
 }
 
 //If an arrow key is being pressed, moves the ship in the right direction
