@@ -1,3 +1,6 @@
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    dto = {};
+}
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
@@ -11,15 +14,18 @@ dto.Player = function(startX, startY, direction) {
         username,
         width = 40,
         height = 40,
-        image = new Image(),
+        image,
         speed = 5,
         hitPoint = 10,
         live = 2,
         moving = false,
         score = 0,
         imageUp, imageDown, imageLeft, imageRight;
-	
-	image.src = 'images/ship.png';
+
+    if (typeof require === 'undefined' && typeof exports === 'undefined') {
+	    image = new Image();
+        image.src = 'images/ship.png';
+    }
 
 	// Getters and setters
 	var getX = function () { return x; },
@@ -110,4 +116,7 @@ dto.Player = function(startX, startY, direction) {
         getMoving: getMoving,
         setMoving: setMoving,
 	}
+}
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.Player = dto.Player;
 }

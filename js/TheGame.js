@@ -136,7 +136,7 @@ function init() {
     //START THE GAME
     gameLoop();
 }
-
+//Date.now() shim
 (function() {
     if (!Date.now) {
         Date.now = function now() {
@@ -144,7 +144,6 @@ function init() {
         };
     }
 }());
-
 //BEGIN requestAnimationFrame polyfill
 (function() {
     var lastTime = 0;
@@ -177,9 +176,10 @@ function gameLoop() {
     if (continueLoop) {
 
     var now = Date.now(),
-        delta = now - lastTick,
         fixedDelta = 1000/60,
-        loop;
+        loop,
+        delta = now - lastTick;
+    lastTick = Date.now();
     //console.log('number of loop: '+Math.floor(delta/fixedDelta));
     document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
     var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
@@ -192,7 +192,6 @@ function gameLoop() {
         moveLaser();
     }
     //console.log('delta: '+delta);
-    lastTick = Date.now();
     shootDestruction();
     if (host && remotePlayers.length>1) {
         /*

@@ -5,11 +5,9 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
         socket = require('../server/js/socket').socket,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
-        hitTest = require('./collision_hitTest');
-    exports.checkHitPoint = checkHitPoint;
-    exports.movingPlayer = movingPlayer;
-    exports.addPlayer = addPlayer;
-    exports.remotePlayers = remotePlayers;
+        mapCollision = require('./collision_hitTest').mapCollision,
+        dto = {};
+    dto.Player = require('./dto/Player').Player;
 }
 
 function checkHitPoint () {
@@ -75,25 +73,25 @@ function movingPlayer() {
         switch (remotePlayers[i].getDirection()) {
             case 'right':
                 remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
-                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
                 }
                 break;
             case 'left':
                 remotePlayers[i].setX(remotePlayers[i].getX() - remotePlayers[i].getSpeed());
-                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setX(remotePlayers[i].getX() + remotePlayers[i].getSpeed());
                 }
                 break;
             case 'up':
                 remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
-                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
                 }
                 break;
             case 'down':
                 remotePlayers[i].setY(remotePlayers[i].getY() + remotePlayers[i].getSpeed());
-                if (hitTest.mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
+                if (mapCollision(remotePlayers[i].getX(), remotePlayers[i].getY(), remotePlayers[i].getWidth(), remotePlayers[i].getHeight(), 'tank')) {
                     remotePlayers[i].setY(remotePlayers[i].getY() - remotePlayers[i].getSpeed());
                 }
                 break;
@@ -136,6 +134,15 @@ function addNewPlayer(id, username, x, y, direction) {
     for(var i=0;i<remotePlayers.length;i++)
         if(remotePlayers[i].getUsername()==username)
             return remotePlayers[i];
+    return false;
+}
+
+// Find player by ID
+function playerById(id) {
+    for (var i = 0; i < remotePlayers.length; i++) {
+        if (remotePlayers[i].getSocketID() == id)
+            return remotePlayers[i];
+    }
     return false;
 }
 
@@ -204,4 +211,12 @@ function moveShip() {
             ship_y -= shipSpeed;
         }
     }
+}
+
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.checkHitPoint = checkHitPoint;
+    exports.movingPlayer = movingPlayer;
+    exports.addPlayer = addPlayer;
+    exports.remotePlayers = remotePlayers;
+    exports.playerById = playerById;
 }

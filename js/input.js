@@ -26,8 +26,10 @@ function keyDown(e) {
             shooting(ship_x - 1, ship_y + ship_h / 2, direction);
         }
     }
-    //socket.emit("input", { move: move, shoot: shoot });
     socket.emit("key down", { move: move, shoot: shoot });
+    var player = playerById(mySocketID);
+    player.setDirection(move);
+    player.setMoving(true);
 }
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
@@ -42,6 +44,8 @@ function keyUp(e) {
         downKey = false;
     }
     socket.emit("key up");
+    var player = playerById(mySocketID);
+    player.setMoving(false);
 }
 
 //holds the cursors position

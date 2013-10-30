@@ -12,6 +12,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     hitTest = require('../common/collision_hitTest'),
     socket = require('./js/socket').socket,		                            // Socket controller
     player = require('../common/player'),
+    lastTick,                                               // calculate delta time
     mysql = require('mysql'),
     connection = mysql.createConnection({
         host: 'localhost',
@@ -32,11 +33,27 @@ function init() {
     // Start listening for events
     socket.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
+    lastTick = Date.now();
     setTimeout(loop, 1000);
     //stupid bot shooting every 2s
     setInterval(function() {botStupid.stupidShoot=true;}, 1000 * 2);
 }
 function loop() {
+    var now = Date.now(),
+        fixedDelta = 1000/60,
+        loops,
+        delta = now - lastTick;
+    lastTick = Date.now();
+    var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
+    if(number>0.5)
+        loops = Math.floor(delta/fixedDelta) + 1;
+    else
+        loops = Math.floor(delta/fixedDelta);
+    for(var i=0;i<loops;i++) {
+        player.movingPlayer();
+        //moveLaser();
+    }
+
     botClass.moveBot();
     hitTest.hitTestBot();
     //shoot must behind check and move
@@ -48,14 +65,6 @@ function loop() {
 }
 
 function onSocketConnection(client) {
-    /*if(hostID=='none') {
-        hostID = client.id;
-        this.emit("host", { host: true });
-        client.join('authenticated');
-        util.log('remote host connected, id: '+client.id);
-    } else {
-        this.emit("host", { host: false });
-    }*/
     client.on("disconnect", onClientDisconnect);
     //client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
@@ -63,22 +72,12 @@ function onSocketConnection(client) {
     client.on("bot broadcast", onBotBroadcast);
     client.on("bot die", onBotDie);
     client.on("login", onLogin);
-    client.on("test", onTest);
-    client.on("host", onHost);
     client.on("register", onRegister);
-    client.on("input", onInput);
     client.on("end match", onEndMatch);
     client.on("key down", onKeyDown);
-    client.on("moving player", onMovingPlayer);
     client.on("key up", onKeyUp);
 };
 function onClientDisconnect() {
-
-    if (this.id == hostID) {
-        hostID = 'none';
-        util.log('host disconnected, waiting for another one');
-    }
-
     // Broadcast removed player to connected socket clients
     this.broadcast.to('authenticated').emit("remove player", { id: this.id });
 }
@@ -108,7 +107,7 @@ function onLogin(data) {
 
     var that = this;
 
-    connection.connect();
+    //connection.connect();
 
     var query = connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
         if (err) util.log(err);
@@ -130,17 +129,17 @@ function onLogin(data) {
             }
         }
     });
-    connection.end();
+    //connection.end();
 }
 function onRegister(data) {
     var that = this;
-    connection.connect();
+    //connection.connect();
     var query = connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
         if (err) that.emit("register", { result: 'username already existed' });
         else
             that.emit("register", { result: 'register successfully' });
     });
-    connection.end();
+    //connection.end();
 }
 function onEndMatch(data) {
     var that = this,
@@ -155,44 +154,34 @@ function onEndMatch(data) {
         util.log('no winner specify, app error, not stored on database');
         return;
     }
-    connection.connect();
+    //connection.connect();
     connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
         if (err) util.log(err);
     });
     connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
         if (err) util.log(err);
     });
-    connection.end();
-}
-function onTest(data) {
-    this.emit("test", { test: data.test });
-}
-function onHost(data) {
-    if (host == 'local') {
-        util.log('received rogue host message');
-        return;
-    } else if (hostID != 'none') {
-        util.log('received another host message, keep old, discard this one');
-        return;
-    }
-    hostID = this.id;
-    util.log('remote host connected with ID: ' + hostID);
-    this.join('authenticated');
-}
-function onInput(data) {
-    if (hostID == 'none') return;
-    this.broadcast.to('authenticated').emit("input", { id: this.id, move: data.move, shoot: data.shoot });
+    //connection.end();
 }
 function onKeyDown(data) {
-    if (hostID == 'none') return;
-    this.broadcast.to('authenticated').emit("key down", { id: this.id, move: data.move, shoot: data.shoot });
-}
-function onMovingPlayer(data) {
-    this.broadcast.to('authenticated').emit("moving player", { id: data.id, direction: data.direction });
+    var players = player.playerById(this.id);
+    if (!players) {
+        util.log('key down: player not found');
+        return;
+    }
+    players.setDirection(data.move);
+    players.setMoving(true);
+    this.broadcast.to('authenticated').emit("moving player", { id: this.id, direction: data.move });
 }
 function onKeyUp(data) {
-    if (hostID == 'none') return;
-    this.broadcast.to('authenticated').emit("key up", { id: this.id });
+    var players = player.playerById(this.id);
+    if (!players) {
+        console.log('key up: player not found');
+        return;
+    }
+    players.setMoving(false);
+    socket.emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
 }
-//run init when everything is loaded
+
+//RUN SERVER
 init();
