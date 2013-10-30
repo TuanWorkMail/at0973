@@ -13,6 +13,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     socket = require('./js/socket').socket,		                            // Socket controller
     player = require('../common/player'),
     lastTick,                                               // calculate delta time
+    loopUnused = 0,                                         // % of loop left
     mysql = require('mysql'),
     connection = mysql.createConnection({
         host: 'localhost',
@@ -41,15 +42,18 @@ function init() {
 function loop() {
     var now = Date.now(),
         fixedDelta = 1000/60,
-        loops,
+        loopRounded,
+        remainder,
         delta = now - lastTick;
     lastTick = Date.now();
-    var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
-    if(number>0.5)
-        loops = Math.floor(delta/fixedDelta) + 1;
-    else
-        loops = Math.floor(delta/fixedDelta);
-    for(var i=0;i<loops;i++) {
+    var loopUnrounded = delta/fixedDelta + loopUnused;
+    remainder = loopUnrounded - Math.floor(loopUnrounded);
+    if(remainder>0.5) {
+        loopRounded = Math.floor(loopUnrounded) + 1;
+    } else
+        loopRounded = Math.floor(loopUnrounded);
+    loopUnused = loopUnrounded - loopRounded;
+    for(var i=0;i<loopRounded;i++) {
         player.movingPlayer();
         //moveLaser();
     }

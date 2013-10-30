@@ -23,8 +23,9 @@ var canvas,
     host = false,
     session = [],
     continueLoop = true,
-    lastTick = Date.now(),
+    lastTick = Date.now(),//delta time
     lastTickBullet = 0,
+    loopUnused = 0,//percent left of last loop
     width,
     height,
     //playerLength = 0,
@@ -177,20 +178,22 @@ function gameLoop() {
 
     var now = Date.now(),
         fixedDelta = 1000/60,
-        loop,
+        loopRounded,
+        remainder,
         delta = now - lastTick;
     lastTick = Date.now();
-    //console.log('number of loop: '+Math.floor(delta/fixedDelta));
-    document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
-    var number = delta/fixedDelta - Math.floor(delta/fixedDelta);
-    if(number>0.5)
-        loop = Math.floor(delta/fixedDelta) + 1;
-    else
-        loop = Math.floor(delta/fixedDelta);
-    for(var i=0;i<loop;i++) {
+    var loopUnrounded = delta/fixedDelta + loopUnused;
+    remainder = loopUnrounded - Math.floor(loopUnrounded);
+    if(remainder>0.5) {
+        loopRounded = Math.floor(loopUnrounded) + 1;
+    } else
+        loopRounded = Math.floor(loopUnrounded);
+    loopUnused = loopUnrounded - loopRounded;
+    for(var i=0;i<loopRounded;i++) {
         movingPlayer();
         moveLaser();
     }
+    document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
     //console.log('delta: '+delta);
     shootDestruction();
     if (host && remotePlayers.length>1) {
