@@ -1,4 +1,4 @@
-if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+if (typeof dto === 'undefined') {
     dto = {};
 }
 /**************************************************

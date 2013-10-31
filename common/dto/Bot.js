@@ -112,4 +112,4 @@ function Bot(id, startX, startY, type) {
         height: height
         
     }
-};
+}

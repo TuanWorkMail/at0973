@@ -12,8 +12,11 @@ var util = require("util"),					// Utility resources (logging, object inspection
     hitTest = require('../common/collision_hitTest'),
     socket = require('./js/socket').socket,		                            // Socket controller
     player = require('../common/player'),
+    Session = require('../common/dto/session').Session,
     lastTick,                                               // calculate delta time
     loopUnused = 0,                                         // % of loop left
+    sessionid = 0,                                          // auto incremental session id
+    allSession = [],                                        // array contain all session
     mysql = require('mysql'),
     connection = mysql.createConnection({
         host: 'localhost',
@@ -24,13 +27,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     });
 //initializing.........
 function init() {
-    // if remote host server
-    if (host == 'remote') {
-        hostID = 'none';
-        util.log('remote host');
-    } else {
-        util.log('local host');
-    }
+
     // Start listening for events
     socket.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
@@ -54,17 +51,22 @@ function loop() {
         loopRounded = Math.floor(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
     for(var i=0;i<loopRounded;i++) {
+        //create new session
+        if(allSession.length==0) {
+            var newSession = new Session(sessionid);
+            sessionid++;
+            allSession.push(newSession);
+            exports.remotePlayers = allSession[allSession.indexOf(newSession)].getRemotePlayers();
+        }
         player.movingPlayer();
         //moveLaser();
+        botClass.moveBot();
+        hitTest.hitTestBot();
+        //shoot must behind check and move
+        botStupid.BotShootInterval(botClass.bots, 1);
+        hitTest.hitTestPlayer();
+        player.checkHitPoint();
     }
-
-    botClass.moveBot();
-    hitTest.hitTestBot();
-    //shoot must behind check and move
-    botStupid.BotShootInterval(botClass.bots, 1);
-    hitTest.hitTestPlayer();
-    player.checkHitPoint();
-
     setTimeout(loop, 1000/60);
 }
 
@@ -108,28 +110,19 @@ function onBotDie(data) {
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 function onLogin(data) {
-
     var that = this;
-
     //connection.connect();
-
-    var query = connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
+    connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
         if (err) util.log(err);
         else {
-            //debug
-            //util.log(query.sql);
             if (rows.length == 0) {
-                //debug
-                //util.log('wrong username or password');
                 that.emit("login", { username: 'failed' });
             } else {
-                //debug
-                //util.log('user logon: ' + rows[0].Username);
-                //util.log(helper.createUUID());
                 that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
-                //that.broadcast.to('authenticated').emit("temporary message", { userID: rows[0].ID, uuid: helper.createUUID() });
                 that.join('authenticated');
-                player.addPlayer(that.id, rows[0].Username, rows[0].ID);
+                var newPlayer = player.addPlayer(that.id, rows[0].Username, rows[0].ID);
+                util.log('new player userID: '+rows[0].ID+' and username: '+rows[0].Username);
+                socket.emit("move player", { id: that.id, username: rows[0].Username, x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
             }
         }
     });
@@ -138,7 +131,7 @@ function onLogin(data) {
 function onRegister(data) {
     var that = this;
     //connection.connect();
-    var query = connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
+    connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
         if (err) that.emit("register", { result: 'username already existed' });
         else
             that.emit("register", { result: 'register successfully' });

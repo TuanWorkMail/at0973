@@ -9,6 +9,7 @@
  * 	Depends on: Jquery for file loading and XML parsing
  *
  */
+tmxloader = {};
 tmxloader.trim = function (str) {
     return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 }

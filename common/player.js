@@ -1,17 +1,16 @@
-﻿var //remotePlayers = [],
-    playerLength = 0;
-
-if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
         socket = require('../server/js/socket').socket,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
-        remotePlayers = require('./dto/Instance').Instance.getRemotePlayer(),
+        Session = require('./dto/session').Session,
+        remotePlayers = require('../server/main').remotePlayers,
         dto = {};
     dto.Player = require('./dto/Player').Player;
 } else {
-    var remotePlayers = instance.getRemotePlayer();
+    var remotePlayers = session.getRemotePlayers();
 }
+var playerLength = 0;
 
 function checkHitPoint () {
     for (var i = 0; i < remotePlayers.length; ++i) {
@@ -71,6 +70,8 @@ function reset(para) {
 }
 
 function movingPlayer() {
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined')
+        remotePlayers = require('../server/main').remotePlayers;
     for(var i = 0;i < remotePlayers.length; i++) {
         if(remotePlayers[i].getMoving())
         switch (remotePlayers[i].getDirection()) {
@@ -104,7 +105,7 @@ function movingPlayer() {
     }
 }
 
-function addPlayer(sessionID, username, userID) {
+function addPlayer(socketID, username, userID) {
     //copied from Multiplayer.js
     //where to spawn ship
     var spawn = tmxloader.map.objectgroup['spawn'].objects;
@@ -115,11 +116,10 @@ function addPlayer(sessionID, username, userID) {
         direction = 'up';
     else
         direction = 'down';
-    var player = addNewPlayer(sessionID, username, x, y, direction);
+    var player = addNewPlayer(socketID, username, x, y, direction);
     player.setUserID(userID);
-    util.log('new player userID: '+userID+' and username: '+username);
-    socket.emit("move player", { id: sessionID, username: username, x: x, y: y, direction: direction });
     playerLength++;
+    return player;
 }
 
 //add new player to array

@@ -6,7 +6,6 @@ window.onload = init;
 /************************
 **** NAMESPACE
 ************************/
-window.dto = {};
 
 var canvas,
     ctx,
@@ -21,16 +20,13 @@ var canvas,
     ship_w = 40, ship_h = 40,
     //host = 'none',
     host = false,
-    session = [],
     continueLoop = true,
     lastTick = Date.now(),//delta time
     lastTickBullet = 0,
     loopUnused = 0,//percent left of last loop
-    instance,
     width,
     height,
     //playerLength = 0,
-    tmxloader = {},
     botsLength = 2,
     bots = [],
     remoteBots = [],
@@ -134,8 +130,6 @@ function init() {
     //botDestination = tmxloader.map.objectgroup['destination'].object;
     drawMap();
     temporaryDrawOverhead();
-
-    instance = new Instance();
 
     //START THE GAME
     gameLoop();
