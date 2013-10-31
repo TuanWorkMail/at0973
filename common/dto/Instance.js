@@ -1,5 +1,5 @@
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.getRemotePlayer = Instance.getRemotePlayer;
+    exports.Instance = Instance;
 }
 function Instance() {
     // Bot
@@ -7,7 +7,7 @@ function Instance() {
     // Player
         remotePlayers = [];
 
-    function getRemotePlayer() { return remotePlayers }
+    function getRemotePlayer() { return remotePlayers; }
 
     return {
 

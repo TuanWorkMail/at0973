@@ -6,11 +6,11 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         socket = require('../server/js/socket').socket,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
-        remotePlayers = require('./dto/Instance').getRemotePlayer(),
+        remotePlayers = require('./dto/Instance').Instance.getRemotePlayer(),
         dto = {};
     dto.Player = require('./dto/Player').Player;
 } else {
-    var player;
+    var remotePlayers = instance.getRemotePlayer();
 }
 
 function checkHitPoint () {

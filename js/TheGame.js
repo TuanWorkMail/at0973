@@ -26,6 +26,7 @@ var canvas,
     lastTick = Date.now(),//delta time
     lastTickBullet = 0,
     loopUnused = 0,//percent left of last loop
+    instance,
     width,
     height,
     //playerLength = 0,
@@ -133,6 +134,8 @@ function init() {
     //botDestination = tmxloader.map.objectgroup['destination'].object;
     drawMap();
     temporaryDrawOverhead();
+
+    instance = new Instance();
 
     //START THE GAME
     gameLoop();
