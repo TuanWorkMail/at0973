@@ -1,10 +1,3 @@
-/**
- * Created with JetBrains WebStorm.
- * User: AnhTuan
- * Date: 10/15/13
- * Time: 11:28 AM
- * To change this template use File | Settings | File Templates.
- */
 dto.Session = function() {
     var id,
         player,

@@ -32,7 +32,8 @@ exports.moveBot=function () {
             require('./BotStupid').goStraight(bots[bot]);
         }
         var socket = require('./socket').socket;
-        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
+        socket.emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
+            y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
 //add new bot to the array
@@ -77,7 +78,8 @@ function drawPath() {
                     spriteNum = 4; // path node
                     break;
             }
-            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32, bots[i].pathFound[rp][0] * 32, bots[i].pathFound[rp][1] * 32, 32, 32);
+            ctx.drawImage(spriteSheet, spriteNum * 32, 0, 32, 32,
+                bots[i].pathFound[rp][0] * 32, bots[i].pathFound[rp][1] * 32, 32, 32);
         }
     }
 }

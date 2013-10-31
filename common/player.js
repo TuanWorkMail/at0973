@@ -1,13 +1,16 @@
-﻿var playerLength = 0,
-    remotePlayers = [];
+﻿var //remotePlayers = [],
+    playerLength = 0;
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
         socket = require('../server/js/socket').socket,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
+        remotePlayers = require('./dto/Instance').getRemotePlayer(),
         dto = {};
     dto.Player = require('./dto/Player').Player;
+} else {
+    var player;
 }
 
 function checkHitPoint () {
@@ -217,6 +220,6 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.checkHitPoint = checkHitPoint;
     exports.movingPlayer = movingPlayer;
     exports.addPlayer = addPlayer;
-    exports.remotePlayers = remotePlayers;
+    //exports.remotePlayers = remotePlayers;
     exports.playerById = playerById;
 }
