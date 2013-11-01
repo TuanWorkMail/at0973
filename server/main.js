@@ -15,8 +15,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     Session = require('../common/dto/session').Session,
     lastTick,                                               // calculate delta time
     loopUnused = 0,                                         // % of loop left
-    sessionid = 0,                                          // auto incremental session id
-    allSession = [],                                        // array contain all session
+    sessionID = 0,                                          // auto incremental session id
     mysql = require('mysql'),
     connection = mysql.createConnection({
         host: 'localhost',
@@ -25,8 +24,13 @@ var util = require("util"),					// Utility resources (logging, object inspection
         password: '',
         database: 'tank5'
     });
+allSession = [];// array contain all session in GLOBAL SCOPE
 //initializing.........
 function init() {
+    //create a new blank session
+    var newSession = new Session(sessionID);
+    sessionID++;
+    allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
@@ -67,17 +71,6 @@ function loop() {
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
-    //create new session
-    var check = false;
-    if(allSession.length==0)
-        check=true;
-    else if(allSession[allSession.length-1].getRemotePlayers().length>2)
-        check=true;
-    if(check) {
-        var newSession = new Session(sessionid);
-        sessionid++;
-        allSession.push(newSession);
-    }
     client.on("disconnect", onClientDisconnect);
     //client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
@@ -126,25 +119,6 @@ function onBotDie(data) {
     this.broadcast.to('authenticated').emit("bot die", { count: data.count });
     //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
-function onLogin(data) {
-    var that = this;
-    //connection.connect();
-    connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
-        if (err) util.log(err);
-        else {
-            if (rows.length == 0) {
-                that.emit("login", { username: 'failed' });
-            } else {
-                that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
-                that.join('authenticated');
-                var newPlayer = player.addPlayer(that.id, rows[0].Username, rows[0].ID);
-                util.log('new player userID: '+rows[0].ID+' and username: '+rows[0].Username);
-                that.broadcast.to('authenticated').emit("move player", { id: that.id, username: rows[0].Username, x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
-            }
-        }
-    });
-    //connection.end();
-}
 function onRegister(data) {
     var that = this;
     //connection.connect();
@@ -177,25 +151,69 @@ function onEndMatch(data) {
     });
     //connection.end();
 }
+function onLogin(data) {
+    var that = this;
+    //connection.connect();
+    connection.query('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password], function (err, rows, fields) {
+        if (err) util.log(err);
+        else {
+            if (rows.length == 0) {
+                that.emit("login", { username: 'failed' });
+            } else {
+                if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
+                    var newSession = new Session(allSession.length-1);
+                    allSession.push(newSession);
+                }
+                var newPlayer = player.spawnPlayer(that.id, rows[0].Username, rows[0].ID);
+                that.emit("login", { username: rows[0].Username, userID: rows[0].ID, roomID: newPlayer.roomIndex });
+                that.join(getRoomName(newPlayer.roomIndex));
+                newPlayer = newPlayer.newPlayer;
+                util.log('new player userID: '+rows[0].ID+' and username: '+rows[0].Username);
+                sockets.in(getRoomName(newPlayer.roomIndex)).emit("move player", { id: that.id, username: rows[0].Username,
+                    x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
+            }
+        }
+    });
+    //connection.end();
+}
 function onKeyDown(data) {
-    var players = player.playerById(this.id);
+    var players = playerById(this.id);
     if (!players) {
         util.log('key down: player not found');
         return;
     }
-    players.setDirection(data.move);
-    players.setMoving(true);
-    this.broadcast.to('authenticated').emit("moving player", { id: this.id, direction: data.move });
+    players.players.setDirection(data.move);
+    players.players.setMoving(true);
+    this.broadcast.to(getRoomName(players.roomID)).emit("moving player", { id: this.id, direction: data.move });
 }
-function onKeyUp(data) {
-    var players = player.playerById(this.id);
-    if (!players) {
+function onKeyUp() {
+    var result = playerById(this.id);
+    if (!result) {
         console.log('key up: player not found');
         return;
     }
+    var players = result.players;
     players.setMoving(false);
-    this.broadcast.to('authenticated').emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
+    sockets.in(getRoomName(result.roomID)).emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
 }
-
+function getRoomName(id) {
+    switch (id) {
+        case 0: return 'zero';
+        case 1: return 'one';
+        case 2: return 'two';
+        default: return 'default';
+    }
+}
+// Find player by ID
+function playerById(socketid) {
+    for (var j=0; j<allSession.length; j++) {
+        var remotePlayers = allSession[j].getRemotePlayers();
+        for (var i = 0; i < remotePlayers.length; i++) {
+            if (remotePlayers[i].getSocketID() == socketid)
+                return {players:remotePlayers[i],roomID:j};
+        }
+    }
+    return false;
+}
 //RUN SERVER
 init();

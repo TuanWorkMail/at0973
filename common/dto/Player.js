@@ -84,6 +84,7 @@ dto.Player = function(startX, startY, direction) {
 	return {
         draw: draw,
         reset: reset,
+        socketID: socketID,
 
 		getX: getX,
 		getY: getY,

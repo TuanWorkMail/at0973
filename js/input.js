@@ -28,6 +28,10 @@ function keyDown(e) {
     }
     socket.emit("key down", { move: move, shoot: shoot });
     var player = playerById(mySocketID);
+    if(!player) {
+        console.log('keydown: player not found');
+        return;
+    }
     player.setDirection(move);
     player.setMoving(true);
 }
@@ -45,6 +49,10 @@ function keyUp(e) {
     }
     socket.emit("key up");
     var player = playerById(mySocketID);
+    if(!player) {
+        console.log('keyup: player not found');
+        return;
+    }
     player.setMoving(false);
 }
 

@@ -127,7 +127,6 @@ function onEndMatch(data) {
 
 // Moving player
 function onMovingPlayer(data) {
-    console.log('moving player received');
     var player = playerById(data.id);
     if (!player) {
         console.log('Moving: player not found');

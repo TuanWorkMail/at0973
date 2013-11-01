@@ -4,10 +4,9 @@
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
         Session = require('./dto/session').Session,
-        remotePlayers = require('../server/main').remotePlayers,
         dto = {};
     dto.Player = require('./dto/Player').Player;
-} else {
+} else if(typeof remotePlayers === 'undefined'){
     var remotePlayers = session.getRemotePlayers();
 }
 var playerLength = 0;
@@ -21,7 +20,6 @@ function checkHitPoint () {
     }
 }
 
-//This function runs whenever the player's ship hits an enemy and either subtracts a life or sets the alive variable to false if the player runs out of lives
 function checkLive(object) {
     object.setLive(object.getLive() - 1);
     console.log('live: ' + object.getLive());
@@ -105,10 +103,17 @@ function movingPlayer() {
     }
 }
 
-function addPlayer(socketID, username, userID) {
+function spawnPlayer(socketID, username, userID) {
     //copied from Multiplayer.js
     //where to spawn ship
     var spawn = tmxloader.map.objectgroup['spawn'].objects;
+    // WHY THIS NOT WORKING???????, WHY PUT IT HERE NOT WORK, BUT IN main IT WORK
+    /*if(allSession[allSession.length-1].getRemotePlayers().length>2) {
+        var newSession = new Session(allSession.length-1);
+        allSession.push(newSession);
+    }*/
+    var playerLength = allSession[allSession.length-1].getRemotePlayers().length;
+
     var x = spawn[playerLength % spawn.length].x,
         y = spawn[playerLength % spawn.length].y,
         direction;
@@ -117,9 +122,9 @@ function addPlayer(socketID, username, userID) {
     else
         direction = 'down';
     var player = addNewPlayer(socketID, username, x, y, direction);
-    player.setUserID(userID);
-    playerLength++;
-    return player;
+    if (!player) return false;
+    player.newPlayer.setUserID(userID);
+    return {newPlayer: player.newPlayer, roomIndex: player.roomIndex};
 }
 
 //add new player to array
@@ -129,14 +134,13 @@ function addNewPlayer(id, username, x, y, direction) {
     var newPlayer = new dto.Player(x, y, direction);
     newPlayer.setSocketID(id);
     newPlayer.setUsername(username);
-
-    // Add new player to the remote players array
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+        var roomIndex = allSession.length - 1,
+            remotePlayers = allSession[roomIndex].getRemotePlayers();
+    } else//WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
+        remotePlayers = session.getRemotePlayers();
     remotePlayers.push(newPlayer);
-
-    for(var i=0;i<remotePlayers.length;i++)
-        if(remotePlayers[i].getUsername()==username)
-            return remotePlayers[i];
-    return false;
+    return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomIndex: roomIndex};
 }
 // Find player by ID
 function playerById(id) {
@@ -217,6 +221,6 @@ function moveShip() {
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.checkHitPoint = checkHitPoint;
     exports.movingPlayer = movingPlayer;
-    exports.addPlayer = addPlayer;
+    exports.spawnPlayer = spawnPlayer;
     exports.playerById = playerById;
 }

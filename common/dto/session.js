@@ -10,7 +10,7 @@ function Session(sid) {
     function getID() {return id} function setID(para) {id = para}
     function getRemotePlayers() { return remotePlayers; }
 
-    return {
+    return {remotePlayers: remotePlayers,
         getID: getID, setID: setID,
         getRemotePlayers: getRemotePlayers
     }
