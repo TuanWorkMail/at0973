@@ -124,7 +124,6 @@ function addPlayer(socketID, username, userID) {
 
 //add new player to array
 function addNewPlayer(id, username, x, y, direction) {
-    console.log("New player connected: " + id);
 
     // Initialise the new player
     var newPlayer = new dto.Player(x, y, direction);
@@ -139,7 +138,6 @@ function addNewPlayer(id, username, x, y, direction) {
             return remotePlayers[i];
     return false;
 }
-
 // Find player by ID
 function playerById(id) {
     for (var i = 0; i < remotePlayers.length; i++) {
@@ -220,6 +218,5 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.checkHitPoint = checkHitPoint;
     exports.movingPlayer = movingPlayer;
     exports.addPlayer = addPlayer;
-    //exports.remotePlayers = remotePlayers;
     exports.playerById = playerById;
 }

@@ -8,4 +8,4 @@ io.configure(function () {
     // Restrict log output
     io.set("log level", 2);
 });
-exports.socket = io.sockets;
+exports.sockets = io.sockets;

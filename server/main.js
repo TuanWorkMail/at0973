@@ -10,7 +10,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     botStupid = require('./js/BotStupid'),
     tmxloader = require('./js/TMX_Engine.js').tmxloader,
     hitTest = require('../common/collision_hitTest'),
-    socket = require('./js/socket').socket,		                            // Socket controller
+    sockets = require('./js/socket').sockets,		                            // Socket controller
     player = require('../common/player'),
     Session = require('../common/dto/session').Session,
     lastTick,                                               // calculate delta time
@@ -27,9 +27,8 @@ var util = require("util"),					// Utility resources (logging, object inspection
     });
 //initializing.........
 function init() {
-
     // Start listening for events
-    socket.on("connection", onSocketConnection);
+    sockets.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
@@ -51,26 +50,34 @@ function loop() {
         loopRounded = Math.floor(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
     for(var i=0;i<loopRounded;i++) {
-        //create new session
-        if(allSession.length==0) {
-            var newSession = new Session(sessionid);
-            sessionid++;
-            allSession.push(newSession);
-            exports.remotePlayers = allSession[allSession.indexOf(newSession)].getRemotePlayers();
+        for(var j=0; j<allSession.length; j++) {
+            // BEGIN LOGIC      BEGIN LOGIC     BEGIN LOGIC     BEGIN LOGIC
+            exports.remotePlayers = allSession[j].getRemotePlayers();
+            player.movingPlayer();
+            //moveLaser();
+            botClass.moveBot();
+            hitTest.hitTestBot();
+            //shoot must behind check and move
+            botStupid.BotShootInterval(botClass.bots, 1);
+            hitTest.hitTestPlayer();
+            player.checkHitPoint();
+            // END LOGIC        END LOGIC       END LOGIC       END LOGIC
         }
-        player.movingPlayer();
-        //moveLaser();
-        botClass.moveBot();
-        hitTest.hitTestBot();
-        //shoot must behind check and move
-        botStupid.BotShootInterval(botClass.bots, 1);
-        hitTest.hitTestPlayer();
-        player.checkHitPoint();
     }
     setTimeout(loop, 1000/60);
 }
-
 function onSocketConnection(client) {
+    //create new session
+    var check = false;
+    if(allSession.length==0)
+        check=true;
+    else if(allSession[allSession.length-1].getRemotePlayers().length>2)
+        check=true;
+    if(check) {
+        var newSession = new Session(sessionid);
+        sessionid++;
+        allSession.push(newSession);
+    }
     client.on("disconnect", onClientDisconnect);
     //client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
@@ -82,10 +89,20 @@ function onSocketConnection(client) {
     client.on("end match", onEndMatch);
     client.on("key down", onKeyDown);
     client.on("key up", onKeyUp);
-};
+}
 function onClientDisconnect() {
-    // Broadcast removed player to connected socket clients
-    this.broadcast.to('authenticated').emit("remove player", { id: this.id });
+    var removePlayer = false;
+    for(var j=0; j<allSession.length; j++) {
+        for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
+            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
+                allSession[j].getRemotePlayers().splice(i, 1);
+                this.broadcast.to('authenticated').emit("remove player", { id: this.id });
+                removePlayer = true;
+            }
+        }
+    }
+    if (!removePlayer)
+        util.log("Remove: Player not found: "+this.id);
 }
 function onNewPlayer(data) {
     // Broadcast new player to connected socket clients
@@ -122,7 +139,7 @@ function onLogin(data) {
                 that.join('authenticated');
                 var newPlayer = player.addPlayer(that.id, rows[0].Username, rows[0].ID);
                 util.log('new player userID: '+rows[0].ID+' and username: '+rows[0].Username);
-                socket.emit("move player", { id: that.id, username: rows[0].Username, x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
+                that.broadcast.to('authenticated').emit("move player", { id: that.id, username: rows[0].Username, x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
             }
         }
     });
@@ -177,7 +194,7 @@ function onKeyUp(data) {
         return;
     }
     players.setMoving(false);
-    socket.emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
+    this.broadcast.to('authenticated').emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
 }
 
 //RUN SERVER
