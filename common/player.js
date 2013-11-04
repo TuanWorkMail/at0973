@@ -108,11 +108,11 @@ function spawnPlayer(socketID, username, userID) {
     //where to spawn ship
     var spawn = tmxloader.map.objectgroup['spawn'].objects;
     // WHY THIS NOT WORKING???????, WHY PUT IT HERE NOT WORK, BUT IN main IT WORK
-    /*if(allSession[allSession.length-1].getRemotePlayers().length>2) {
-        var newSession = new Session(allSession.length-1);
-        allSession.push(newSession);
+    /*if(myGlobal.allSession[myGlobal.allSession.length-1].getRemotePlayers().length>2) {
+        var newSession = new Session(myGlobal.allSession.length-1);
+        myGlobal.allSession.push(newSession);
     }*/
-    var playerLength = allSession[allSession.length-1].getRemotePlayers().length;
+    var playerLength = myGlobal.allSession[myGlobal.allSession.length-1].getRemotePlayers().length;
 
     var x = spawn[playerLength % spawn.length].x,
         y = spawn[playerLength % spawn.length].y,
@@ -135,8 +135,8 @@ function addNewPlayer(id, username, x, y, direction) {
     newPlayer.setSocketID(id);
     newPlayer.setUsername(username);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-        var roomIndex = allSession.length - 1,
-            remotePlayers = allSession[roomIndex].getRemotePlayers();
+        var roomIndex = myGlobal.allSession.length - 1,
+            remotePlayers = myGlobal.allSession[roomIndex].getRemotePlayers();
     } else//WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
         remotePlayers = session.getRemotePlayers();
     remotePlayers.push(newPlayer);

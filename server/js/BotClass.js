@@ -1,8 +1,4 @@
 var botSmart = require('./BotSmart');
-//where bot will spawn, each map have a number of predefined point
-var whereSpawn = 0,
-    bots = [],
-    botsLength = 2;
 /*
 var pathStart,
     pathStartX,
@@ -21,18 +17,18 @@ var pathStart,
 exports.moveBot=function () {
     createBot();
     for (var bot = 0; bot < bots.length; bot++) {
-        if (bots[bot].type == 'smart') {
+        if (bots[bot].getType() == 'smart') {
             if (bots[bot].whereNow < bots[bot].pathFound.length - 1) {
                 botSmart.movingBot(bots[bot]);
             } else {
                 bots[bot].pathFound = botSmart.botRandomPath(bots[bot]);
                 bots[bot].whereNow = 0;
             }
-        } else if (bots[bot].type == 'dumb') {
+        } else if (bots[bot].getType() == 'dumb') {
             require('./BotStupid').goStraight(bots[bot]);
         }
         var sockets = require('./socket').sockets;
-        sockets.in('authenticated').emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
+        sockets.in(myGlobal.roomName).emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
             y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
@@ -120,4 +116,4 @@ function moving(object, direction, speed, type) {
             break;
     }
 }
-exports.bots = bots;
+//exports.bots = bots;
