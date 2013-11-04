@@ -25,9 +25,9 @@ var util = require("util"),					// Utility resources (logging, object inspection
         database: 'tank5'
     });
 // GLOBAL SCOPE
-myGlobal = {};  //all global will be in this, to make debugging easier
-myGlobal.allSession = [];// array contain all session
-myGlobal.roomName = '';       //global room name because every class need it
+$$myGlobal = {};  //all global will be in this, to make debugging easier
+$$myGlobal.allSession = [];// array contain all session
+$$myGlobal.roomName = '';       //global room name because every class need it
 //these are just local make global, need to be refactored
 whereSpawn = 0;
 bots = [];
@@ -38,7 +38,7 @@ function init() {
     //create a new blank session
     var newSession = new Session(sessionID);
     sessionID++;
-    myGlobal.allSession.push(newSession);
+    $$myGlobal.allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
     tmxloader.load(__dirname + '\\map\\classic2.tmx');
@@ -62,15 +62,15 @@ function loop() {
         loopRounded = Math.floor(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
     for(var i=0;i<loopRounded;i++) {
-        for(var j=0; j<myGlobal.allSession.length; j++) {
+        for(var j=0; j<$$myGlobal.allSession.length; j++) {
 
             // BEGIN LOGIC      BEGIN LOGIC     BEGIN LOGIC     BEGIN LOGIC
 
-            myGlobal.roomName = 'room'+j;
-            exports.remotePlayers = myGlobal.allSession[j].getRemotePlayers();
-            whereSpawn = myGlobal.allSession[j].whereSpawn;
-            bots = myGlobal.allSession[j].bots;
-            botsLength = myGlobal.allSession[j].botsLength;
+            $$myGlobal.roomName = 'room'+j;
+            exports.remotePlayers = $$myGlobal.allSession[j].getRemotePlayers();
+            whereSpawn = $$myGlobal.allSession[j].whereSpawn;
+            bots = $$myGlobal.allSession[j].bots;
+            botsLength = $$myGlobal.allSession[j].botsLength;
             player.movingPlayer();
             //moveLaser();
             botClass.moveBot();
@@ -101,10 +101,10 @@ function onSocketConnection(client) {
 }
 function onClientDisconnect() {
     var removePlayer = false;
-    for(var j=0; j<myGlobal.allSession.length; j++) {
-        for (var i = 0; i < myGlobal.allSession[j].getRemotePlayers().length; i++) {
-            if (myGlobal.allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
-                myGlobal.allSession[j].getRemotePlayers().splice(i, 1);
+    for(var j=0; j<$$myGlobal.allSession.length; j++) {
+        for (var i = 0; i < $$myGlobal.allSession[j].getRemotePlayers().length; i++) {
+            if ($$myGlobal.allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
+                $$myGlobal.allSession[j].getRemotePlayers().splice(i, 1);
                 this.broadcast.to('authenticated').emit("remove player", { id: this.id });
                 removePlayer = true;
             }
@@ -176,9 +176,9 @@ function onLogin(data) {
             if (rows.length == 0) {
                 that.emit("login", { username: 'failed' });
             } else {
-                if(myGlobal.allSession[myGlobal.allSession.length-1].getRemotePlayers().length>=2) {
-                    var newSession = new Session(myGlobal.allSession.length-1);
-                    myGlobal.allSession.push(newSession);
+                if($$myGlobal.allSession[$$myGlobal.allSession.length-1].getRemotePlayers().length>=2) {
+                    var newSession = new Session($$myGlobal.allSession.length-1);
+                    $$myGlobal.allSession.push(newSession);
                 }
                 var newPlayer = player.spawnPlayer(that.id, rows[0].Username, rows[0].ID);
                 that.emit("login", { username: rows[0].Username, userID: rows[0].ID, roomID: newPlayer.roomIndex });
@@ -214,8 +214,8 @@ function onKeyUp() {
 }
 // Find player by ID
 function playerById(socketid) {
-    for (var j=0; j<myGlobal.allSession.length; j++) {
-        var remotePlayers = myGlobal.allSession[j].getRemotePlayers();
+    for (var j=0; j<$$myGlobal.allSession.length; j++) {
+        var remotePlayers = $$myGlobal.allSession[j].getRemotePlayers();
         for (var i = 0; i < remotePlayers.length; i++) {
             if (remotePlayers[i].getSocketID() == socketid)
                 return {players:remotePlayers[i],roomID:j};

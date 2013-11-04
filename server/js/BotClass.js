@@ -28,7 +28,7 @@ exports.moveBot=function () {
             require('./BotStupid').goStraight(bots[bot]);
         }
         var sockets = require('./socket').sockets;
-        sockets.in(myGlobal.roomName).emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
+        sockets.in($$myGlobal.roomName).emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
             y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
