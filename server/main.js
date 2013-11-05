@@ -3,7 +3,7 @@
 
 // LOCAL SCOPE
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
-    helper = require("./js/helper"),
+    helper = require("./../common/helper"),
     host = 'local',                        //if server host or use remote host
     hostID = '',
     botClass = require('./js/BotClass.js'),

@@ -42,7 +42,7 @@ exports.goStraight = function (object) {
             break;
     }
     if(flag)
-        switch (require('./helper').randomNumber(1, 4)) {
+        switch (require('./../../common/helper').randomNumber(1, 4)) {
             case 1:
                 object.direction = 'up';
                 break;

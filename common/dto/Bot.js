@@ -1,6 +1,6 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.Bot = Bot;
-    var randomNumber = require('../../server/js/helper').randomNumber;
+    var randomNumber = require('../helper').randomNumber;
 }
 /**************************************************
 ** CLIENT BOT CLASS

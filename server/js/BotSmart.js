@@ -36,7 +36,7 @@ exports.movingBot = function (bots) {
 //output: array of path to a random point
 exports.botRandomPath = function (object) {
     var check = true,
-        randomNumber = require('./helper').randomNumber,
+        randomNumber = require('./../../common/helper').randomNumber,
         pathFinder = require('./BotPathFinder').pathFinder,
         botDestination = tmxloader.map.objectgroup['destination'].objects;
     while (check) {

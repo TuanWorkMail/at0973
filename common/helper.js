@@ -1,4 +1,7 @@
-
+﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.createUUID = createUUID;
+    exports.randomNumber = randomNumber;
+}
 //input: interval in which random number come from
 //output: random number between interval
 function randomNumber(from, to) {
@@ -10,6 +13,7 @@ function findLayerByName(name) {
             return i;
         }
     }
+    return false;
 }
 //input: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
 function createUUID(pattern) {
