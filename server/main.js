@@ -91,8 +91,9 @@ function onSocketConnection(client) {
     client.on("login", onLogin);
     client.on("register", onRegister);
     client.on("end match", onEndMatch);
-    client.on("key down", onKeyDown);
-    client.on("key up", onKeyUp);
+    client.on("move key down", onMoveKeyDown);
+    client.on("move key up", onMoveKeyUp);
+    client.on("shoot key down", onShootKeyDown);
 }
 function onClientDisconnect() {
     var removePlayer = false;
@@ -166,7 +167,7 @@ function onLogin(data) {
     });
     //connection.end();
 }
-function onKeyDown(data) {
+function onMoveKeyDown(data) {
     var players = playerById(this.id);
     if (!players) {
         util.log('key down: player not found');
@@ -176,7 +177,7 @@ function onKeyDown(data) {
     players.players.setMoving(true);
     this.broadcast.to('room'+players.roomID).emit("moving player", { id: this.id, direction: data.move });
 }
-function onKeyUp() {
+function onMoveKeyUp() {
     var result = playerById(this.id);
     if (!result) {
         console.log('key up: player not found');
@@ -185,6 +186,9 @@ function onKeyUp() {
     var players = result.players;
     players.setMoving(false);
     sockets.in('room'+result.roomID).emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
+}
+function onShootKeyDown(data) {
+
 }
 // Find player by ID
 function playerById(socketid) {

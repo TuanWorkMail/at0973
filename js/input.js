@@ -17,15 +17,32 @@ function keyDown(e) {
     }
     if (e.keyCode == 32) {
         shootKey = true;
-        if (direction == 'up') {
-            shooting(ship_x + ship_w / 2, ship_y - 1, direction);
-        } else if (direction == 'down') {
-            shooting(ship_x + ship_w / 2, ship_y + ship_h + 1, direction);
-        } else if (direction == 'right') {
-            shooting(ship_x + ship_w + 1, ship_y + ship_h / 2, direction);
-        } else if (direction == 'left') {
-            shooting(ship_x - 1, ship_y + ship_h / 2, direction);
+        var player = playerById(mySocketID);
+        if(!player) {
+            console.log('keydown: player not found');
+            return;
         }
+        var ship_x = player.getX(),
+            ship_y = player.getY(),
+            ship_w = player.getWidth(),
+            ship_h = player.getHeight(),
+            x, y,
+            direction = player.getDirection();
+        if (direction == 'up') {
+            x = ship_x + ship_w / 2;
+            y = ship_y - 1;
+        } else if (direction == 'down') {
+            x = ship_x + ship_w / 2;
+            y = ship_y + ship_h + 1;
+        } else if (direction == 'right') {
+            x = ship_x + ship_w + 1;
+            y = ship_y + ship_h / 2;
+        } else if (direction == 'left') {
+            x = ship_x - 1;
+            y = ship_y + ship_h / 2;
+        }
+        shooting(x, y, direction);
+        socket.emit("shoot key down", { x: x, y: y, direction: direction });
     }
 }
 //Checks to see if a pressed key has been released and stops the ships movement if it has
@@ -45,25 +62,25 @@ function keyUp(e) {
         check = true;
     }
     if(check)
-        socket.emit("key up");
+        socket.emit("move key up");
     var player = playerById(mySocketID);
     if(!player) {
-        console.log('keyup: player not found');
+        console.log('movekeyup: player not found');
         return;
     }
     player.setMoving(false);
 }
 function updateInput() {
     if (rightKey || leftKey || upKey || downKey) {
-        var move, shoot=true;
+        var move;
         if(rightKey) move='right';
         else if(leftKey) move='left';
         else if(upKey) move='up';
         else if(downKey) move='down';
-        socket.emit("key down", { move: move, shoot: shoot });
+        socket.emit("move key down", { move: move });
         var player = playerById(mySocketID);
         if(!player) {
-            console.log('keydown: player not found');
+            console.log('updateInput: player not found');
             return;
         }
         player.setDirection(move);
@@ -72,7 +89,7 @@ function updateInput() {
 }
 
 //holds the cursors position
-function cursorPosition(x, y) {
+function CursorPosition(x, y) {
     this.x = x;
     this.y = y;
 }
@@ -90,6 +107,5 @@ function getCursorPos(e) {
     }
     x -= canvasOverhead.offsetLeft;
     y -= canvasOverhead.offsetTop;
-    var cursorPos = new cursorPosition(x, y);
-    return cursorPos;
+    return new CursorPosition(x, y);
 }
