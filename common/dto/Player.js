@@ -59,30 +59,12 @@ dto.Player = function(startX, startY, direction) {
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para; };
 
-	// Draw player
-	var draw = function(ctx) {
-		if (direction=='right') {
-			//ctx.drawImage(ship_right, x, y);
-            drawTile(1, x, y);
-		} else if (direction=='left') {
-			//ctx.drawImage(ship_left, x, y);
-            drawTile(4, x, y);
-		} if (direction=='up') {
-			//ctx.drawImage(ship, x, y);
-            drawTile(3, x, y);
-		} else if (direction=='down') {
-			//ctx.drawImage(ship_down, x, y);
-            drawTile(2, x, y);
-		}
-	};
     // reset live
     var reset = function() {
         live = 2;
     }
-
 	// Define which variables and methods can be accessed
 	return {
-        draw: draw,
         reset: reset,
         socketID: socketID,
 

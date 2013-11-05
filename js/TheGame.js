@@ -186,33 +186,15 @@ function gameLoop() {
         moveLaser();
     }
     document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
-    //console.log('delta: '+delta);
     shootDestruction();
-    if (host && remotePlayers.length>1) {
-        /*
-        moveBot();
-        hitTestBot();
-        //shoot must behind check and move
-        BotShootInterval(bots, 1);
-        hitTestPlayer();
-        checkHitPoint();
-        */
-    }
     if(!host) {
         clearCanvas();
         //drawMap();
         if (alive && gameStarted && lives > 0) {
             //shipCollision();
-
-            //COMBINE BOTS AND REMOTEBOTS, NOW DEPEND ON HOST
             drawBot();
-
-            drawShip();
+            drawPlayer();
             drawLaser();
-            // Draw the remote players
-            for (var i = 0; i < remotePlayers.length; i++) {
-                remotePlayers[i].draw(ctx);
-            }
             updateInput();
         }
         scoreTotal();
