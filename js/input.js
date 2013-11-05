@@ -1,18 +1,19 @@
-﻿//Checks to see which key has been pressed and either to move the ship or fire a laser
+﻿//Now, let�s make our ship move. Add these to the variables at the top:
+var rightKey = false,
+    leftKey = false,
+    upKey = false,
+    downKey = false;
+//Checks to see which key has been pressed and either to move the ship or fire a laser
 function keyDown(e) {
     var move, shoot = false;
     if (e.keyCode == 39) {
         rightKey = true;
-        move = 'right';
     } else if (e.keyCode == 37) {
         leftKey = true;
-        move = 'left';
     } else if (e.keyCode == 38) {
         upKey = true;
-        move = 'up';
     } else if (e.keyCode == 40) {
         downKey = true;
-        move = 'down';
     }
     if (e.keyCode == 88 && lasers.length <= lasersLength) {
         shoot = true;
@@ -26,14 +27,7 @@ function keyDown(e) {
             shooting(ship_x - 1, ship_y + ship_h / 2, direction);
         }
     }
-    socket.emit("key down", { move: move, shoot: shoot });
-    var player = playerById(mySocketID);
-    if(!player) {
-        console.log('keydown: player not found');
-        return;
-    }
-    player.setDirection(move);
-    player.setMoving(true);
+
 }
 
 //Checks to see if a pressed key has been released and stops the ships movement if it has
@@ -78,14 +72,20 @@ function getCursorPos(e) {
     var cursorPos = new cursorPosition(x, y);
     return cursorPos;
 }
-
-/**************************************************
-** PLAYER UPDATE
-**************************************************/
-function updatePlayer() {
-    // Update local player and check for change
+function updateInput() {
     if (rightKey || leftKey || upKey || downKey) {
-        // Send local player data to the game server
-        socket.emit("move player", { x: ship_x, y: ship_y, direction: direction }); 
+        var move, shoot=true;
+        if(rightKey) move='right';
+        else if(leftKey) move='left';
+        else if(upKey) move='up';
+        else if(downKey) move='down';
+        socket.emit("key down", { move: move, shoot: shoot });
+        var player = playerById(mySocketID);
+        if(!player) {
+            console.log('keydown: player not found');
+            return;
+        }
+        player.setDirection(move);
+        player.setMoving(true);
     }
 };

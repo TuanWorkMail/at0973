@@ -88,11 +88,6 @@ function loop() {
 }
 function onSocketConnection(client) {
     client.on("disconnect", onClientDisconnect);
-    //client.on("new player", onNewPlayer);
-    client.on("move player", onMovePlayer);
-    client.on("new lasers", onNewLasers);
-    client.on("bot broadcast", onBotBroadcast);
-    client.on("bot die", onBotDie);
     client.on("login", onLogin);
     client.on("register", onRegister);
     client.on("end match", onEndMatch);
@@ -105,35 +100,14 @@ function onClientDisconnect() {
         for (var i = 0; i < $$myGlobal.allSession[j].getRemotePlayers().length; i++) {
             if ($$myGlobal.allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
                 $$myGlobal.allSession[j].getRemotePlayers().splice(i, 1);
-                this.broadcast.to('authenticated').emit("remove player", { id: this.id });
+                // NEED FIX
+                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
                 removePlayer = true;
             }
         }
     }
     if (!removePlayer)
         util.log("Remove: Player not found: "+this.id);
-}
-function onNewPlayer(data) {
-    // Broadcast new player to connected socket clients
-    this.broadcast.to('authenticated').emit("new player", { id: this.id, userID: data.userID, username: data.username });
-
-}
-function onMovePlayer(data) {
-    if(hostID!=this.id) util.log('warning: move player send by player, not host');
-    // Broadcast updated position to connected socket clients
-    this.broadcast.to('authenticated').emit("move player", { id: data.id, username: data.username, x: data.x, y: data.y, direction: data.direction });
-}
-function onNewLasers(data) {
-    // Broadcast updated position to connected socket clients
-    this.broadcast.to('authenticated').emit("new lasers", { id: data.id, x: data.x, y: data.y, direction: data.direction });
-}
-function onBotBroadcast(data) {
-    this.broadcast.to('authenticated').emit("bot broadcast", { count: data.count, x: data.x, y: data.y, direction: data.direction, type: data.type });
-    //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
-}
-function onBotDie(data) {
-    this.broadcast.to('authenticated').emit("bot die", { count: data.count });
-    //util.log('length ' + data.length + ';bot ' + data.bot + ';x ' + data.x + ';y ' + data.y);
 }
 function onRegister(data) {
     var that = this;

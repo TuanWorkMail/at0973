@@ -34,11 +34,6 @@ var canvas,
     stupidShoot=false,
     //array of coordinate the bot can randomly go to
     botDestination,
-    //Now, let�s make our ship move. Add these to the variables at the top:
-    rightKey = false,
-    leftKey = false,
-    upKey = false,
-    downKey = false,
     //which direction the ship is facing
     direction,
     //Add the socket variable to the file
@@ -218,9 +213,7 @@ function gameLoop() {
             for (var i = 0; i < remotePlayers.length; i++) {
                 remotePlayers[i].draw(ctx);
             }
-            //call update function
-            //updatePlayer();
-
+            updateInput();
         }
         scoreTotal();
     }

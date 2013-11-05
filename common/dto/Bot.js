@@ -75,6 +75,20 @@ function Bot(id, startX, startY, type) {
 
     // Define which variables and methods can be accessed
     return {
+        id: id,
+        x: x,
+        y: y,
+        type: type,
+        pathFound: pathFound,
+        whereNow: whereNow,
+        to: to,
+        direction: direction,
+        speed: speed,
+        image: image,
+        width: width,
+        height: height,
+
+
         getX: getX,
         setX: setX,
         getY: getY,
@@ -96,20 +110,6 @@ function Bot(id, startX, startY, type) {
         getWidth: getWidth,
         setWidth: setWidth,
         getHeight: getHeight,
-        setHeight: setHeight,
-        
-        id: id,
-        x: x,
-        y: y,
-        type: type,
-        pathFound: pathFound,
-        whereNow: whereNow,
-        to: to,
-        direction: direction,
-        speed: speed,
-        image: image,
-        width: width,
-        height: height
-        
+        setHeight: setHeight
     }
 }
