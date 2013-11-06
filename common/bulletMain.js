@@ -3,6 +3,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         createUUID = helper.createUUID,
         hitTest = require('./collision_hitTest'),
         mapCollision = hitTest.mapCollision,
+        Bullet = require('./dto/bullet').Bullet,
         socket = require('../server/js/socket').socket;
 }
 var lasers = [],
@@ -10,12 +11,11 @@ var lasers = [],
 
 //input: x,y,direction of the bullet
 //push new bullet into array and emit to server
-//client only
- function shooting(x,y,direction) {
-    var id = createUUID('xxxx');
+function shooting(x,y,direction) {
+    var id = helper.createUUID('xxxx');
     var newBullet = new Bullet(id, x, y, direction, false);
     lasers.push(newBullet);
-    //socket.emit("new lasers", { id: id, x: x, y: y, direction: direction });
+    return id;
 }
 
 //If there are lasers in the lasers array, then this will draw them on the canvas
@@ -49,7 +49,7 @@ function moveLaser() {
 }
 
 function renderBulletDestroyed(bulletObject) {
-    
+
 }
 
 function removeBullet(lasers) {

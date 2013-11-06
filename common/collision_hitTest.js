@@ -131,7 +131,8 @@ function hitTestBot() {
 }
 
 function hitTestPlayer() {
-    var ship_xw,
+    var remotePlayers = require('../server/main').remotePlayers,
+        ship_xw,
         ship_yh;
 
     for (var i = 0; i < lasers.length; i++) {

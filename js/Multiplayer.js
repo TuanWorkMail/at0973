@@ -11,7 +11,7 @@ var setSocketEventHandlers = function() {
 	socket.on("connect", onSocketConnected);
 	socket.on("disconnect", onSocketDisconnect);
 	socket.on("move player", onMovePlayer);
-	socket.on("new lasers", onNewLasers);
+	socket.on("new bullet", onNewBullet);
 	socket.on("remove player", onRemovePlayer);
 	socket.on("bot broadcast", onBotBroadcast);
 	socket.on("bot die", onBotDie);
@@ -52,7 +52,7 @@ function onMovePlayer(data) {
 }
 
 // Move lasers
-function onNewLasers(data) {
+function onNewBullet(data) {
 	//add new lasers
     var newBullet = new Bullet(data.id, data.x, data.y, data.direction, false);
     lasers.push(newBullet);

@@ -3,9 +3,6 @@
 
 // LOCAL SCOPE
 var util = require("util"),					// Utility resources (logging, object inspection, etc)
-    helper = require("./../common/helper"),
-    host = 'local',                        //if server host or use remote host
-    hostID = '',
     botClass = require('./js/BotClass.js'),
     botStupid = require('./js/BotStupid'),
     tmxloader = require('./js/TMX_Engine.js').tmxloader,
@@ -13,6 +10,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     sockets = require('./js/socket').sockets,		                            // Socket controller
     player = require('../common/player'),
     Session = require('../common/dto/session').Session,
+    bulletMain = require('../common/bulletMain'),
     lastTick,                                               // calculate delta time
     loopUnused = 0,                                         // % of loop left
     sessionID = 0,                                          // auto incremental session id
@@ -32,7 +30,7 @@ $$myGlobal.roomName = '';       //global room name because every class need it
 whereSpawn = 0;
 bots = [];
 botsLength = 2;
-
+alive = true;
 //initializing.........
 function init() {
     //create a new blank session
@@ -187,8 +185,32 @@ function onMoveKeyUp() {
     players.setMoving(false);
     sockets.in('room'+result.roomID).emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
 }
-function onShootKeyDown(data) {
-
+function onShootKeyDown() {
+    var player = playerById(this.id),
+        roomID = player.roomID;
+    player = player.players;
+    if(!player) return;
+    var ship_x = player.getX(),
+        ship_y = player.getY(),
+        ship_w = player.getWidth(),
+        ship_h = player.getHeight(),
+        x, y,
+        direction = player.getDirection();
+    if (direction == 'up') {
+        x = ship_x + ship_w / 2;
+        y = ship_y - 1;
+    } else if (direction == 'down') {
+        x = ship_x + ship_w / 2;
+        y = ship_y + ship_h + 1;
+    } else if (direction == 'right') {
+        x = ship_x + ship_w + 1;
+        y = ship_y + ship_h / 2;
+    } else if (direction == 'left') {
+        x = ship_x - 1;
+        y = ship_y + ship_h / 2;
+    }
+    var id = bulletMain.shooting(x, y, direction);
+    sockets.in(roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction });
 }
 // Find player by ID
 function playerById(socketid) {

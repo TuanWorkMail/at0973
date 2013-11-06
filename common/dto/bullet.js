@@ -47,3 +47,6 @@ function Bullet(id, x, y, direction, isRemoved) {
         isRemoved: isRemoved,
     }
 }
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.Bullet = Bullet;
+}
