@@ -1,4 +1,5 @@
-var botSmart = require('./BotSmart');
+var botSmart = require('./BotSmart'),
+    botsLength = 2;
 /*
 var pathStart,
     pathStartX,
@@ -45,7 +46,7 @@ function createBot() {
         var x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
-        if (whereSpawn % 4 == 0) {
+        if (whereSpawn % 1 == 0) {
             newBot = new Bot(whereSpawn, x, y, 'smart');
             newBot.pathFound = botSmart.botRandomPath(newBot);
         } else {

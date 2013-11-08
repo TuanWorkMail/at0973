@@ -10,8 +10,8 @@ function Session(roomid) {
 
     //where bot will spawn, each map have a number of predefined point
     var whereSpawn = 0,
-        bots = [],
-        botsLength = 2;
+        bots = [];
+
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }
@@ -21,7 +21,6 @@ function Session(roomid) {
 
         whereSpawn: whereSpawn,
         bots: bots,
-        botsLength: botsLength,
 
         getRoomID: getRoomID,
         getLasers: getLasers,

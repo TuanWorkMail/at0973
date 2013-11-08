@@ -31,7 +31,6 @@ session = {};
 //these are just local make global, need to be refactored
 whereSpawn = 0;
 bots = [];
-botsLength = 2;
 alive = true;
 lasers = [];
 //initializing.........
@@ -66,7 +65,6 @@ function loop() {
             session = allSession[j];
             whereSpawn = allSession[j].whereSpawn;
             bots = allSession[j].bots;
-            botsLength = allSession[j].botsLength;
             lasers = allSession[j].getLasers();
             if(session.getRemotePlayers().length < 2) continue;
             player.movingPlayer();
