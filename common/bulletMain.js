@@ -5,12 +5,13 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         mapCollision = hitTest.mapCollision,
         Bullet = require('./dto/bullet').Bullet,
         socket = require('../server/js/socket').socket;
+} else if(typeof lasers === 'undefined') {
+    var lasers = [];
 }
-var lasers = [],
-    laserSpeed = 15;
-
+var laserSpeed = 15;
 //input: x,y,direction of the bullet
 //push new bullet into array and emit to server
+//client only
 function shooting(x,y,direction) {
     var id = helper.createUUID('xxxx');
     var newBullet = new Bullet(id, x, y, direction, false);
@@ -28,6 +29,8 @@ function drawLaser() {
 
 //If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
+    // HACKY SOLUTION, WHY THERES A LOCAL UNDEFINED LASERS?THERES ALREADY A GLOBAL ONE
+    if(typeof lasers === 'undefined') return;
     for (var i = 0; i < lasers.length; i++) {
         if (lasers[i].direction == 'up') {
             lasers[i].y -= laserSpeed;
@@ -70,7 +73,7 @@ function removeBullet(lasers) {
 }
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.lasers = lasers;
     exports.shooting = shooting;
     exports.moveLaser = moveLaser;
+    exports.lasers = lasers;
 }

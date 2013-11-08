@@ -1,28 +1,28 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
-        socket = require('../server/js/socket').socket,
+        sockets = require('../server/js/socket').sockets,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
-        Session = require('./dto/session').Session,
         dto = {};
     dto.Player = require('./dto/Player').Player;
 } else if(typeof remotePlayers === 'undefined'){
     var remotePlayers = session.getRemotePlayers();
 }
-var playerLength = 0;
 
 function checkHitPoint () {
+    var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() < 0 && alive) {
-            console.log('player ' + remotePlayers[i].getUsername() + ' die');
+            util.log('player ' + remotePlayers[i].getUsername() + ' die');
             checkLive(remotePlayers[i]);
         }
     }
 }
 
 function checkLive(object) {
+    var remotePlayers = session.getRemotePlayers();
     object.setLive(object.getLive() - 1);
-    console.log('live: ' + object.getLive());
+    util.log('live: ' + object.getLive());
     if (object.getLive() > 0) {
         reset('');
     } else if (object.getLive() <= 0) {
@@ -33,21 +33,22 @@ function checkLive(object) {
             id[i]=remotePlayers[i].getUserID();
             score[i]=remotePlayers[i].getLive();
         }
-        socket.emit("end match", { id1: id[0], id2:id[1], score1: score[0], score2: score[1] });
-        console.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
+        sockets.in('r'+session.getRoomID()).emit("end match", { id1: id[0], id2:id[1], score1: score[0], score2: score[1] });
+        util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
     }
 }
 
 function reset(para) {
+    var remotePlayers = session.getRemotePlayers();
     for (var obj = 0; obj < bots.length; ++obj) {
-        socket.emit("bot die", { count: bots[obj].id });
+        sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
     }
     bots.length = 0;
     whereSpawn = 0;
     lasers.length = 0;
     // respawn player
-    playerLength = 0;
+    var playerLength = remotePlayers.length;
     var objGroup = tmxloader.map.objectgroup['spawn'].objects;
     for (var i = 0; i < remotePlayers.length; i++) {
         var x = objGroup[playerLength % objGroup.length].x,
@@ -62,14 +63,13 @@ function reset(para) {
         remotePlayers[i].setDirection(direction);
         remotePlayers[i].setHitPoint(10);
         if(para=='end match') remotePlayers[i].reset();
-        socket.emit("move player", { id: remotePlayers[i].getSocketID(), username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
-        playerLength++;
+        sockets.in('r'+session.getRoomID()).emit("move player", { id: remotePlayers[i].getSocketID(),
+            username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
 }
 
 function movingPlayer() {
-    if (typeof require !== 'undefined' && typeof exports !== 'undefined')
-        remotePlayers = require('../server/main').remotePlayers;
+    var remotePlayers = session.getRemotePlayers();
     for(var i = 0;i < remotePlayers.length; i++) {
         if(remotePlayers[i].getMoving())
         switch (remotePlayers[i].getDirection()) {
@@ -107,12 +107,7 @@ function spawnPlayer(socketID, username, userID) {
     //copied from Multiplayer.js
     //where to spawn ship
     var spawn = tmxloader.map.objectgroup['spawn'].objects;
-    // WHY THIS NOT WORKING???????, WHY PUT IT HERE NOT WORK, BUT IN main IT WORK
-    /*if($$myGlobal.allSession[$$myGlobal.allSession.length-1].getRemotePlayers().length>2) {
-        var newSession = new Session($$myGlobal.allSession.length-1);
-        $$myGlobal.allSession.push(newSession);
-    }*/
-    var playerLength = $$myGlobal.allSession[$$myGlobal.allSession.length-1].getRemotePlayers().length;
+    var playerLength = allSession[allSession.length-1].getRemotePlayers().length;
 
     var x = spawn[playerLength % spawn.length].x,
         y = spawn[playerLength % spawn.length].y,
@@ -124,30 +119,35 @@ function spawnPlayer(socketID, username, userID) {
     var player = addNewPlayer(socketID, username, x, y, direction);
     if (!player) return false;
     player.newPlayer.setUserID(userID);
-    return {newPlayer: player.newPlayer, roomIndex: player.roomIndex};
+    return {newPlayer: player.newPlayer, roomID: player.roomID};
 }
 
 //add new player to array
 function addNewPlayer(id, username, x, y, direction) {
-
     // Initialise the new player
-    var newPlayer = new dto.Player(x, y, direction);
+    var roomID = 0,
+        newPlayer = new dto.Player(x, y, direction);
     newPlayer.setSocketID(id);
     newPlayer.setUsername(username);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-        var roomIndex = $$myGlobal.allSession.length - 1,
-            remotePlayers = $$myGlobal.allSession[roomIndex].getRemotePlayers();
-    } else//WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
-        remotePlayers = session.getRemotePlayers();
+        var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();
+        roomID = allSession[allSession.length - 1].getRoomID();
+    } else {
+        //WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
+        //theres already remoteplayer up top, but i need to get it again here
+        var remotePlayers = session.getRemotePlayers();
+    }
     remotePlayers.push(newPlayer);
-    return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomIndex: roomIndex};
+    return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomID: roomID};
 }
 // Find player by ID
+// client only
 function playerById(id) {
     for (var i = 0; i < remotePlayers.length; i++) {
         if (remotePlayers[i].getSocketID() == id)
             return remotePlayers[i];
     }
+
     return false;
 }
 

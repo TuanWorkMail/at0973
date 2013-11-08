@@ -17,7 +17,6 @@ function keyDown(e) {
     }
     if (e.keyCode == 32) {
         shootKey = true;
-        socket.emit("shoot key down");
     }
 }
 //Checks to see if a pressed key has been released and stops the ships movement if it has
@@ -35,6 +34,9 @@ function keyUp(e) {
     } else if (e.keyCode == 40) {
         downKey = false;
         check = true;
+    }
+    if (e.keyCode == 32) {
+        shootKey = false;
     }
     if(check)
         socket.emit("move key up");
@@ -61,6 +63,9 @@ function updateInput() {
         player.setDirection(move);
         player.setMoving(true);
     }
+    if (shootKey)
+        //if(Date.now() - lastTick > 1000)//only shoot every 1 second
+            socket.emit("shoot key down");
 }
 
 //holds the cursors position

@@ -7,6 +7,8 @@
  */
 var mapCollision = require('./../../common/collision_hitTest').mapCollision,
     stupidShoot=false;
+//stupid bot shooting every 2s
+setInterval(function() {stupidShoot=true;}, 1000 * 2);
 //stupid bot just go straight, if stuck turn randomly
 exports.goStraight = function (object) {
     //flag to check if hit the wall

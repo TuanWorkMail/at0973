@@ -1,6 +1,5 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    var tmxloader = require('./../server/js/TMX_Engine').tmxloader,
-        lasers = require('./bulletMain').lasers;
+    var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
@@ -131,7 +130,7 @@ function hitTestBot() {
 }
 
 function hitTestPlayer() {
-    var remotePlayers = require('../server/main').remotePlayers,
+    var remotePlayers = session.getRemotePlayers(),
         ship_xw,
         ship_yh;
 

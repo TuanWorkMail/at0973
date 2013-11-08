@@ -3,24 +3,28 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 } else
     var session = new Session(0);
 
-function Session(sid) {
-    var id = sid,
-        roomName,
-        remotePlayers = [];
+function Session(roomid) {
+    var roomid = roomid,
+        remotePlayers = [],
+        lasers = [];
+
     //where bot will spawn, each map have a number of predefined point
     var whereSpawn = 0,
         bots = [],
         botsLength = 2;
 
-    function getID() {return id} function setID(para) {id = para}
+    function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }
+    function getLasers() { return lasers }
 
     return {
 
         whereSpawn: whereSpawn,
         bots: bots,
         botsLength: botsLength,
-        getID: getID, setID: setID,
+
+        getRoomID: getRoomID,
+        getLasers: getLasers,
         getRemotePlayers: getRemotePlayers
     }
 }
