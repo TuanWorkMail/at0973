@@ -218,3 +218,11 @@ tmxloader.load = function (url) {
         //});
     }
 }
+function layerByName(name) {
+    for (var i = 0; i < tmxloader.map.layers.length; i++) {
+        if (tmxloader.map.layers[i].name == name) {
+            return tmxloader.map.layers[i];
+        }
+    }
+    return false;
+}

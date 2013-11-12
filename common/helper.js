@@ -7,14 +7,6 @@
 function randomNumber(from, to) {
     return Math.floor(Math.random() * (to - from + 1) + from);
 }
-function findLayerByName(name) {
-    for (var i = 0; i < tmxloader.map.layers.length; i++) {
-        if (tmxloader.map.layers[i].name == name) {
-            return i;
-        }
-    }
-    return false;
-}
 //input: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
 function createUUID(pattern) {
     return pattern.replace(/[xy]/g, function (c) {

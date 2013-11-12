@@ -9,6 +9,7 @@ var setSocketEventHandlers = function() {
 
     // CLIENT ONLY
 	socket.on("connect", onSocketConnected);
+    socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
 	socket.on("move player", onMovePlayer);
 	socket.on("new bullet", onNewBullet);
@@ -21,15 +22,15 @@ var setSocketEventHandlers = function() {
 	socket.on("end match", onEndMatch);
     socket.on("moving player", onMovingPlayer);
 };
-
-// Socket connected
 function onSocketConnected() {
     console.log("Connected to socket server");
     console.log("ID: " + this.socket.sessionid);
     mySocketID = this.socket.sessionid;
 }
-
-// Socket disconnected
+function onStart(data) {
+    tmxloader.load("map/" + data.map + ".tmx");
+    init();
+}
 function onSocketDisconnect() {
 	console.log("Disconnected from socket server");
 }

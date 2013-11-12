@@ -73,7 +73,7 @@ function temporaryDrawOverhead() {
     if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width) viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
     if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height) viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
 
-    var i = findLayerByName('overhead');
+    var result = layerByName('overhead');
 
         //for every horizontal tile in viewport
         for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
@@ -85,9 +85,9 @@ function temporaryDrawOverhead() {
 
                 if (tile_x >= 0 && (tile_x < tmxloader.map.width) && tile_y >= 0 && (tile_y < tmxloader.map.height)) {
                     //if there is a tile at X Y
-                    if (tmxloader.map.layers[i].data[tile_x][tile_y] != 0) {
+                    if (result.data[tile_x][tile_y] != 0) {
 
-                        var gid = tmxloader.map.layers[i].data[tile_x][tile_y];
+                        var gid = result.data[tile_x][tile_y];
 
                         //number of tiles per row of tilesheet
                         var NoOfTiles = tmxloader.map.tilesets[0].width / tmxloader.map.tilesets[0].tileWidth;
@@ -147,17 +147,10 @@ function drawPlayer() {
         }
     }
 }
-//if host draw from bots, if guest draw from remoteBots
 function drawBot() {
-    var array;
-    if (host == true) {
-        array = bots;
-    } else if (host == false) {
-        array = remoteBots;
-    }
-    for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i < remoteBots.length; i++) {
         //drawByDirection(array[i]);
-        drawingBot(array[i]);
+        drawingBot(remoteBots[i]);
     }
     //drawPath();
 }

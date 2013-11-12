@@ -13,6 +13,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     Session = require('../common/dto/session').Session,
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
+    map = 'classic1',
     lastRoomID = 0,                                         // auto increment roomID
     lastTick,                                               // calculate delta time
     loopUnused = 0,                                         // % of loop left
@@ -41,7 +42,7 @@ function init() {
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    tmxloader.load(__dirname + '\\map\\classic2.tmx');
+    tmxloader.load(__dirname + '\\map\\'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
 }
@@ -81,6 +82,7 @@ function loop() {
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
+    client.emit('start', {map: map});
     client.on("disconnect", onClientDisconnect);
     client.on("login", onLogin);
     client.on("register", onRegister);

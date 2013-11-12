@@ -1,5 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
+    var TMX_Engine = require('./../server/js/TMX_Engine'),
+        tmxloader = TMX_Engine.tmxloader,
+        layerByName = TMX_Engine.layerByName;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
@@ -37,7 +39,7 @@ function mapCollision(x, y, w, h, type) {
 }
 
 function shootDestruction() {
-    var foundID = findLayerByName('destructible');
+    var result = layerByName('destructible');
     for (var i = 0; i < lasers.length; i++) {
         var justanumber = 2;
         switch (lasers[i].direction) {
@@ -45,11 +47,11 @@ function shootDestruction() {
             case 'up':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
-                    if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
-                        tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
+                    if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
+                        result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
                         //destroy 4 brick at impact
                         for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
+                            result.data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
                         }
                         lasers[i].isRemoved = true;
                         break;
@@ -60,11 +62,11 @@ function shootDestruction() {
             case 'down':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
-                    if (tmxloader.map.layers[foundID].data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
-                        tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
+                    if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
+                        result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
                         //destroy 4 brick at impact
                         for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
+                            result.data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
                         }
                         lasers[i].isRemoved = true;
                         break;
@@ -75,11 +77,11 @@ function shootDestruction() {
             case 'left':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
-                    if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
-                        tmxloader.map.layers[foundID].data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
+                    if (result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
+                        result.data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
                         //destroy 4 brick at impact
                         for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
+                            result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
                         }
                         lasers[i].isRemoved = true;
                         break;
@@ -94,11 +96,11 @@ function shootDestruction() {
                         y1 = Math.floor(lasers[i].y / 10),
                         x2 = Math.floor(((lasers[i].x + behindpresent) / 10)),
                         y2 = Math.floor((lasers[i].y - 1) / 10);
-                    if (tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
-                        tmxloader.map.layers[foundID].data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
+                    if (result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
+                        result.data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
                         //destroy 4 brick at impact
                         for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            tmxloader.map.layers[foundID].data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
+                            result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
                         }
                         lasers[i].isRemoved = true;
                         break;
@@ -193,7 +195,7 @@ function hitTestPlayer_old() {
  object_xw = objectGroup[obj].x + objectGroup[obj].width;
  object_yh = objectGroup[obj].y + objectGroup[obj].height;
 
- var layerID = findLayerByName('obstacle');
+ var layerID = layerByName('obstacle');
 
  if (ship_x < object_xw && ship_y < object_yh && ship_xw > objectGroup[obj].x && ship_yh > objectGroup[obj].y) {
  return true;

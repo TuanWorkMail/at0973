@@ -9,31 +9,18 @@
     <style>
         .centerPlaceholder {
             position: absolute;
-            top: 0px;
-            right: 50%;
         }
         .popup {
             position: relative;
-            top: 200px;
-            right: -50%;
+            top: -100%;
+            left: -50%;
             background: #666;
             z-index: 10;
-            display: block;
+            display: none;
         }
     </style>
 
     <script>
-        function server() {
-            host = true;
-            document.getElementById('tile').innerHTML += 'SERVER';
-            init();
-        }
-
-        function client() {
-            host = false;
-            document.getElementById('tile').innerHTML += 'CLIENT';
-            init();
-        }
         function login() {
             var username = document.getElementById('username').value,
                 password = document.getElementById('password').value;
@@ -66,7 +53,7 @@
 </head>
 
 <body>
-    <div class="centerPlaceholder">
+    <div class="centerPlaceholder" id="center">
         <div class="popup" id="login">
             <input type="text" id="username" value="u1" /><br />
             <input type="password" id="password" value="12" /><br />
@@ -74,23 +61,5 @@
         </div>
     </div>
     <span id="showfps" style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10">fps: 60</span>
-    <table style="display: none; position: absolute">
-        <tr>
-            <td rowspan="2"><div id="tile"></div></td>
-            <td></td>
-            <td><input type="text" id="registerUser" /></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><input type="password" id="registerPass" /></td>
-        </tr>
-        <tr>
-            <td><input type="button" value="HOST" onclick="server();" />
-                <input type="button" value="CLIENT" onclick="client();" />
-            </td>
-            <td></td>
-            <td><input type="button" value="register" onclick="register();" /></td>
-        </tr>
-    </table>
 </body>
 </html>
