@@ -156,7 +156,7 @@ function drawBot() {
 }
 function drawingBot(object) {
     if(object.getType() == 'dumb') {
-        if (object.direction == 'right') {
+        /*if (object.direction == 'right') {
             drawTile(5, object.getX(), object.getY());
         } else if (object.direction == 'left') {
             drawTile(8, object.getX(), object.getY());
@@ -164,9 +164,25 @@ function drawingBot(object) {
             drawTile(7, object.getX(), object.getY());
         } else if (object.direction == 'down') {
             drawTile(6, object.getX(), object.getY());
+        }*/
+        switch(object.direction) {
+            case 'right':
+                drawTile(5, object.getX(), object.getY());
+                break;
+            case 'left':
+                drawTile(8, object.getX(), object.getY());
+                break;
+            case 'up':
+                drawTile(7, object.getX(), object.getY());
+                break;
+            case 'down':
+                drawTile(6, object.getX(), object.getY());
+                break;
+            default :
+                console.log(object.getDirection()+' is not direction');
         }
     } else {
-        if (object.direction == 'right') {
+        /*if (object.direction == 'right') {
             drawTile(22, object.getX(), object.getY());
         } else if (object.direction == 'left') {
             drawTile(24, object.getX(), object.getY());
@@ -174,6 +190,22 @@ function drawingBot(object) {
             drawTile(23, object.getX(), object.getY());
         } else if (object.direction == 'down') {
             drawTile(21, object.getX(), object.getY());
+        }*/
+        switch(object.direction) {
+            case 'right':
+                drawTile(22, object.getX(), object.getY());
+                break;
+            case 'left':
+                drawTile(24, object.getX(), object.getY());
+                break;
+            case 'up':
+                drawTile(23, object.getX(), object.getY());
+                break;
+            case 'down':
+                drawTile(21, object.getX(), object.getY());
+                break;
+            default :
+                console.log(object.getDirection()+' is not direction');
         }
     }
 }

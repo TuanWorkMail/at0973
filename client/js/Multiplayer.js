@@ -28,7 +28,7 @@ function onSocketConnected() {
     mySocketID = this.socket.sessionid;
 }
 function onStart(data) {
-    tmxloader.load("map/" + data.map + ".tmx");
+    tmxloader.load("../common/map/" + data.map + ".tmx");
     init();
 }
 function onSocketDisconnect() {

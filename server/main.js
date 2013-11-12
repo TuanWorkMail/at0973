@@ -42,7 +42,7 @@ function init() {
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    tmxloader.load(__dirname + '\\map\\'+map+'.tmx');
+    tmxloader.load('../common/map/'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
 }
@@ -52,7 +52,7 @@ function loop() {
         loopRounded,
         remainder,
         delta = now - lastTick;
-    lastTick = Date.now();
+    lastTick = now;
     var loopUnrounded = delta/fixedDelta + loopUnused;
     remainder = loopUnrounded - Math.floor(loopUnrounded);
     if(remainder>0.5) {

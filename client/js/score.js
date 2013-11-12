@@ -5,7 +5,6 @@ function continueButton(e) {
     var cursorPos = getCursorPos(e);
     if (cursorPos.x > (width / 2) - 53 && cursorPos.x < (width / 2) + 47 && cursorPos.y > (height / 2) + 10 && cursorPos.y < (height / 2) + 50) {
         alive = true;
-        continueLoop = true;
         lives = 3;
         reset();
         canvas.removeEventListener('click', continueButton, false);
