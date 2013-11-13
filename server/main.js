@@ -6,14 +6,14 @@ var util = require("util"),					// Utility resources (logging, object inspection
     helper = require('../common/helper'),
     botClass = require('./js/BotClass.js'),
     botStupid = require('./js/BotStupid'),
-    tmxloader = require('./js/TMX_Engine.js').tmxloader,
+    tmxloader = require('./js/TMX_Engine.js'),
     hitTest = require('../common/collision_hitTest'),
     sockets = require('./js/socket').sockets,		                            // Socket controller
     player = require('../common/player'),
     Session = require('../common/dto/session').Session,
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
-    map = 'classic1',
+    map = 'classic2',
     lastRoomID = 0,                                         // auto increment roomID
     lastTick,                                               // calculate delta time
     loopUnused = 0,                                         // % of loop left
@@ -42,7 +42,7 @@ function init() {
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    tmxloader.load('../common/map/'+map+'.tmx');
+    tmxloader.tmxLoad('../common/map/'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
 }

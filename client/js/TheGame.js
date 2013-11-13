@@ -28,7 +28,6 @@ var canvas,
     bullet,
     ship_x, ship_y,
     score = 0,
-    enemiesGroup,
     alive = true,
     lives = 3,
     gameStarted = false;
@@ -44,11 +43,13 @@ function init() {
     //tmxloader.load("map/" + whichMap + ".tmx");
     width = tmxloader.map.width * tmxloader.map.tileWidth;
     height = tmxloader.map.height * tmxloader.map.tileHeight;
+    // pop up login
     var centerPlaceholder = document.getElementById('center'),
         loginBox = document.getElementById('login');
     centerPlaceholder.style.top = height/2+'px';
     centerPlaceholder.style.left = width/2+'px';
     loginBox.style.display = 'block';
+    // create stacked canvases
     canvas = document.createElement("canvas");
     ctx = canvas.getContext("2d");
     document.body.appendChild(canvas);
@@ -78,10 +79,9 @@ function init() {
     canvasOverhead.addEventListener('click', gameStart, false);
     viewport = new Viewport(0, 0, ctx.canvas.width, ctx.canvas.height);
     spriteSheet = new Image();
-    spriteSheet.src = "map/" + tmxloader.map.tilesets[0].src;
+    spriteSheet.src = "../common/map/" + tmxloader.map.tilesets[0].src;
     spriteSheet2 = new Image();
     spriteSheet2.src = "images/tank5.png";
-    enemiesGroup = tmxloader.map.objectgroup['bot'].objects;
 
     drawMap();
     temporaryDrawOverhead();

@@ -77,15 +77,19 @@ var ObjectGroup = function (groupname, width, height) {
     this.objects = [];
 
 };
-///classic2.tmx
-tmxloader.load = function (url) {
+function tmxLoad (url) {
+    readFile(url, loadCallback);
+};
+function readFile(url, callback) {
     var parser = new xml2js.Parser();
-    fs.readFile(url, function(err, data) {
-        parser.parseString(data, function (err, result) {
-            loadCallback(result);
+    fs.readFile(url, function(err, data) {                  // read xml
+        if(err) {util.log(err); return;}                    // log error
+        parser.parseString(data, function (err, result) {   // parse xml
+            if(err) {util.log(err); return;}                // log error
+            callback(result);                               // process xml
         });
     });
-};
+}
 function loadCallback(result) {
     //console.log('Parsing...' + result.map.$.version);
 
@@ -95,7 +99,8 @@ function loadCallback(result) {
     var $tileheight = result.map.$.tileheight;
     tmxloader.map = new Map($width, $height, $tilewidth, $tileheight, result.map.layer.length);
 
-    //console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
+    //console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height +
+    // " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
     //console.log("Found " + result.map.layer.length + " Layers");
 
     var $layer = result.map.layer;
@@ -153,7 +158,6 @@ function loadCallback(result) {
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
-    util.log('map loaded');
 }
 exports.layerByName = function(name) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
@@ -164,3 +168,4 @@ exports.layerByName = function(name) {
     return false;
 }
 exports.tmxloader = tmxloader;
+exports.tmxLoad = tmxLoad;

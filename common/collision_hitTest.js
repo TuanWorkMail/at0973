@@ -40,6 +40,7 @@ function mapCollision(x, y, w, h, type) {
 
 function shootDestruction() {
     var result = layerByName('destructible');
+    if(!result) return;
     for (var i = 0; i < lasers.length; i++) {
         var justanumber = 2;
         switch (lasers[i].direction) {

@@ -1,5 +1,6 @@
 ﻿//Now, let�s make our ship move. Add these to the variables at the top:
-var shootKey = false,
+var changeDirection,
+    shootKey = false,
     rightKey = false,
     leftKey = false,
     upKey = false,
@@ -8,11 +9,23 @@ var shootKey = false,
 function keyDown(e) {
     if (e.keyCode == 39) {
         rightKey = true;
+        leftKey = false;
+        upKey = false;
+        downKey = false;
     } else if (e.keyCode == 37) {
+        rightKey = false;
         leftKey = true;
+        upKey = false;
+        downKey = false;
     } else if (e.keyCode == 38) {
+        rightKey = false;
+        leftKey = false;
         upKey = true;
+        downKey = false;
     } else if (e.keyCode == 40) {
+        rightKey = false;
+        leftKey = false;
+        upKey = false;
         downKey = true;
     }
     if (e.keyCode == 32) {

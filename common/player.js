@@ -8,7 +8,6 @@
 } else if(typeof remotePlayers === 'undefined'){
     var remotePlayers = session.getRemotePlayers();
 }
-
 function checkHitPoint () {
     var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; ++i) {
@@ -18,7 +17,6 @@ function checkHitPoint () {
         }
     }
 }
-
 function checkLive(object) {
     var remotePlayers = session.getRemotePlayers();
     object.setLive(object.getLive() - 1);
@@ -38,7 +36,6 @@ function checkLive(object) {
         reset('end match');
     }
 }
-
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
     for (var obj = 0; obj < bots.length; ++obj) {
@@ -67,7 +64,7 @@ function reset(para) {
             username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
 }
-
+var lastDirection = 'left';
 function movingPlayer() {
     var remotePlayers = session.getRemotePlayers();
     for(var i = 0;i < remotePlayers.length; i++) {
@@ -102,7 +99,6 @@ function movingPlayer() {
         }
     }
 }
-
 function spawnPlayer(socketID, username, userID) {
     //copied from Multiplayer.js
     //where to spawn ship
@@ -121,7 +117,6 @@ function spawnPlayer(socketID, username, userID) {
     player.newPlayer.setUserID(userID);
     return {newPlayer: player.newPlayer, roomID: player.roomID};
 }
-
 //add new player to array
 function addNewPlayer(id, username, x, y, direction) {
     // Initialise the new player

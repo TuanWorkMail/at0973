@@ -45,7 +45,7 @@ function Bot(id, startX, startY, type) {
         }
         speed = 2;
     } else if (type == 'smart') {
-        speed = 5;
+        speed = 4;
     }
 
 

@@ -149,22 +149,6 @@ function botById(id) {
     return false;
 }
 
-//add new bot to the array
-function createRemoteBot() {
-    if (whereSpawn == enemiesGroup.length) {
-        whereSpawn = 0;
-    }
-    while (bots.length < maximumBot && whereSpawn < enemiesGroup.length) {
-        // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x;
-        y = enemiesGroup[whereSpawn].y;
-        newBot = new Bot(x, y, botRandomPath(x, y), 0);
-        // Add new player to the remote players array
-        bots.push(newBot);
-        whereSpawn++;
-    }
-}
-
 /**************************************************
 ** GAME FINDER FUNCTIONS
 **************************************************/
