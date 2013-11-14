@@ -1,6 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var TMX_Engine = require('./../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
+        sockets = require('../server/js/socket').sockets,
         layerByName = TMX_Engine.layerByName;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
@@ -124,7 +125,7 @@ function hitTestBot() {
 
             if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
                 //must emit before splice
-                socket.emit("bot die", { count: bots[obj].id });
+                sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
                 bots.splice(obj, 1);
                 lasers[i].isRemoved = true;
             }

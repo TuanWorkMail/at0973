@@ -4,9 +4,10 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         hitTest = require('./collision_hitTest'),
         mapCollision = hitTest.mapCollision,
         Bullet = require('./dto/bullet').Bullet,
+        tmxloader = require('../server/js/TMX_Engine').tmxloader,
         socket = require('../server/js/socket').socket;
-} else if(typeof lasers === 'undefined') {
-    var lasers = [];
+} else {
+    lasers = [];
 }
 var laserSpeed = 15;
 //input: x,y,direction of the bullet
@@ -19,18 +20,9 @@ function shooting(x,y,direction) {
     return id;
 }
 
-//If there are lasers in the lasers array, then this will draw them on the canvas
-function drawLaser() {
-    for (var i = 0; i < lasers.length; i++) {
-        ctx.fillStyle = '#f00';
-        ctx.fillRect(lasers[i].x - 2, lasers[i].y - 2, 4, 4);
-    }
-}
 
 //If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
-    // HACKY SOLUTION, WHY THERES A LOCAL UNDEFINED LASERS?THERES ALREADY A GLOBAL ONE
-    if(typeof lasers === 'undefined') return;
     for (var i = 0; i < lasers.length; i++) {
         if (lasers[i].direction == 'up') {
             lasers[i].y -= laserSpeed;
@@ -42,9 +34,8 @@ function moveLaser() {
             lasers[i].x -= laserSpeed;
         }
         if (mapCollision(lasers[i].x, lasers[i].y, 4, 4, 'bullet')) {
-            renderBulletDestroyed(lasers[i]);
             lasers[i].isRemoved = true;
-        } else if (lasers[i].y < 0 || lasers[i].y > height || lasers[i].x < 0 || lasers[i].x > width) {
+        } else if (lasers[i].y < 0 || lasers[i].y > tmxloader.map.height * tmxloader.map.tileHeight || lasers[i].x < 0 || lasers[i].x > tmxloader.map.width * tmxloader.map.tileWidth) {
             lasers[i].isRemoved = true;
         }
     }
@@ -75,5 +66,4 @@ function removeBullet(lasers) {
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.shooting = shooting;
     exports.moveLaser = moveLaser;
-    exports.lasers = lasers;
 }

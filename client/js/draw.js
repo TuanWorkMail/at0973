@@ -1,6 +1,48 @@
-/**
- * Storage Object for Viewport
- */
+var viewport,
+    viewport_x = 0,
+    viewport_y = 0,
+    canvas,
+    ctx,
+    canvasBg,
+    contextBg,
+    canvasOverhead,
+    contextOverhead,
+    spriteSheet,
+    spriteSheet2;
+function createStackedCanvases() {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
+    canvas = document.createElement("canvas");
+    ctx = canvas.getContext("2d");
+    document.body.appendChild(canvas);
+    canvas.style.position = 'absolute';
+    canvas.style.zIndex = 1;
+    canvas.width = width;
+    canvas.height = height;
+    canvasBg = document.createElement("canvas");
+    contextBg = canvasBg.getContext("2d");
+    document.body.appendChild(canvasBg);
+    canvasBg.style.position = 'absolute';
+    canvasBg.style.zIndex = 0;
+    canvasBg.width = width;
+    canvasBg.height = height;
+    contextBg.fillStyle = "#000";
+    contextBg.fillRect(0, 0, width, height);
+    canvasOverhead = document.createElement("canvas");
+    contextOverhead = canvasOverhead.getContext("2d");
+    document.body.appendChild(canvasOverhead);
+    canvasOverhead.style.position = 'absolute';
+    canvasOverhead.style.zIndex = 2;
+    canvasOverhead.width = width;
+    canvasOverhead.height = height;
+
+    canvasOverhead.addEventListener('click', gameStart, false);
+    viewport = new Viewport(0, 0, width, height);
+    spriteSheet = new Image();
+    spriteSheet.src = "../common/map/" + tmxloader.map.tilesets[0].src;
+    spriteSheet2 = new Image();
+    spriteSheet2.src = "images/tank5.png";
+}
 function Viewport(x, y, width, height) {
     this.x = x;
     this.y = y;
@@ -9,11 +51,6 @@ function Viewport(x, y, width, height) {
     this.halfWidth = Math.floor(width / 2);
     this.halfHeight = Math.floor(height / 2);
 }
-
-
-/**
- * Map drawing function
- */
 function drawMap() {
 
     //clear(); 
@@ -23,8 +60,10 @@ function drawMap() {
     if (viewport.x < 0) viewport.x = 0;
     if (viewport.y < 0) viewport.y = 0;
     //number of tiles in map multiply by tile width(pixel) minus viewport width(pixel)
-    if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width) viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
-    if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height) viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
+    if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width)
+        viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
+    if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height)
+        viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
 
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
@@ -53,7 +92,10 @@ function drawMap() {
                         var spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight;
 
                         //draw the sprite at X Y, place it at its place according to the viewport
-                        contextBg.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth, tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) - (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) - (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
+                        contextBg.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
+                            tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) -
+                                (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) -
+                                (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
                     }
                 }
             }
@@ -70,8 +112,10 @@ function temporaryDrawOverhead() {
     if (viewport.x < 0) viewport.x = 0;
     if (viewport.y < 0) viewport.y = 0;
     //number of tiles in map multiply by tile width(pixel) minus viewport width(pixel)
-    if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width) viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
-    if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height) viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
+    if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width)
+        viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
+    if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height)
+        viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
 
     var result = layerByName('overhead');
 
@@ -100,7 +144,10 @@ function temporaryDrawOverhead() {
                         var spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight;
 
                         //draw the sprite at X Y, place it at its place according to the viewport
-                        contextOverhead.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth, tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) - (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) - (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
+                        contextOverhead.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
+                            tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) -
+                                (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) -
+                                (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
                     }
                 }
             }
@@ -119,7 +166,6 @@ function drawTile(gid, x, y, width, height) {
     var spriteY = Math.floor(gid / NoOfTiles) * 40;
 
     if(width===undefined || height === undefined) {
-        //draw the sprite at X Y, place it at its place according to the viewport
         ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);
     } else {
         ctx.drawImage(spriteSheet2, spriteX, spriteY, width, height, x, y, width, height);
@@ -127,9 +173,18 @@ function drawTile(gid, x, y, width, height) {
 }
 //Clears the canvas so it can be updated
 function clearCanvas() {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
     ctx.clearRect(0, 0, width, height);
     //ctx.fillStyle = "#000";
     //ctx.fillRect(0, 0, width, height);
+}
+//If there are lasers in the lasers array, then this will draw them on the canvas
+function drawLaser() {
+    for (var i = 0; i < lasers.length; i++) {
+        ctx.fillStyle = '#f00';
+        ctx.fillRect(lasers[i].x - 2, lasers[i].y - 2, 4, 4);
+    }
 }
 function drawPlayer() {
     for (var i = 0; i < remotePlayers.length; i++) {
@@ -147,24 +202,8 @@ function drawPlayer() {
         }
     }
 }
-function drawBot() {
-    for (var i = 0; i < remoteBots.length; i++) {
-        //drawByDirection(array[i]);
-        drawingBot(remoteBots[i]);
-    }
-    //drawPath();
-}
 function drawingBot(object) {
     if(object.getType() == 'dumb') {
-        /*if (object.direction == 'right') {
-            drawTile(5, object.getX(), object.getY());
-        } else if (object.direction == 'left') {
-            drawTile(8, object.getX(), object.getY());
-        } if (object.direction == 'up') {
-            drawTile(7, object.getX(), object.getY());
-        } else if (object.direction == 'down') {
-            drawTile(6, object.getX(), object.getY());
-        }*/
         switch(object.direction) {
             case 'right':
                 drawTile(5, object.getX(), object.getY());
@@ -182,15 +221,6 @@ function drawingBot(object) {
                 console.log(object.getDirection()+' is not direction');
         }
     } else {
-        /*if (object.direction == 'right') {
-            drawTile(22, object.getX(), object.getY());
-        } else if (object.direction == 'left') {
-            drawTile(24, object.getX(), object.getY());
-        } if (object.direction == 'up') {
-            drawTile(23, object.getX(), object.getY());
-        } else if (object.direction == 'down') {
-            drawTile(21, object.getX(), object.getY());
-        }*/
         switch(object.direction) {
             case 'right':
                 drawTile(22, object.getX(), object.getY());
@@ -209,41 +239,23 @@ function drawingBot(object) {
         }
     }
 }
-
-function drawByDirection(object) {
-    var halfWidth = object.getWidth() / 2,
-        halfHeight = object.getHeight() / 2;
-
-    // Backup before messing with the canvas
-    ctx.save();
-
-    // Move registration point to the center of the canvas
-    ctx.translate(object.getX() + halfWidth, object.getY() + halfHeight);
-
-    switch (object.direction) {
-        case 'up':
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
-            break;
-        case 'down':
-            // Rotate 180 degree
-            ctx.rotate((Math.PI / 180) * 180);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
-            break;
-        case 'left':
-            // Rotate 270 degree
-            ctx.rotate((Math.PI / 180) * 270);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
-            break;
-        case 'right':
-            // Rotate 90 degree
-            ctx.rotate((Math.PI / 180) * 90);
-            ctx.drawImage(object.getImage(), -halfWidth, -halfHeight);
-            break;
-    }
-
-    // Move registration point back to the top left corner of canvas
-    //ctx.translate(-(object.getX() + halfWidth), -(object.getY() + halfHeight));
-
-    // restore
-    ctx.restore();
+function drawStartScreen() {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 50px VT323';
+    ctx.fillText('Canvas Shooter', width / 2 - 150, height / 2);
+    ctx.font = 'bold 20px VT323';
+    ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
+    ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
+    ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
+}
+function drawEndScreen() {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
+    ctx.fillText('Game Over!', (width / 2) - 60, height / 2);
+    ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
+    ctx.fillStyle = '#000';
+    ctx.fillText('Continue?', (width / 2) - 60, (height / 2) + 35);
+    canvas.addEventListener('click', continueButton, false);
 }

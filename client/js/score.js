@@ -1,4 +1,5 @@
-﻿
+﻿var alive = true,
+    lives = 3;
 
 //After the player loses all their lives, the continue button is shown and if clicked, it resets the game and removes the event listener for the continue button
 function continueButton(e) {
@@ -11,10 +12,8 @@ function continueButton(e) {
     }
 }
 
-//Draws the text for the score and lives on the canvas and if the player runs out of lives, it's draws the game over text and continue button as well as adding the event listener for the continue button
 function scoreTotal() {
-    ctx.font = 'bold 20px VT323';
-    ctx.fillStyle = '#fff';
+    var gameStarted = tank5.main.gameStarted;
     /*
     ctx.fillText('Score: ', 10, 55);
     ctx.fillText(score, 70, 55);
@@ -22,19 +21,10 @@ function scoreTotal() {
     ctx.fillText(lives, 68, 30);
     */
     if (!gameStarted) {
-        ctx.font = 'bold 50px VT323';
-        ctx.fillText('Canvas Shooter', width / 2 - 150, height / 2);
-        ctx.font = 'bold 20px VT323';
-        ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
-        ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
-        ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
+        drawStartScreen();
     }
     if (!alive) {
-        ctx.fillText('Game Over!', (width / 2) - 60, height / 2);
-        ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
-        ctx.fillStyle = '#000';
-        ctx.fillText('Continue?', (width / 2) - 60, (height / 2) + 35);
-        canvas.addEventListener('click', continueButton, false);
+        drawEndScreen();
     }
 }
 

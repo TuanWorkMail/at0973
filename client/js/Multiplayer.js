@@ -1,13 +1,19 @@
-var mySocketID;
+
+var mySocketID,
+    serverURL = 'localhost',
+    //serverURL = '125.212.217.58',
+    //serverURL = 'tuan.sytes.net',
+    socket;         //Add the socket variable to the file
+
+
+//io.connect will connect you to a Socket.IO server by using
+//the first parameter as the server address.
+socket = io.connect(serverURL, { port: 8000, transports: ["websocket"] });
+
 /**************************************************
 ** GAME EVENT HANDLERS
 **************************************************/
-var setSocketEventHandlers = function() {
-	// Keyboard
-	//window.addEventListener("keydown", onKeydown, false);
-	//window.addEventListener("keyup", onKeyup, false);
-
-    // CLIENT ONLY
+function setSocketEventHandlers() {
 	socket.on("connect", onSocketConnected);
     socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
@@ -29,7 +35,7 @@ function onSocketConnected() {
 }
 function onStart(data) {
     tmxloader.load("../common/map/" + data.map + ".tmx");
-    init();
+    tank5.main.init();
 }
 function onSocketDisconnect() {
 	console.log("Disconnected from socket server");
@@ -73,34 +79,6 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 }
 
-// Bot broadcast
-function onBotBroadcast(data) {
-    var bot = botById(data.count);
-    if (bot!=false) {
-        bot.setX(data.x);
-        bot.setY(data.y);
-        bot.direction=data.direction;
-        bot.type = data.type;
-        return;
-    }
-    var newBot = new Bot(data.count, data.x, data.y, data.type);
-    newBot.direction = data.direction;
-    remoteBots.push(newBot);
-}
-
-// Bot die
-function onBotDie(data) {
-    var bot = botById(data.count);
-    if (bot!=false) {
-        for (var i = 0; i < remoteBots.length; i++) {
-            if (remoteBots[i].id == data.count)
-                remoteBots.splice(i, 1);
-        }
-        return;
-    }
-    console.log('bot '+data.count+' not found');
-}
-
 // Login
 function onLogin(data) {
     if (data.uuid == 'failed') {
@@ -138,18 +116,6 @@ function onMovingPlayer(data) {
 }
 
 /**************************************************
- ** BOT FINDER FUNCTION
- **************************************************/
-// Find bot by ID
-function botById(id) {
-    for (var i = 0; i < remoteBots.length; i++) {
-        if (remoteBots[i].id == id)
-            return remoteBots[i];
-    }
-    return false;
-}
-
-/**************************************************
 ** GAME FINDER FUNCTIONS
 **************************************************/
 // Find player by ID
@@ -172,44 +138,3 @@ function playerByUsername(username) {
 
     return false;
 }
-
-// Input
-/*function onInput(data) {
- if (!host) return;
- var player = playerById(data.id);
- if (!player) {
- console.log('Input: player not found');
- return;
- }
- switch (data.move) {
- case 'right':
- player.setDirection('right');
- player.setX(player.getX() + player.getSpeed());
- if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
- player.setX(player.getX() - player.getSpeed());
- }
- break;
- case 'left':
- player.setDirection('left');
- player.setX(player.getX() - player.getSpeed());
- if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
- player.setX(player.getX() + player.getSpeed());
- }
- break;
- case 'up':
- player.setDirection('up');
- player.setY(player.getY() - player.getSpeed());
- if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
- player.setY(player.getY() + player.getSpeed());
- }
- break;
- case 'down':
- player.setDirection('down');
- player.setY(player.getY() + player.getSpeed());
- if (mapCollision(player.getX(), player.getY(), player.getWidth(), player.getHeight(), 'tank')) {
- player.setY(player.getY() - player.getSpeed());
- }
- break;
- }
- socket.emit("move player", { id: data.id, username: player.getUsername(), x: player.getX(), y: player.getY(), direction: data.move });
- }*/

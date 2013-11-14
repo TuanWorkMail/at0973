@@ -6,7 +6,7 @@ var util = require("util"),					// Utility resources (logging, object inspection
     helper = require('../common/helper'),
     botClass = require('./js/BotClass.js'),
     botStupid = require('./js/BotStupid'),
-    tmxloader = require('./js/TMX_Engine.js'),
+    TMX_Engine = require('./js/TMX_Engine.js'),
     hitTest = require('../common/collision_hitTest'),
     sockets = require('./js/socket').sockets,		                            // Socket controller
     player = require('../common/player'),
@@ -42,7 +42,7 @@ function init() {
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    tmxloader.tmxLoad('../common/map/'+map+'.tmx');
+    TMX_Engine.tmxLoad('../common/map/'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
 }
@@ -67,11 +67,11 @@ function loop() {
             whereSpawn = allSession[j].whereSpawn;
             bots = allSession[j].bots;
             lasers = allSession[j].getLasers();
-            if(session.getRemotePlayers().length < 2) continue;
+            if(session.getRemotePlayers().length < 1) continue;
             player.movingPlayer();
             bulletMain.moveLaser();
             botClass.moveBot();
-            //hitTest.hitTestBot();
+            hitTest.hitTestBot();
             //shoot must behind check and move
             //botStupid.BotShootInterval(bots, 1);
             //hitTest.hitTestPlayer();
@@ -185,10 +185,13 @@ function onMoveKeyUp() {
     players.setMoving(false);
     sockets.in('r'+result.roomID).emit("move player", { id: this.id, username: players.getUsername(), x: players.getX(), y: players.getY(), direction: players.getDirection() });
 }
+var shootLastTick = Date.now();
 function onShootKeyDown() {
     var result = _playerById(this.id),
     player = result.players;
     if(!player) return;
+    var now = Date.now();
+    if(now-shootLastTick<1000) return;
     var ship_x = player.getX(),
         ship_y = player.getY(),
         ship_w = player.getWidth(),
@@ -210,6 +213,7 @@ function onShootKeyDown() {
     }
     var id = _shooting(x, y, direction, result.lasers);
     sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction });
+    shootLastTick = now;
 }
 // Find player by ID
 function _playerById(socketid) {
