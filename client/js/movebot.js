@@ -1,6 +1,6 @@
 var remoteBots = [];
 function onBotBroadcast(data) {
-    var bot = botById(data.count);
+    var bot = botById(data.id);
     if (bot!=false) {
         bot.setX(data.x);
         bot.setY(data.y);
@@ -8,7 +8,7 @@ function onBotBroadcast(data) {
         bot.type = data.type;
         return;
     }
-    var newBot = new Bot(data.count, data.x, data.y, data.type);
+    var newBot = new Bot(data.id, data.x, data.y, data.type);
     newBot.direction = data.direction;
     remoteBots.push(newBot);
 }

@@ -1,4 +1,5 @@
 var botSmart = require('./BotSmart'),
+    helper = require('../../common/helper'),
     botsLength = 2;
 /*
 var pathStart,
@@ -29,7 +30,7 @@ exports.moveBot=function () {
             require('./BotStupid').goStraight(bots[bot]);
         }
         var sockets = require('./socket').sockets;
-        sockets.in('r'+session.getRoomID()).emit("bot broadcast", { count: bots[bot].id, x: bots[bot].getX(),
+        sockets.in('r'+session.getRoomID()).emit("bot broadcast", { id: bots[bot].id, x: bots[bot].getX(),
             y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
     }
 }
@@ -43,19 +44,19 @@ function createBot() {
     }
     while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
         // Initialise the new bot
-        var x = enemiesGroup[whereSpawn].x,
+        var id = helper.createUUID('xxxx'),
+            x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
         //every 3 bot is smart
         if (whereSpawn % 1 == 0) {
-            newBot = new Bot(whereSpawn, x, y, 'smart');
+            newBot = new Bot(id, x, y, 'smart');
             newBot.pathFound = botSmart.botRandomPath(newBot);
         } else {
-            newBot = new Bot(whereSpawn, x, y, 'dumb');
+            newBot = new Bot(id, x, y, 'dumb');
         }
         // Add new player to the remote players array
         bots.push(newBot);
         whereSpawn++;
-
     }
 }
 
