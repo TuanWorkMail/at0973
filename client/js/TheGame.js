@@ -29,6 +29,7 @@ tank5.main = (function() {
 
         drawMap();
         temporaryDrawOverhead();
+        drawEagle();
 
         //START THE GAME
         gameLoop();

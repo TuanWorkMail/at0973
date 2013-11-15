@@ -3,12 +3,14 @@
 
 //After the player loses all their lives, the continue button is shown and if clicked, it resets the game and removes the event listener for the continue button
 function continueButton(e) {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
     var cursorPos = getCursorPos(e);
     if (cursorPos.x > (width / 2) - 53 && cursorPos.x < (width / 2) + 47 && cursorPos.y > (height / 2) + 10 && cursorPos.y < (height / 2) + 50) {
         alive = true;
         lives = 3;
         reset('');
-        canvas.removeEventListener('click', continueButton, false);
+        canvasOverhead.removeEventListener('click', continueButton, false);
     }
 }
 

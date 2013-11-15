@@ -35,6 +35,16 @@ function onSocketConnected() {
 }
 function onStart(data) {
     tmxloader.load("../common/map/" + data.map + ".tmx");
+    var alluser = '';
+    alluser += '<table><tr><th>Username</th><th>Won</th></tr>';
+    for(var i=0; i<data.alluser.length; i++) {
+        alluser += '<tr>';
+        alluser += '<td>'+data.alluser[i].Username+'</td>';
+        alluser += '<td>'+data.alluser[i].Won+'</td>';
+        alluser += '</tr>';
+    }
+    alluser += '</table>';
+    document.getElementById('alluser').innerHTML = alluser;
     tank5.main.init();
 }
 function onSocketDisconnect() {
@@ -85,6 +95,7 @@ function onLogin(data) {
         document.getElementById('error-message').innerHTML = data.errormessage;
     } else {
         document.getElementById('login').style.display = 'none';
+        document.getElementById('alluser').style.display = 'none';
     }
 }
 
@@ -95,8 +106,7 @@ function onTest(data) {
 
 // Register
 function onRegister(data) {
-    var string = '<br/>' + data.result;
-    document.getElementById('tile').innerHTML += string;
+    document.getElementById('registererror').innerHTML = data.result;
 }
 
 // End

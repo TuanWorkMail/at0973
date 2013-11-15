@@ -259,5 +259,15 @@ function drawEndScreen() {
     ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
     ctx.fillStyle = '#000';
     ctx.fillText('Continue?', (width / 2) - 60, (height / 2) + 35);
-    canvas.addEventListener('click', continueButton, false);
+    canvasOverhead.addEventListener('click', continueButton, false);
+}
+function drawEagle() {
+    var drawpoint = tmxloader.map.objectgroup['eagle'].objects;
+    var eagle = new Image();
+    eagle.src = "images/eagle.png";
+    for(var i=0; i<drawpoint.length; i++) {
+        var x = drawpoint[i].x,
+            y = drawpoint[i].y;
+        contextBg.drawImage(eagle, 0, 0, 40, 40, x, y, 40, 40);
+    }
 }

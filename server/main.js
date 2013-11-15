@@ -36,7 +36,7 @@ bots = [];
 alive = true;
 lasers = [];
 //initializing.........
-function init() {
+(function () {
     //create a new blank session
     var newSession = new Session(sessionID);
     sessionID++;
@@ -46,7 +46,7 @@ function init() {
     TMX_Engine.tmxLoad('../common/map/'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
-}
+}())
 function loop() {
     var now = Date.now(),
         fixedDelta = 1000/60,
@@ -85,7 +85,12 @@ function loop() {
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
-    client.emit('start', {map: map});
+    connection.query('SELECT Username, Won FROM user', function (err, rows, fields) {
+        if (err) util.log(err);
+        else {
+            client.emit('start', {map: map, alluser: rows});
+        }
+    });
     client.on("disconnect", onClientDisconnect);
     client.on("login", onLogin);
     client.on("register", onRegister);
@@ -114,7 +119,7 @@ function onRegister(data) {
     connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
         if (err) that.emit("register", { result: 'username already existed' });
         else
-            that.emit("register", { result: 'register successfully' });
+            that.emit("register", { result: 'register successfully, now please login' });
     });
     //connection.end();
 }
@@ -242,5 +247,3 @@ function _shooting(x,y,direction, lasers) {
     lasers.push(newBullet);
     return id;
 }
-//RUN SERVER
-init();

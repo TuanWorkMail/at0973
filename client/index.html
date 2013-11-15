@@ -29,6 +29,15 @@
                 password = document.getElementById('registerPass').value;
             socket.emit("register", { username: username, password: password });
         }
+        function showhide(which) {
+            if(which=='login') {
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('register').style.display = 'block';
+            } else {
+                document.getElementById('login').style.display = 'block';
+                document.getElementById('register').style.display = 'none';
+            }
+        }
     </script>
 </head>
 <body>
@@ -38,9 +47,18 @@
             <input type="password" id="password" value="12" /><br />
             <span style="color: orange" id="error-message"></span><br/>
             <input type="button" value="login" onclick="login();" />
+            <a href="#" onclick="showhide('login');">register</a>
+        </div>
+        <div class="popup" id="register">
+            <input type="text" id="registerUser" value="" /><br />
+            <input type="password" id="registerPass" value="" /><br />
+            <span style="color: orange" id="registererror"></span><br/>
+            <input type="button" value="register" onclick="register();" />
+            <a href="#" onclick="showhide('register');">login</a>
         </div>
     </div>
     <span id="showfps" style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10">fps: 60</span>
+    <span id='alluser' style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10"></span>
 
     <script src="js/movebot.js"></script>
     <script src="js/other.js"></script>
