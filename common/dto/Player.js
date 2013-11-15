@@ -17,7 +17,8 @@ dto.Player = function(startX, startY, direction) {
         image,
         speed = 5,
         hitPoint = 10,
-        live = 2,
+        live = 0,
+        defaultLive = 1,
         moving = false,
         score = 0,
         imageUp, imageDown, imageLeft, imageRight;
@@ -53,19 +54,19 @@ dto.Player = function(startX, startY, direction) {
         getScore = function () { return score; },
         setScore = function (para) { score = para; },
         getLive = function () { return live; },
-        setLive = function (para) { live = para; },
+        setLive = function (para) {
+            if(para>defaultLive)
+                live = defaultLive;
+            else
+                live = para;
+        },
         getMoving = function () { return moving; },
         setMoving = function (para) { moving = para; },
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para; };
 
-    // reset live
-    var reset = function() {
-        live = 2;
-    }
 	// Define which variables and methods can be accessed
 	return {
-        reset: reset,
         socketID: socketID,
 
 		getX: getX,

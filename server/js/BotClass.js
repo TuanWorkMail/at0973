@@ -47,8 +47,9 @@ function createBot() {
         var id = helper.createUUID('xxxx'),
             x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y;
+        console.log(whereSpawn);
         //every 3 bot is smart
-        if (whereSpawn % 1 == 0) {
+        if (whereSpawn % 2 == 0) {
             newBot = new Bot(id, x, y, 'smart');
             newBot.pathFound = botSmart.botRandomPath(newBot);
         } else {

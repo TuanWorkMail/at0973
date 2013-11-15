@@ -13,9 +13,10 @@ var util = require("util"),					// Utility resources (logging, object inspection
     Session = require('../common/dto/session').Session,
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
-    map = 'classic2',
+    map = 'classic1',
     lastRoomID = 0,                                         // auto increment roomID
     lastTick,                                               // calculate delta time
+    lastBotTick,                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
     sessionID = 0,                                          // auto incremental session id
     mysql = require('mysql'),
@@ -73,12 +74,14 @@ function loop() {
             botClass.moveBot();
             hitTest.hitTestBot();
             //shoot must behind check and move
-            //botStupid.BotShootInterval(bots, 1);
-            //hitTest.hitTestPlayer();
+            if(lastBotTick-now>=1000)
+                botStupid.BotShootInterval(bots, 1);
+            hitTest.hitTestPlayer();
             player.checkHitPoint();
             //                      END LOGIC        END LOGIC       END LOGIC       END LOGIC
         }
     }
+    lastBotTick = now;
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
@@ -86,7 +89,6 @@ function onSocketConnection(client) {
     client.on("disconnect", onClientDisconnect);
     client.on("login", onLogin);
     client.on("register", onRegister);
-    client.on("end match", onEndMatch);
     client.on("move key down", onMoveKeyDown);
     client.on("move key up", onMoveKeyUp);
     client.on("shoot key down", onShootKeyDown);
@@ -116,28 +118,6 @@ function onRegister(data) {
     });
     //connection.end();
 }
-function onEndMatch(data) {
-    var that = this,
-        wonID,
-        point = data.score1-data.score2;
-
-    if(data.score1-data.score2>0)
-        wonID= data.id1;
-    else if(data.score2-data.score1>0)
-        wonID=data.id2;
-    else {
-        util.log('no winner specify, app error, not stored on database');
-        return;
-    }
-    //connection.connect();
-    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
-        if (err) util.log(err);
-    });
-    connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
-        if (err) util.log(err);
-    });
-    //connection.end();
-}
 function onLogin(data) {
     var that = this;
     //connection.connect();
@@ -145,7 +125,7 @@ function onLogin(data) {
         if (err) util.log(err);
         else {
             if (rows.length == 0) {
-                that.emit("login", { username: 'failed' });
+                that.emit("login", { errormessage: 'wrong username or password' });
             } else {
                 that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
                 if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
@@ -214,6 +194,31 @@ function onShootKeyDown() {
     var id = _shooting(x, y, direction, result.lasers);
     sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction });
     shootLastTick = now;
+}
+exports.onEndMatch = function(data) {
+    var that = this,
+        wonID,
+        point = data.score1-data.score2;
+    if(data.id1==data.id2) {
+        util.log('same id, app error, not stored on database');
+        return;
+    }
+    if(data.score1-data.score2>0)
+        wonID= data.id1;
+    else if(data.score2-data.score1>0)
+        wonID=data.id2;
+    else {
+        util.log('no winner specify, app error, not stored on database');
+        return;
+    }
+    //connection.connect();
+    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+    connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
+        if (err) util.log(err);
+    });
+    //connection.end();
 }
 // Find player by ID
 function _playerById(socketid) {

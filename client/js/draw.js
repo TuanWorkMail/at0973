@@ -36,7 +36,6 @@ function createStackedCanvases() {
     canvasOverhead.width = width;
     canvasOverhead.height = height;
 
-    canvasOverhead.addEventListener('click', gameStart, false);
     viewport = new Viewport(0, 0, width, height);
     spriteSheet = new Image();
     spriteSheet.src = "../common/map/" + tmxloader.map.tilesets[0].src;
@@ -249,10 +248,13 @@ function drawStartScreen() {
     ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
     ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
     ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
+    canvasOverhead.addEventListener('click', gameStart, false);
 }
 function drawEndScreen() {
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
         height = tmxloader.map.height * tmxloader.map.tileHeight;
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 50px VT323';
     ctx.fillText('Game Over!', (width / 2) - 60, height / 2);
     ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
     ctx.fillStyle = '#000';

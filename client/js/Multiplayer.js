@@ -81,8 +81,8 @@ function onRemovePlayer(data) {
 
 // Login
 function onLogin(data) {
-    if (data.uuid == 'failed') {
-        document.getElementById('tile').innerHTML = 'wrong username or password';
+    if (typeof data.errormessage !== 'undefined' ) {
+        document.getElementById('error-message').innerHTML = data.errormessage;
     } else {
         document.getElementById('login').style.display = 'none';
     }

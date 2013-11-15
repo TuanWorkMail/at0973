@@ -1,5 +1,6 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
+        main = require('../server/main'),
         sockets = require('../server/js/socket').sockets,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
@@ -31,7 +32,8 @@ function checkLive(object) {
             id[i]=remotePlayers[i].getUserID();
             score[i]=remotePlayers[i].getLive();
         }
-        sockets.in('r'+session.getRoomID()).emit("end match", { id1: id[0], id2:id[1], score1: score[0], score2: score[1] });
+        var data = { id1: id[0], id2:id[1], score1: score[0], score2: score[1] };
+        main.onEndMatch(data);
         util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
     }
@@ -45,21 +47,20 @@ function reset(para) {
     whereSpawn = 0;
     lasers.length = 0;
     // respawn player
-    var playerLength = remotePlayers.length;
     var objGroup = tmxloader.map.objectgroup['spawn'].objects;
     for (var i = 0; i < remotePlayers.length; i++) {
-        var x = objGroup[playerLength % objGroup.length].x,
-            y = objGroup[playerLength % objGroup.length].y,
+        var x = objGroup[i % objGroup.length].x,
+            y = objGroup[i % objGroup.length].y,
             direction;
-        if (playerLength % objGroup.length == 0)
-            direction = 'up';
-        else
+        if (i % objGroup.length == 0)
             direction = 'down';
+        else
+            direction = 'up';
         remotePlayers[i].setX(x);
         remotePlayers[i].setY(y);
         remotePlayers[i].setDirection(direction);
         remotePlayers[i].setHitPoint(10);
-        if(para=='end match') remotePlayers[i].reset();
+        if(para=='end match') remotePlayers[i].setLive(2);
         sockets.in('r'+session.getRoomID()).emit("move player", { id: remotePlayers[i].getSocketID(),
             username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
