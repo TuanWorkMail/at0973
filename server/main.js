@@ -14,7 +14,6 @@ var util = require("util"),					// Utility resources (logging, object inspection
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
     map = 'classic1',
-    lastRoomID = 0,                                         // auto increment roomID
     lastTick,                                               // calculate delta time
     lastBotTick,                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
@@ -77,6 +76,7 @@ function loop() {
             if(lastBotTick-now>=1000)
                 botStupid.BotShootInterval(bots, 1);
             hitTest.hitTestPlayer();
+            hitTest.hitTestEagle();
             player.checkHitPoint();
             //                      END LOGIC        END LOGIC       END LOGIC       END LOGIC
         }
@@ -133,12 +133,7 @@ function onLogin(data) {
                 that.emit("login", { errormessage: 'wrong username or password' });
             } else {
                 that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
-                if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
-                    var roomID = getRoomID(),
-                        newSession = new Session(roomID);
-                    allSession.push(newSession);
-                }
-                var newPlayer = player.spawnPlayer(that.id, rows[0].Username, rows[0].ID),
+                var newPlayer = player.newPlayer(that.id, rows[0].Username, rows[0].ID),
                     roomID = newPlayer.roomID;
                 newPlayer = newPlayer.newPlayer;
                 that.join('r'+roomID);
@@ -236,10 +231,6 @@ function _playerById(socketid) {
         }
     }
     return false;
-}
-function getRoomID() {
-    lastRoomID++;
-    return (lastRoomID);
 }
 function _shooting(x,y,direction, lasers) {
     var id = helper.createUUID('xxxx'),

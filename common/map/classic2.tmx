@@ -213,7 +213,7 @@
  </layer>
  <objectgroup color="#00ff00" name="spawn" width="48" height="48">
   <object name="1" x="160" y="40" width="40" height="40"/>
-  <object name="2" x="320" y="440" width="40" height="40"/>
+  <object name="0" x="320" y="440" width="40" height="40"/>
  </objectgroup>
  <objectgroup color="#ff0000" name="bot" width="48" height="48">
   <object name="1" x="80" y="200" width="40" height="40"/>
@@ -226,5 +226,9 @@
   <object x="400" y="440" width="40" height="40"/>
   <object x="440" y="400" width="40" height="40"/>
   <object x="240" y="240" width="40" height="40"/>
+ </objectgroup>
+ <objectgroup color="#ffff00" name="eagle" width="48" height="48">
+  <object name="0" x="240" y="440" width="40" height="40"/>
+  <object name="1" x="240" y="40" width="40" height="40"/>
  </objectgroup>
 </map>

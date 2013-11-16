@@ -14,19 +14,13 @@ dto.Player = function(startX, startY, direction) {
         username,
         width = 40,
         height = 40,
-        image,
         speed = 5,
         hitPoint = 10,
         live = 0,
         defaultLive = 1,
         moving = false,
         score = 0,
-        imageUp, imageDown, imageLeft, imageRight;
-
-    if (typeof require === 'undefined' && typeof exports === 'undefined') {
-	    image = new Image();
-        image.src = 'images/ship.png';
-    }
+        position;
 
 	// Getters and setters
 	var getX = function () { return x; },
@@ -49,8 +43,6 @@ dto.Player = function(startX, startY, direction) {
         setHeight = function (para) { height = para; },
         getSpeed = function () { return speed; },
         setSpeed = function (para) { speed = para; },
-        getImage = function () { return image; },
-        setImage = function (para) { image = para; },
         getScore = function () { return score; },
         setScore = function (para) { score = para; },
         getLive = function () { return live; },
@@ -62,13 +54,14 @@ dto.Player = function(startX, startY, direction) {
         },
         getMoving = function () { return moving; },
         setMoving = function (para) { moving = para; },
+        getPosition = function () { return position; },
+        setPosition = function (para) { position = para; },
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para; };
 
 	// Define which variables and methods can be accessed
 	return {
         socketID: socketID,
-
 		getX: getX,
 		getY: getY,
 		setX: setX,
@@ -89,16 +82,16 @@ dto.Player = function(startX, startY, direction) {
 		setHeight: setHeight,
 		getSpeed: getSpeed,
 		setSpeed: setSpeed,
-		getImage: getImage,
-		setImage: setImage,
 		getScore: getScore,
 		setScore: setScore,
 		getLive: getLive,
 		setLive: setLive,
 		getHitPoint: getHitPoint,
 		setHitPoint: setHitPoint,
+        getPosition: getPosition,
+        setPosition: setPosition,
         getMoving: getMoving,
-        setMoving: setMoving,
+        setMoving: setMoving
 	}
 }
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {

@@ -4,6 +4,8 @@
         sockets = require('../server/js/socket').sockets,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
+        Session = require('../common/dto/session').Session,
+        lastRoomID = 0,                                             // auto increment roomID
         dto = {};
     dto.Player = require('./dto/Player').Player;
 } else if(typeof remotePlayers === 'undefined'){
@@ -12,7 +14,7 @@
 function checkHitPoint () {
     var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; ++i) {
-        if (remotePlayers[i].getHitPoint() < 0 && alive) {
+        if (remotePlayers[i].getHitPoint() <= 0 && alive) {
             util.log('player ' + remotePlayers[i].getUsername() + ' die');
             checkLive(remotePlayers[i]);
         }
@@ -47,15 +49,11 @@ function reset(para) {
     whereSpawn = 0;
     lasers.length = 0;
     // respawn player
-    var objGroup = tmxloader.map.objectgroup['spawn'].objects;
     for (var i = 0; i < remotePlayers.length; i++) {
-        var x = objGroup[i % objGroup.length].x,
-            y = objGroup[i % objGroup.length].y,
-            direction;
-        if (i % objGroup.length == 0)
-            direction = 'down';
-        else
-            direction = 'up';
+        var result = spawnPlayer(i),
+            x = result.x,
+            y = result.y,
+            direction = result.direction;
         remotePlayers[i].setX(x);
         remotePlayers[i].setY(y);
         remotePlayers[i].setDirection(direction);
@@ -64,6 +62,52 @@ function reset(para) {
         sockets.in('r'+session.getRoomID()).emit("move player", { id: remotePlayers[i].getSocketID(),
             username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
+}
+function newPlayer(socketID, username, userID) {
+    var result = spawnPlayer(allSession[allSession.length-1].getRemotePlayers().length),
+        x = result.x,
+        y = result.y,
+        direction = result.direction;
+    var player = addNewPlayer(socketID, username, x, y, direction);
+    if (!player) return false;
+    player.newPlayer.setUserID(userID);
+    player.newPlayer.setPosition(result.name);
+    return {newPlayer: player.newPlayer, roomID: player.roomID};
+}
+function spawnPlayer(position) {
+    var spawn = tmxloader.map.objectgroup['spawn'].objects,
+        x = spawn[position % spawn.length].x,
+        y = spawn[position % spawn.length].y,
+        name = spawn[position % spawn.length].name,
+        direction;
+    if (name == '0')
+        direction = 'up';
+    else
+        direction = 'down';
+    return {x: x, y: y, direction: direction, name: name}
+}
+//add new player to array
+function addNewPlayer(id, username, x, y, direction) {
+    // Initialise the new player
+    var roomID = 0,
+        newPlayer = new dto.Player(x, y, direction);
+    newPlayer.setSocketID(id);
+    newPlayer.setUsername(username);
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+        if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
+            var roomID = newRoomID(),
+                newSession = new Session(roomID);
+            allSession.push(newSession);
+        }
+        var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();
+        roomID = allSession[allSession.length - 1].getRoomID();
+    } else {
+        //WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
+        //theres already remoteplayer up top, but i need to get it again here
+        var remotePlayers = session.getRemotePlayers();
+    }
+    remotePlayers.push(newPlayer);
+    return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomID: roomID};
 }
 var lastDirection = 'left';
 function movingPlayer() {
@@ -100,41 +144,9 @@ function movingPlayer() {
         }
     }
 }
-function spawnPlayer(socketID, username, userID) {
-    //copied from Multiplayer.js
-    //where to spawn ship
-    var spawn = tmxloader.map.objectgroup['spawn'].objects;
-    var playerLength = allSession[allSession.length-1].getRemotePlayers().length;
-
-    var x = spawn[playerLength % spawn.length].x,
-        y = spawn[playerLength % spawn.length].y,
-        direction;
-    if (playerLength % spawn.length == 0)
-        direction = 'up';
-    else
-        direction = 'down';
-    var player = addNewPlayer(socketID, username, x, y, direction);
-    if (!player) return false;
-    player.newPlayer.setUserID(userID);
-    return {newPlayer: player.newPlayer, roomID: player.roomID};
-}
-//add new player to array
-function addNewPlayer(id, username, x, y, direction) {
-    // Initialise the new player
-    var roomID = 0,
-        newPlayer = new dto.Player(x, y, direction);
-    newPlayer.setSocketID(id);
-    newPlayer.setUsername(username);
-    if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-        var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();
-        roomID = allSession[allSession.length - 1].getRoomID();
-    } else {
-        //WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
-        //theres already remoteplayer up top, but i need to get it again here
-        var remotePlayers = session.getRemotePlayers();
-    }
-    remotePlayers.push(newPlayer);
-    return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomID: roomID};
+function newRoomID() {
+    lastRoomID++;
+    return (lastRoomID);
 }
 // Find player by ID
 // client only
@@ -217,6 +229,6 @@ function moveShip() {
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.checkHitPoint = checkHitPoint;
     exports.movingPlayer = movingPlayer;
-    exports.spawnPlayer = spawnPlayer;
+    exports.newPlayer = newPlayer;
     exports.playerById = playerById;
 }

@@ -7,6 +7,7 @@
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
     exports.hitTestPlayer = hitTestPlayer;
+    exports.hitTestEagle = hitTestEagle;
 }
 //iput:x,y,w,h,type(bullet/tank)
 function mapCollision(x, y, w, h, type) {
@@ -147,7 +148,25 @@ function hitTestPlayer() {
             if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
                 remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - 4);
                 lasers[i].isRemoved = true;
-                console.log('hp: ' + remotePlayers[obj].getHitPoint());
+            }
+        }
+    }
+}
+function hitTestEagle() {
+    var remotePlayers = session.getRemotePlayers(),
+        eagle = tmxloader.map.objectgroup['eagle'].objects;
+
+    for (var i = 0; i < lasers.length; i++) {
+        for (var obj = 0; obj < eagle.length; ++obj) {
+            var ship_xw = eagle[obj].x + eagle[obj].width,
+                ship_yh = eagle[obj].y + eagle[obj].height;
+            if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > eagle[obj].x && lasers[i].y > eagle[obj].y) {
+                var name = eagle[obj].name;
+                for(var j=0; j<remotePlayers.length; j++) {
+                    if(remotePlayers[j].getPosition()==name) {
+                        remotePlayers[j].setHitPoint(0);
+                    }
+                }
             }
         }
     }
