@@ -96,8 +96,8 @@ function addNewPlayer(id, username, x, y, direction) {
     newPlayer.setUsername(username);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
-            var roomID = newRoomID(),
-                newSession = new Session(roomID);
+            roomID = newRoomID();
+            newSession = new Session(roomID);
             allSession.push(newSession);
         }
         var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();

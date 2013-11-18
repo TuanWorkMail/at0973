@@ -34,8 +34,8 @@ whereSpawn = 0;
 bots = [];
 alive = true;
 lasers = [];
-(function () {                                          // initializing...........
-    TMX_Engine.loadMap('../common/map/'+map+'.tmx');    // load map as soon as possible
+TMX_Engine.loadMap('../common/map/'+map+'.tmx', init);    // load map as soon as possible
+function init() {
     //create a new blank session
     var newSession = new Session(sessionID);
     sessionID++;
@@ -44,7 +44,7 @@ lasers = [];
     sockets.on("connection", onSocketConnection);
     lastTick = Date.now();
     setTimeout(loop, 1000);
-}())
+}
 function loop() {
     var now = Date.now(),
         fixedDelta = 1000/60,
@@ -113,16 +113,6 @@ function onClientDisconnect() {
     if (!removePlayer)
         util.log("Remove: Player not found: "+this.id);
 }
-function onRegister(data) {
-    var that = this;
-    //connection.connect();
-    connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
-        if (err) that.emit("register", { result: 'username already existed' });
-        else
-            that.emit("register", { result: 'register successfully, now please login' });
-    });
-    //connection.end();
-}
 function onLogin(data) {
     var that = this;
     //connection.connect();
@@ -142,6 +132,16 @@ function onLogin(data) {
                     x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
             }
         }
+    });
+    //connection.end();
+}
+function onRegister(data) {
+    var that = this;
+    //connection.connect();
+    connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
+        if (err) that.emit("register", { result: 'username already existed' });
+        else
+            that.emit("register", { result: 'register successfully, now please login' });
     });
     //connection.end();
 }

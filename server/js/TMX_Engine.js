@@ -77,20 +77,20 @@ var ObjectGroup = function (groupname, width, height) {
     this.objects = [];
 
 };
-function loadMap (url) {
-    readFile(url, loadCallback);
+function loadMap (src, callback) {          // run callback after map loaded
+    readFile(src, parseMap, callback);
 };
-function readFile(url, callback) {
+function readFile(src, callback1, callback2) {  // run callback1 after file loaded
     var parser = new xml2js.Parser();
-    fs.readFile(url, function(err, data) {                  // read xml
+    fs.readFile(src, function(err, data) {                  // read xml
         if(err) {util.log(err); return;}                    // log error
         parser.parseString(data, function (err, result) {   // parse xml
             if(err) {util.log(err); return;}                // log error
-            callback(result);                               // process xml
+            callback1(result, callback2);                   // process xml
         });
     });
 }
-function loadCallback(result) {
+function parseMap(result, callback) {   // run callback after map loaded
     //console.log('Parsing...' + result.map.$.version);
 
     var $width = result.map.$.width;
@@ -158,6 +158,7 @@ function loadCallback(result) {
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
+    callback();
 }
 exports.layerByName = function(name) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {

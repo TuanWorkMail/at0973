@@ -41,8 +41,17 @@ function mapCollision(x, y, w, h, type) {
 }
 
 function shootDestruction() {
-    var result = layerByName('destructible');
-    if(!result) return;
+    var destructible = session.getDestructible();
+    if(destructible.length==0) {
+        var result2 = layerByName('destructible');
+        for(var i=0; i<result2.data.length; i++) {
+            destructible[i] = [];
+            for(var j=0; j<result2.data[i].length; j++)
+                destructible[i][j] = result2.data[i][j];
+        }
+    }
+    var result = {};
+        result.data=destructible;
     for (var i = 0; i < lasers.length; i++) {
         var justanumber = 2;
         switch (lasers[i].direction) {
@@ -50,6 +59,7 @@ function shootDestruction() {
             case 'up':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
+
                     if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
                         result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
                         //destroy 4 brick at impact

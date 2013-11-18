@@ -19,15 +19,6 @@ function Bot(id, startX, startY, type) {
         width = 40,
         height = 40;
 
-    if (typeof require === 'undefined' && typeof exports === 'undefined') {
-        image = new Image();
-        if (type == 'dumb') {
-            image.src = 'images/8bit_enemy.png';
-        } else if (type == 'smart') {
-            image.src = 'images/bot2.png';
-        }
-    }
-
     if (type == 'dumb') {
         switch (randomNumber(1, 4)) {
             case 1:
