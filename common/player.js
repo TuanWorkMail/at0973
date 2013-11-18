@@ -16,20 +16,21 @@ function checkHitPoint () {
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() <= 0 && alive) {
             util.log('player ' + remotePlayers[i].getUsername() + ' die');
+            remotePlayers[i].setLive(remotePlayers[i].getLive() - 1);
+            util.log('live: ' + remotePlayers[i].getLive());
             checkLive(remotePlayers[i]);
         }
     }
 }
 function checkLive(object) {
     var remotePlayers = session.getRemotePlayers();
-    object.setLive(object.getLive() - 1);
-    util.log('live: ' + object.getLive());
     if (object.getLive() > 0) {
         reset('');
     } else if (object.getLive() <= 0) {
         //alive = false;
         //continueLoop = false;
         var id = [], score = [];
+        if(remotePlayers.length<2) return;      // make sure the following don't throw error
         for(var i=0;i<2;i++) {
             id[i]=remotePlayers[i].getUserID();
             score[i]=remotePlayers[i].getLive();

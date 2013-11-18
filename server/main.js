@@ -34,15 +34,14 @@ whereSpawn = 0;
 bots = [];
 alive = true;
 lasers = [];
-//initializing.........
-(function () {
+(function () {                                          // initializing...........
+    TMX_Engine.loadMap('../common/map/'+map+'.tmx');    // load map as soon as possible
     //create a new blank session
     var newSession = new Session(sessionID);
     sessionID++;
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    TMX_Engine.tmxLoad('../common/map/'+map+'.tmx');
     lastTick = Date.now();
     setTimeout(loop, 1000);
 }())
@@ -77,6 +76,7 @@ function loop() {
                 botStupid.BotShootInterval(bots, 1);
             hitTest.hitTestPlayer();
             hitTest.hitTestEagle();
+            hitTest.shootDestruction();
             player.checkHitPoint();
             //                      END LOGIC        END LOGIC       END LOGIC       END LOGIC
         }

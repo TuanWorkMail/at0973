@@ -66,6 +66,9 @@ function drawMap() {
 
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
+
+        if(tmxloader.map.layers[i].name == 'overhead' || tmxloader.map.layers[i].name == 'destructible') continue;
+
         //for every horizontal tile in viewport
         for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
             //for every vertical tile in viewport
@@ -102,7 +105,7 @@ function drawMap() {
     }
 }
 
-function temporaryDrawOverhead() {
+function drawLayer(layerName) {
 
     //clear();
     viewport.x = viewport_x //- viewport.halfWidth;
@@ -116,7 +119,7 @@ function temporaryDrawOverhead() {
     if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height)
         viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
 
-    var result = layerByName('overhead');
+    var result = layerByName(layerName);
 
         //for every horizontal tile in viewport
         for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
@@ -142,8 +145,13 @@ function temporaryDrawOverhead() {
                         //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
                         var spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight;
 
+                        if(layerName=='overhead')
+                            var context = contextOverhead;
+                        else
+                            var context = ctx;
+
                         //draw the sprite at X Y, place it at its place according to the viewport
-                        contextOverhead.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
+                        context.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
                             tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) -
                                 (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) -
                                 (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
@@ -164,7 +172,7 @@ function drawTile(gid, x, y, width, height) {
     //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
     var spriteY = Math.floor(gid / NoOfTiles) * 40;
 
-    if(width===undefined || height === undefined) {
+    if(typeof width==='undefined' || typeof height === 'undefined') {
         ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);
     } else {
         ctx.drawImage(spriteSheet2, spriteX, spriteY, width, height, x, y, width, height);

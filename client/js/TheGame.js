@@ -28,7 +28,7 @@ tank5.main = (function() {
         document.addEventListener('keyup', keyUp, false);
 
         drawMap();
-        temporaryDrawOverhead();
+        drawLayer('overhead');
         drawEagle();
 
         //START THE GAME
@@ -38,6 +38,7 @@ tank5.main = (function() {
     function gameLoop() {
         clearCanvas();
         scoreTotal();
+        drawLayer('destructible');
         if (gameStarted) {
             var now = Date.now(),
                 fixedDelta = 1000/60,

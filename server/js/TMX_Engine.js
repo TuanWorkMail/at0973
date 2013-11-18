@@ -77,7 +77,7 @@ var ObjectGroup = function (groupname, width, height) {
     this.objects = [];
 
 };
-function tmxLoad (url) {
+function loadMap (url) {
     readFile(url, loadCallback);
 };
 function readFile(url, callback) {
@@ -168,4 +168,4 @@ exports.layerByName = function(name) {
     return false;
 }
 exports.tmxloader = tmxloader;
-exports.tmxLoad = tmxLoad;
+exports.loadMap = loadMap;
