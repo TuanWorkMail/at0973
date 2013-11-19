@@ -1,4 +1,5 @@
-var tmxloader = require('./TMX_Engine').tmxloader;
+var tmxloader = require('./TMX_Engine').tmxloader,
+    helper = require('../../common/helper');
 //input: bot array
 //move the bot according to there foundPath
 exports.movingBot = function (bots) {
@@ -56,16 +57,11 @@ exports.botRandomPath = function (object) {
 function combineTileLayer() {
     var combined = [];
     for (var layer = 0; layer < tmxloader.map.layers.length; layer++) {
-        if (tmxloader.map.layers[layer].name == 'overhead')
+        if (tmxloader.map.layers[layer].name == 'overhead' || tmxloader.map.layers[layer].name == 'destructible')
             continue;
         //first use 1 layer as the start
-        //var new = old[] will create a REFERENCE, not a clone
-        //have to manually clone each array in multi-dimentional array
         if (combined.length == 0) {
-            for (var i = 0; i < tmxloader.map.width; i++) {
-                combined[i] = tmxloader.map.layers[layer].data[i].slice(0);
-            }
-            continue;
+            helper.clone2DArray(session.getDestructible(), combined);
         }
         //if combined is 0 and layer is not 0, combined = 1 (unwalkable)
         for (var i = 0; i < tmxloader.map.width; i++) {

@@ -1,19 +1,19 @@
 
 //RESTART for changes to applied        RESTART for changes to applied      RESTART for changes to applied
 
+var map = 'classic1';                                                                   // map name
+TMX_Engine = require('./js/TMX_Engine.js').loadMap('../common/map/'+map+'.tmx', init);  // load map as soon as possible
 // LOCAL SCOPE
-var util = require("util"),					// Utility resources (logging, object inspection, etc)
+var util = require("util"),
     helper = require('../common/helper'),
     botClass = require('./js/BotClass.js'),
     botStupid = require('./js/BotStupid'),
-    TMX_Engine = require('./js/TMX_Engine.js'),
     hitTest = require('../common/collision_hitTest'),
-    sockets = require('./js/socket').sockets,		                            // Socket controller
+    sockets = require('./js/socket').sockets,
     player = require('../common/player'),
     Session = require('../common/dto/session').Session,
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
-    map = 'classic1',
     lastTick,                                               // calculate delta time
     lastBotTick,                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
@@ -34,7 +34,6 @@ whereSpawn = 0;
 bots = [];
 alive = true;
 lasers = [];
-TMX_Engine.loadMap('../common/map/'+map+'.tmx', init);    // load map as soon as possible
 function init() {
     //create a new blank session
     var newSession = new Session(sessionID);

@@ -42,6 +42,7 @@ function mapCollision(x, y, w, h, type) {
 
 function shootDestruction() {
     var destructible = session.getDestructible();
+    // this one for client, server create in session.js
     if(destructible.length==0) {
         var result2 = layerByName('destructible');
         for(var i=0; i<result2.data.length; i++) {
