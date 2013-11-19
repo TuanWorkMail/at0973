@@ -190,7 +190,7 @@ function onShootKeyDown() {
         x = ship_x - 1;
         y = ship_y + ship_h / 2;
     }
-    var id = _shooting(x, y, direction, result.lasers);
+    var id = _shooting(x, y, direction, result.lasers, this.id);
     sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction });
     shootLastTick = now;
 }
@@ -231,9 +231,10 @@ function _playerById(socketid) {
     }
     return false;
 }
-function _shooting(x,y,direction, lasers) {
+function _shooting(x,y,direction, lasers, originID) {
     var id = helper.createUUID('xxxx'),
-        newBullet = new Bullet(id, x, y, direction, false);
+        newBullet = new Bullet(id, x, y, direction);
+    newBullet.setOriginID(originID);
     lasers.push(newBullet);
     return id;
 }

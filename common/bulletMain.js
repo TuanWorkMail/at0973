@@ -1,6 +1,5 @@
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var helper = require('./helper'),
-        createUUID = helper.createUUID,
         hitTest = require('./collision_hitTest'),
         mapCollision = hitTest.mapCollision,
         Bullet = require('./dto/bullet').Bullet,
@@ -15,7 +14,7 @@ var laserSpeed = 15;
 //client only
 function shooting(x,y,direction) {
     var id = helper.createUUID('xxxx');
-    var newBullet = new Bullet(id, x, y, direction, false);
+    var newBullet = new Bullet(id, x, y, direction);
     lasers.push(newBullet);
     return id;
 }
@@ -64,6 +63,5 @@ function removeBullet(lasers) {
 }
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.shooting = shooting;
     exports.moveLaser = moveLaser;
 }

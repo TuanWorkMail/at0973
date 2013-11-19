@@ -1,6 +1,10 @@
 if (typeof dto === 'undefined') {
     dto = {};
 }
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.Player = dto.Player;
+    var tmxloader = require('../../server/js/TMX_Engine').tmxloader;
+}
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
@@ -20,7 +24,8 @@ dto.Player = function(startX, startY, direction) {
         defaultLive = 1,
         moving = false,
         score = 0,
-        position;
+        position,
+        shootBrick = false;
 
 	// Getters and setters
 	var getX = function () { return x; },
@@ -57,7 +62,8 @@ dto.Player = function(startX, startY, direction) {
         getPosition = function () { return position; },
         setPosition = function (para) { position = para; },
         getHitPoint = function () { return hitPoint; },
-        setHitPoint = function (para) { hitPoint = para; };
+        setHitPoint = function (para) { hitPoint = para;},
+        getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para; };
 
 	// Define which variables and methods can be accessed
 	return {
@@ -66,34 +72,19 @@ dto.Player = function(startX, startY, direction) {
 		getY: getY,
 		setX: setX,
 		setY: setY,
-		getUUID: getUUID,
-		setUUID: setUUID,
-        getUserID: getUserID,
-        setUserID: setUserID,
-        getSocketID: getSocketID,
-        setSocketID: setSocketID,
-        getUsername: getUsername,
-        setUsername: setUsername,
-		getDirection: getDirection,
-		setDirection: setDirection,
-		getWidth: getWidth,
-		setWidth: setWidth,
-		getHeight: getHeight,
-		setHeight: setHeight,
-		getSpeed: getSpeed,
-		setSpeed: setSpeed,
-		getScore: getScore,
-		setScore: setScore,
-		getLive: getLive,
-		setLive: setLive,
-		getHitPoint: getHitPoint,
-		setHitPoint: setHitPoint,
-        getPosition: getPosition,
-        setPosition: setPosition,
-        getMoving: getMoving,
-        setMoving: setMoving
+		getUUID: getUUID, setUUID: setUUID,
+        getUserID: getUserID, setUserID: setUserID,
+        getSocketID: getSocketID, setSocketID: setSocketID,
+        getUsername: getUsername, setUsername: setUsername,
+		getDirection: getDirection, setDirection: setDirection,
+		getWidth: getWidth, setWidth: setWidth,
+		getHeight: getHeight, setHeight: setHeight,
+		getSpeed: getSpeed, setSpeed: setSpeed,
+		getScore: getScore, setScore: setScore,
+		getLive: getLive, setLive: setLive,
+		getHitPoint: getHitPoint, setHitPoint: setHitPoint,
+        getPosition: getPosition, setPosition: setPosition,
+        getMoving: getMoving, setMoving: setMoving,
+        getShootBrick: getShootBrick, setShootBrick: setShootBrick
 	}
-}
-if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.Player = dto.Player;
 }

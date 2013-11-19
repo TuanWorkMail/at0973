@@ -23,9 +23,18 @@ function mapCollision(x, y, w, h, type) {
         return true;
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
+        if (tmxloader.map.layers[i].name == 'destructible') continue;
         if (tmxloader.map.layers[i].name == 'background' || tmxloader.map.layers[i].name == 'overhead') continue;
         if (type == 'bullet') {
             if (tmxloader.map.layers[i].name == 'water' || tmxloader.map.layers[i].name == 'destructible') continue;
+        } else {
+            for (var j = 0; j < wNOT; j++) {
+                for (var k = 0; k < hNOT; k++) {
+                    if (session.getDestructible()[xTile + j][yTile + k] != 0) {
+                        return true;
+                    }
+                }
+            }
         }
         for (var j = 0; j < wNOT; j++) {
             for (var k = 0; k < hNOT; k++) {
