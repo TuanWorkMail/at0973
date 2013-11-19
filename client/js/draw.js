@@ -105,9 +105,9 @@ function drawMap() {
     }
 }
 
-function drawLayer(layerName) {
+function drawLayer(layer, context) {
+    if(layer.length==0) return;
 
-    //clear();
     viewport.x = viewport_x //- viewport.halfWidth;
     viewport.y = viewport_y //- viewport.halfHeight;
 
@@ -119,8 +119,6 @@ function drawLayer(layerName) {
     if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height)
         viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
 
-    var result = layerByName(layerName);
-
         //for every horizontal tile in viewport
         for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
             //for every vertical tile in viewport
@@ -131,9 +129,9 @@ function drawLayer(layerName) {
 
                 if (tile_x >= 0 && (tile_x < tmxloader.map.width) && tile_y >= 0 && (tile_y < tmxloader.map.height)) {
                     //if there is a tile at X Y
-                    if (result.data[tile_x][tile_y] != 0) {
+                    if (layer[tile_x][tile_y] != 0) {
 
-                        var gid = result.data[tile_x][tile_y];
+                        var gid = layer[tile_x][tile_y];
 
                         //number of tiles per row of tilesheet
                         var NoOfTiles = tmxloader.map.tilesets[0].width / tmxloader.map.tilesets[0].tileWidth;
@@ -144,11 +142,6 @@ function drawLayer(layerName) {
                         var spriteX = (gid - 1) % NoOfTiles * tmxloader.map.tilesets[0].tileWidth;
                         //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
                         var spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight;
-
-                        if(layerName=='overhead')
-                            var context = contextOverhead;
-                        else
-                            var context = ctx;
 
                         //draw the sprite at X Y, place it at its place according to the viewport
                         context.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
