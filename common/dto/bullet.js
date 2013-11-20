@@ -11,7 +11,7 @@ function Bullet(id, x, y, direction) {
         y = y,
         direction = direction,
         isRemoved = false,
-        originID;
+        originID = 0;
 
     function getID() { return id; } function setID(para) { id = para; }
     function getX() { return x; } function setX(para) { x = para; }

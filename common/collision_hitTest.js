@@ -50,7 +50,8 @@ function mapCollision(x, y, w, h, type) {
 }
 
 function shootDestruction() {
-    var destructible = session.getDestructible();
+    var remotePlayers = session.getRemotePlayers(),
+        destructible = session.getDestructible();
     // this one for client, server create in session.js
     if(destructible.length==0) {
         var result2 = layerByName('destructible');
@@ -63,6 +64,13 @@ function shootDestruction() {
     var result = {};
         result.data=destructible;
     for (var i = 0; i < lasers.length; i++) {
+        if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
+            for(var j=0;j<remotePlayers.length;j++) {
+                if(lasers[i].getOriginID()===remotePlayers[j].getSocketID()) {
+                    if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
+                }
+            }
+        }
         var justanumber = 2;
         switch (lasers[i].direction) {
             //bullet travel upward
@@ -135,20 +143,26 @@ function shootDestruction() {
 }
 
 function hitTestBot() {
-    var enemy_xw,
+    var remotePlayers = session.getRemotePlayers(),
+        enemy_xw,
         enemy_yh;
-
     for (var i = 0; i < lasers.length; i++) {
         for (var obj = 0; obj < bots.length; ++obj) {
-
             enemy_xw = bots[obj].getX() + bots[obj].getWidth();
             enemy_yh = bots[obj].getY() + bots[obj].getHeight();
-
             if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
                 //must emit before splice
                 sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
                 bots.splice(obj, 1);
                 lasers[i].isRemoved = true;
+                for(var k=0; k<remotePlayers.length; k++) {
+                    if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
+                        remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
+                        if(remotePlayers[k].getBotKill()>=4) {
+                            remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
+                        }
+                    }
+                }
             }
         }
     }

@@ -2,7 +2,6 @@ if (typeof dto === 'undefined') {
     dto = {};
 }
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.Player = dto.Player;
     var tmxloader = require('../../server/js/TMX_Engine').tmxloader;
 }
 /**************************************************
@@ -25,13 +24,12 @@ dto.Player = function(startX, startY, direction) {
         moving = false,
         score = 0,
         position,
-        shootBrick = false;
+        shootBrick = false,     // ability to shoot brick
+        botKill = 0;            // number of bot killed
 
 	// Getters and setters
-	var getX = function () { return x; },
-        getY = function () { return y; },
-        setX = function (newX) { x = newX; },
-        setY = function (newY) { y = newY; },
+	var getX = function () { return x; }, setX = function (newX) { x = newX; },
+        getY = function () { return y; }, setY = function (newY) { y = newY; },
         getUUID = function () { return uuid; },
         setUUID = function (para) { uuid = para; },
         getUserID = function () { return userID; },
@@ -63,7 +61,8 @@ dto.Player = function(startX, startY, direction) {
         setPosition = function (para) { position = para; },
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para;},
-        getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para; };
+        getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para;},
+        getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para};
 
 	// Define which variables and methods can be accessed
 	return {
@@ -85,6 +84,10 @@ dto.Player = function(startX, startY, direction) {
 		getHitPoint: getHitPoint, setHitPoint: setHitPoint,
         getPosition: getPosition, setPosition: setPosition,
         getMoving: getMoving, setMoving: setMoving,
-        getShootBrick: getShootBrick, setShootBrick: setShootBrick
+        getShootBrick: getShootBrick, setShootBrick: setShootBrick,
+        getBotKill: getBotKill, setBotKill: setBotKill
 	}
+}
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.Player = dto.Player;
 }
