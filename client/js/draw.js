@@ -272,3 +272,13 @@ function drawEagle() {
         contextBg.drawImage(eagle, 0, 0, 40, 40, x, y, 40, 40);
     }
 }
+var drop = new Image();
+drop.src = "images/drop.png";
+function drawDrop() {
+    var drops = session.getDrop();
+    for(var i=0; i<drops.length; i++) {
+        var x = drops[i].getX(),
+            y = drops[i].getY();
+        ctx.drawImage(drop, 0, 0, 40, 40, x, y, 40, 40);
+    }
+}

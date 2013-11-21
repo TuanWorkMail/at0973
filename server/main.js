@@ -191,7 +191,7 @@ function onShootKeyDown() {
         y = ship_y + ship_h / 2;
     }
     var id = _shooting(x, y, direction, result.lasers, this.id);
-    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction });
+    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id });
     shootLastTick = now;
 }
 exports.onEndMatch = function(data) {

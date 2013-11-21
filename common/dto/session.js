@@ -10,7 +10,8 @@ function Session(roomid) {
     var roomid = roomid,
         remotePlayers = [],
         lasers = [],
-        destructible = [];
+        destructible = [],
+        drop = [];
 
     //where bot will spawn, each map have a number of predefined point
     var whereSpawn = 0,
@@ -25,6 +26,7 @@ function Session(roomid) {
     function getRemotePlayers() { return remotePlayers; }
     function getLasers() { return lasers }
     function getDestructible() {return destructible}
+    function getDrop() {return drop}
 
     return {
 
@@ -34,6 +36,7 @@ function Session(roomid) {
         getDestructible: getDestructible,
         getRoomID: getRoomID,
         getLasers: getLasers,
-        getRemotePlayers: getRemotePlayers
+        getRemotePlayers: getRemotePlayers,
+        getDrop: getDrop
     }
 }

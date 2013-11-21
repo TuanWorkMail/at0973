@@ -27,6 +27,8 @@ function setSocketEventHandlers() {
 	socket.on("register", onRegister);
 	socket.on("end match", onEndMatch);
     socket.on("moving player", onMovingPlayer);
+    socket.on("shoot brick", onShootBrick);
+    socket.on("new drop", onNewDrop);
 };
 function onSocketConnected() {
     console.log("Connected to socket server");
@@ -72,6 +74,7 @@ function onMovePlayer(data) {
 function onNewBullet(data) {
 	//add new lasers
     var newBullet = new Bullet(data.id, data.x, data.y, data.direction);
+    newBullet.setOriginID(data.originID);
     lasers.push(newBullet);
 }
 
@@ -124,7 +127,18 @@ function onMovingPlayer(data) {
     player.setDirection(data.direction);
     player.setMoving(true);
 }
-
+function onShootBrick(data){
+    var player = playerById(data.id);
+    if (!player) {
+        console.log('shoot brick: player not found');
+        return;
+    }
+    player.setShootBrick(true);
+}
+function onNewDrop(data) {
+    var newDrop = new Drop(data.type, data.x, data.y);
+    session.getDrop().push(newDrop);
+}
 /**************************************************
 ** GAME FINDER FUNCTIONS
 **************************************************/

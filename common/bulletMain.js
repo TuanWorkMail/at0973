@@ -63,6 +63,12 @@ function removeBullet(lasers) {
                 endOfArray=true;
             }
             if(lasers[i].getIsRemoved()) {
+                if(lasers[i].getType()==='piercing') return;
+                lasers.splice(i, 1);
+                //get out of loop
+                i = lasers.length;
+            } else if(lasers[i].isRemoved) {
+                if(lasers[i].getType()==='piercing') return;
                 lasers.splice(i, 1);
                 //get out of loop
                 i = lasers.length;

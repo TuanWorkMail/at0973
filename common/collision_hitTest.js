@@ -2,7 +2,8 @@
     var TMX_Engine = require('./../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
         sockets = require('../server/js/socket').sockets,
-        layerByName = TMX_Engine.layerByName;
+        layerByName = TMX_Engine.layerByName,
+        Drop = require('./dto/drop').Drop;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
@@ -147,9 +148,16 @@ function hitTestBot() {
         for (var obj = 0; obj < bots.length; ++obj) {
             enemy_xw = bots[obj].getX() + bots[obj].getWidth();
             enemy_yh = bots[obj].getY() + bots[obj].getHeight();
-            if (lasers[i].x < enemy_xw && lasers[i].y < enemy_yh && lasers[i].x > bots[obj].getX() && lasers[i].y > bots[obj].getY()) {
-                //must emit before splice
+            if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>bots[obj].getX() && lasers[i].y>bots[obj].getY()) {
                 sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
+                if(bots[obj].getType()==='dumb'){
+                    var type = 'piercing',
+                        x = bots[obj].getX(),
+                        y = bots[obj].getY(),
+                        newDrop = new Drop(type, x, y);
+                    session.getDrop().push(newDrop);
+                    sockets.in('r'+session.getRoomID()).emit("new drop",{type: type,x: x,y: y});
+                }
                 bots.splice(obj, 1);
                 lasers[i].isRemoved = true;
                 for(var k=0; k<remotePlayers.length; k++) {
@@ -157,6 +165,7 @@ function hitTestBot() {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
                         if(remotePlayers[k].getBotKill()>=4) {
                             remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
+                            sockets.in('r'+session.getRoomID()).emit("shoot brick",{id:remotePlayers[k].getSocketID()});
                         }
                     }
                 }
