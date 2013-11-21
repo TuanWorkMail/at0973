@@ -72,12 +72,12 @@ function shootDestruction() {
             }
         }
         var justanumber = 2;
-        switch (lasers[i].direction) {
-            //bullet travel upward
+        var laser = lasers[i];
+        switch (laser.getDirection()) {
             case 'up':
+                var x = Math.floor(laser.getX() / tmxloader.map.tileWidth);
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
-
                     if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
                         result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
                         //destroy 4 brick at impact
@@ -89,7 +89,6 @@ function shootDestruction() {
                     }
                 }
                 break;
-            //bullet travel downward
             case 'down':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
@@ -104,7 +103,6 @@ function shootDestruction() {
                     }
                 }
                 break;
-            //bullet travel to the left
             case 'left':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
@@ -119,7 +117,6 @@ function shootDestruction() {
                     }
                 }
                 break;
-            //bullet travel to the right
             case 'right':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {

@@ -8,7 +8,6 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 } else {
     lasers = [];
 }
-var laserSpeed = 15;
 //input: x,y,direction of the bullet
 //push new bullet into array and emit to server
 //client only
@@ -23,19 +22,29 @@ function shooting(x,y,direction) {
 //If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
     for (var i = 0; i < lasers.length; i++) {
-        if (lasers[i].direction == 'up') {
-            lasers[i].y -= laserSpeed;
-        } else if (lasers[i].direction == 'down') {
-            lasers[i].y += laserSpeed;
-        } else if (lasers[i].direction == 'right') {
-            lasers[i].x += laserSpeed;
-        } else if (lasers[i].direction == 'left') {
-            lasers[i].x -= laserSpeed;
+        var laser = lasers[i];
+        switch (laser.getDirection()){
+            case 'up':
+                laser.y -= laser.getSpeed();
+                laser.setY(laser.getY() - laser.getSpeed());
+                break;
+            case 'down':
+                laser.y += laser.getSpeed();
+                laser.setY(laser.getY() + laser.getSpeed());
+                break;
+            case 'right':
+                laser.x += laser.getSpeed();
+                laser.setX(laser.getX() + laser.getSpeed());
+                break;
+            case 'left':
+                laser.x -= laser.getSpeed();
+                laser.setX(laser.getX() - laser.getSpeed());
+                break;
         }
-        if (mapCollision(lasers[i].x, lasers[i].y, 4, 4, 'bullet')) {
-            lasers[i].isRemoved = true;
-        } else if (lasers[i].y < 0 || lasers[i].y > tmxloader.map.height * tmxloader.map.tileHeight || lasers[i].x < 0 || lasers[i].x > tmxloader.map.width * tmxloader.map.tileWidth) {
-            lasers[i].isRemoved = true;
+        if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
+            laser.setIsRemoved(true);
+        } else if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight || laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
+            laser.setIsRemoved(true);
         }
     }
     removeBullet(lasers);
@@ -53,7 +62,7 @@ function removeBullet(lasers) {
             if(i==lasers.length-1) {
                 endOfArray=true;
             }
-            if(lasers[i].isRemoved) {
+            if(lasers[i].getIsRemoved()) {
                 lasers.splice(i, 1);
                 //get out of loop
                 i = lasers.length;

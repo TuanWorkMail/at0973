@@ -11,7 +11,8 @@ function Bullet(id, x, y, direction) {
         y = y,
         direction = direction,
         isRemoved = false,
-        originID = 0;
+        originID = 0,
+        speed = 15;
 
     function getID() { return id; } function setID(para) { id = para; }
     function getX() { return x; } function setX(para) { x = para; }
@@ -19,6 +20,7 @@ function Bullet(id, x, y, direction) {
     function getDirection() { return direction; } function setDirection(para) { direction = para; }
     function getIsRemoved() { return isRemoved; } function setIsRemoved(para) { isRemoved = para; }
     function getOriginID() {return originID} function setOriginID(para) {originID = para}
+    function getSpeed(){return speed} function setSpeed(para){speed=para}
 
     return {
         getID: getID, setID: setID,
@@ -27,6 +29,7 @@ function Bullet(id, x, y, direction) {
         getDirection: getDirection, setDirection: setDirection,
         getIsRemoved: getIsRemoved, setIsRemoved: setIsRemoved,
         getOriginID: getOriginID, setOriginID: setOriginID,
+        getSpeed: getSpeed, setSpeed: setSpeed,
 
         x: x,
         y: y,
