@@ -26,7 +26,7 @@ function Bullet(id, x, y, direction) {
     function setType(para){
         type=para;
         if(para==='piercing')
-            speed = 30;
+            speed = 9;
     }
 
     return {

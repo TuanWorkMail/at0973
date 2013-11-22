@@ -29,6 +29,7 @@ function setSocketEventHandlers() {
     socket.on("moving player", onMovingPlayer);
     socket.on("shoot brick", onShootBrick);
     socket.on("new drop", onNewDrop);
+    socket.on("collide drop", onCollideDrop);
 };
 function onSocketConnected() {
     console.log("Connected to socket server");
@@ -75,6 +76,7 @@ function onNewBullet(data) {
 	//add new lasers
     var newBullet = new Bullet(data.id, data.x, data.y, data.direction);
     newBullet.setOriginID(data.originID);
+    newBullet.setType(data.bulletType);
     lasers.push(newBullet);
 }
 
@@ -136,8 +138,21 @@ function onShootBrick(data){
     player.setShootBrick(true);
 }
 function onNewDrop(data) {
-    var newDrop = new Drop(data.type, data.x, data.y);
+    var newDrop = new Drop(data.id, data.type, data.x, data.y);
     session.getDrop().push(newDrop);
+}
+function onCollideDrop(data) {
+    var drops = session.getDrop();
+    for(var i=0;i<drops.length;i++){
+        if(drops[i].getID()===data.dropID)
+            drops.splice(i,1);
+    }
+    var result = playerById(data.socketID);
+    if(!result) {
+        console.log('collide drop: player not found');
+        return;
+    }
+    result.setBulletType(data.bulletType);
 }
 /**************************************************
 ** GAME FINDER FUNCTIONS

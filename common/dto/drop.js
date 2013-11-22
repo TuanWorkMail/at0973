@@ -1,8 +1,9 @@
 if(typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    var tmxloader = require('../../server/js/TMX_Engine').tmxloader;
     exports.Drop = Drop;
 }
-function Drop(_type, _x, _y) {
-    var id,
+function Drop(_id, _type, _x, _y) {
+    var id = _id,
         type = _type,
         x = _x,
         y = _y,

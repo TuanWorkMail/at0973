@@ -43,8 +43,6 @@ function moveLaser() {
         }
         if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
             laser.setIsRemoved(true);
-        } else if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight || laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
-            laser.setIsRemoved(true);
         }
     }
     removeBullet(lasers);
@@ -62,13 +60,8 @@ function removeBullet(lasers) {
             if(i==lasers.length-1) {
                 endOfArray=true;
             }
-            if(lasers[i].getIsRemoved()) {
-                if(lasers[i].getType()==='piercing') return;
-                lasers.splice(i, 1);
-                //get out of loop
-                i = lasers.length;
-            } else if(lasers[i].isRemoved) {
-                if(lasers[i].getType()==='piercing') return;
+            if(lasers[i].getIsRemoved() || lasers[i].isRemoved) {
+                if(lasers[i].getType()==='piercing') continue;
                 lasers.splice(i, 1);
                 //get out of loop
                 i = lasers.length;

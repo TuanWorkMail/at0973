@@ -14,6 +14,7 @@ var util = require("util"),
     Session = require('../common/dto/session').Session,
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
+    dropcheck = require('./js/drop-check'),
     lastTick,                                               // calculate delta time
     lastBotTick,                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
@@ -58,28 +59,28 @@ function loop() {
     } else
         loopRounded = Math.floor(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
-    for(var i=0;i<loopRounded;i++) {
-        for(var j=0; j<allSession.length; j++) {
-            //                      BEGIN LOGIC      BEGIN LOGIC     BEGIN LOGIC     BEGIN LOGIC
-            session = allSession[j];
-            whereSpawn = allSession[j].whereSpawn;
-            bots = allSession[j].bots;
-            lasers = allSession[j].getLasers();
-            if(session.getRemotePlayers().length < 1) continue;
+    for(var j=0; j<allSession.length; j++) {
+        session = allSession[j];
+        whereSpawn = allSession[j].whereSpawn;
+        bots = allSession[j].bots;
+        lasers = allSession[j].getLasers();
+        if(session.getRemotePlayers().length < 1 || loopRounded < 1) continue;
+        for(var i=0;i<loopRounded;i++) {
             player.movingPlayer();
             bulletMain.moveLaser();
             botClass.moveBot();
-            hitTest.hitTestBot();
-            //shoot must behind check and move
-            if(lastBotTick-now>=1000)
-                botStupid.BotShootInterval(bots, 1);
-            hitTest.hitTestPlayer();
-            hitTest.hitTestEagle();
-            hitTest.shootDestruction();
-            player.checkHitPoint();
-            //                      END LOGIC        END LOGIC       END LOGIC       END LOGIC
         }
+        hitTest.outOfMapBullet();
+        hitTest.hitTestBot();
+        if(lastBotTick-now>=1000)
+            botStupid.BotShootInterval(bots, 1);
+        hitTest.hitTestPlayer();
+        hitTest.hitTestEagle();
+        hitTest.shootDestruction();
+        dropcheck.collideDrop();
+        player.checkHitPoint();
     }
+
     lastBotTick = now;
     setTimeout(loop, 1000/60);
 }
@@ -175,6 +176,7 @@ function onShootKeyDown() {
         ship_y = player.getY(),
         ship_w = player.getWidth(),
         ship_h = player.getHeight(),
+        bulletType = player.getBulletType(),
         x, y,
         direction = player.getDirection();
     if (direction == 'up') {
@@ -190,8 +192,8 @@ function onShootKeyDown() {
         x = ship_x - 1;
         y = ship_y + ship_h / 2;
     }
-    var id = _shooting(x, y, direction, result.lasers, this.id);
-    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id });
+    var id = _shooting(x, y, direction, result.lasers, this.id, bulletType);
+    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id, bulletType: bulletType });
     shootLastTick = now;
 }
 exports.onEndMatch = function(data) {
@@ -231,10 +233,11 @@ function _playerById(socketid) {
     }
     return false;
 }
-function _shooting(x,y,direction, lasers, originID) {
+function _shooting(x,y,direction, lasers, originID, bulletType) {
     var id = helper.createUUID('xxxx'),
         newBullet = new Bullet(id, x, y, direction);
     newBullet.setOriginID(originID);
+    newBullet.setType(bulletType)
     lasers.push(newBullet);
     return id;
 }

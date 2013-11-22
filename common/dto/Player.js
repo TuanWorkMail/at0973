@@ -25,7 +25,8 @@ dto.Player = function(startX, startY, direction) {
         score = 0,
         position,
         shootBrick = false,     // ability to shoot brick
-        botKill = 0;            // number of bot killed
+        botKill = 0,            // number of bot killed
+        bulletType = 'normal';
 
 	// Getters and setters
 	var getX = function () { return x; }, setX = function (newX) { x = newX; },
@@ -62,7 +63,8 @@ dto.Player = function(startX, startY, direction) {
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para;},
         getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para;},
-        getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para};
+        getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
+        getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};
 
 	// Define which variables and methods can be accessed
 	return {
@@ -85,7 +87,8 @@ dto.Player = function(startX, startY, direction) {
         getPosition: getPosition, setPosition: setPosition,
         getMoving: getMoving, setMoving: setMoving,
         getShootBrick: getShootBrick, setShootBrick: setShootBrick,
-        getBotKill: getBotKill, setBotKill: setBotKill
+        getBotKill: getBotKill, setBotKill: setBotKill,
+        getBulletType: getBulletType, setBulletType: setBulletType
 	}
 }
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {

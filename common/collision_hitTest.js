@@ -3,12 +3,14 @@
         tmxloader = TMX_Engine.tmxloader,
         sockets = require('../server/js/socket').sockets,
         layerByName = TMX_Engine.layerByName,
-        Drop = require('./dto/drop').Drop;
+        Drop = require('./dto/drop').Drop,
+        helper = require('./helper');
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
     exports.hitTestPlayer = hitTestPlayer;
     exports.hitTestEagle = hitTestEagle;
+    exports.outOfMapBullet = outOfMapBullet;
 }
 //iput:x,y,w,h,type(bullet/tank)
 function mapCollision(x, y, w, h, type) {
@@ -76,7 +78,8 @@ function shootDestruction() {
         var laser = lasers[i];
         switch (laser.getDirection()) {
             case 'up':
-                var x = Math.floor(laser.getX() / tmxloader.map.tileWidth);
+                var xtile = Math.floor(laser.getX() / tmxloader.map.tileWidth),
+                    ytile = Math.floor(laser.getY() / tmxloader.map.tileHeight);
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
                     if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
@@ -151,12 +154,13 @@ function hitTestBot() {
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>bots[obj].getX() && lasers[i].y>bots[obj].getY()) {
                 sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
                 if(bots[obj].getType()==='dumb'){
-                    var type = 'piercing',
+                    var id = helper.createUUID('xxxx'),
+                        type = 'piercing',
                         x = bots[obj].getX(),
                         y = bots[obj].getY(),
-                        newDrop = new Drop(type, x, y);
+                        newDrop = new Drop(id, type, x, y);
                     session.getDrop().push(newDrop);
-                    sockets.in('r'+session.getRoomID()).emit("new drop",{type: type,x: x,y: y});
+                    sockets.in('r'+session.getRoomID()).emit("new drop",{id: id,type: type,x: x,y: y});
                 }
                 bots.splice(obj, 1);
                 lasers[i].isRemoved = true;
@@ -207,6 +211,24 @@ function hitTestEagle() {
                         remotePlayers[j].setHitPoint(0);
                     }
                 }
+            }
+        }
+    }
+}
+function outOfMapBullet() {
+    if(lasers.length==0) return;
+    var endOfArray = false;
+    while(!endOfArray) {
+        for (var i = 0; i < lasers.length; i++) {
+            var laser = lasers[i];
+            if(i==lasers.length-1) {
+                endOfArray=true;
+            }
+            if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight ||
+                laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
+                lasers.splice(i, 1);
+                //get out of loop
+                i = lasers.length;
             }
         }
     }
