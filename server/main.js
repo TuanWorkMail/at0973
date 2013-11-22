@@ -29,7 +29,7 @@ var util = require("util"),
     });
 // GLOBAL SCOPE
 allSession = [];// array contain all session
-session = {};
+global.session = {};
 //these are just local make global, need to be refactored
 whereSpawn = 0;
 bots = [];
