@@ -29,7 +29,7 @@ var util = require("util"),
     });
 // GLOBAL SCOPE
 allSession = [];// array contain all session
-global.session = {};
+session = {};
 //these are just local make global, need to be refactored
 whereSpawn = 0;
 bots = [];
@@ -146,7 +146,7 @@ function onRegister(data) {
     //connection.end();
 }
 function onMoveKeyDown(data) {
-    var players = _playerById(this.id);
+    var players = player.playerById(this.id);
     if (!players) {
         util.log('key down: player not found');
         return;
@@ -156,7 +156,7 @@ function onMoveKeyDown(data) {
     this.broadcast.to('r'+players.roomID).emit("moving player", { id: this.id, direction: data.move });
 }
 function onMoveKeyUp() {
-    var result = _playerById(this.id);
+    var result = player.playerById(this.id);
     if (!result) {
         console.log('key up: player not found');
         return;
@@ -167,18 +167,17 @@ function onMoveKeyUp() {
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {
-    var result = _playerById(this.id),
-    player = result.players;
-    if(!player) return;
+    var result = player.playerById(this.id);
+    if(!result) return;
     var now = Date.now();
     if(now-shootLastTick<1000) return;
-    var ship_x = player.getX(),
-        ship_y = player.getY(),
-        ship_w = player.getWidth(),
-        ship_h = player.getHeight(),
-        bulletType = player.getBulletType(),
+    var ship_x = result.players.getX(),
+        ship_y = result.players.getY(),
+        ship_w = result.players.getWidth(),
+        ship_h = result.players.getHeight(),
+        bulletType = result.players.getBulletType(),
         x, y,
-        direction = player.getDirection();
+        direction = result.players.getDirection();
     if (direction == 'up') {
         x = ship_x + ship_w / 2;
         y = ship_y - 1;
@@ -221,23 +220,10 @@ exports.onEndMatch = function(data) {
     });
     //connection.end();
 }
-// Find player by ID
-function _playerById(socketid) {
-    for (var j=0; j<allSession.length; j++) {
-        var remotePlayers = allSession[j].getRemotePlayers();
-        for (var i = 0; i < remotePlayers.length; i++) {
-            if (remotePlayers[i].getSocketID() == socketid)
-                // HACKY SOLUTION RETURN LASERS HERE
-                return {players:remotePlayers[i],roomID: allSession[j].getRoomID(), lasers: allSession[j].getLasers()};
-        }
-    }
-    return false;
-}
 function _shooting(x,y,direction, lasers, originID, bulletType) {
     var id = helper.createUUID('xxxx'),
         newBullet = new Bullet(id, x, y, direction);
     newBullet.setOriginID(originID);
-    newBullet.setType(bulletType)
     lasers.push(newBullet);
     return id;
 }

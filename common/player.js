@@ -150,13 +150,21 @@ function newRoomID() {
     return (lastRoomID);
 }
 // Find player by ID
-// client only
-function playerById(id) {
-    for (var i = 0; i < remotePlayers.length; i++) {
-        if (remotePlayers[i].getSocketID() == id)
-            return remotePlayers[i];
-    }
+function playerById(socketid) {
+    var _allSession = [];
+    if(typeof allSession==='undefined')
+        _allSession.push(session);
+    else
+        _allSession = allSession;
+    for (var j=0; j<_allSession.length; j++) {
+        var remotePlayers = _allSession[j].getRemotePlayers();
+        for (var i = 0; i < remotePlayers.length; i++) {
+            if (remotePlayers[i].getSocketID() == socketid)
+            // HACKY SOLUTION RETURN LASERS HERE
+                return {players:remotePlayers[i],roomID: _allSession[j].getRoomID(), lasers: _allSession[j].getLasers()};
+        }
 
+    }
     return false;
 }
 

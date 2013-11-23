@@ -12,8 +12,7 @@ function Bullet(id, x, y, direction) {
         direction = direction,
         isRemoved = false,
         originID = 0,
-        speed = 15,
-        type = 'normal';
+        speed = 15;
 
     function getID() { return id; } function setID(para) { id = para; }
     function getX() { return x; } function setX(para) { x = para; }
@@ -22,12 +21,6 @@ function Bullet(id, x, y, direction) {
     function getIsRemoved() { return isRemoved; } function setIsRemoved(para) { isRemoved = para; }
     function getOriginID() {return originID} function setOriginID(para) {originID = para}
     function getSpeed(){return speed} function setSpeed(para){speed=para}
-    function getType(){return type}
-    function setType(para){
-        type=para;
-        if(para==='piercing')
-            speed = 9;
-    }
 
     return {
         getID: getID, setID: setID,
@@ -37,7 +30,6 @@ function Bullet(id, x, y, direction) {
         getIsRemoved: getIsRemoved, setIsRemoved: setIsRemoved,
         getOriginID: getOriginID, setOriginID: setOriginID,
         getSpeed: getSpeed, setSpeed: setSpeed,
-        getType: getType, setType: setType,
 
         x: x,
         y: y,

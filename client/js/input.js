@@ -58,7 +58,7 @@ function keyUp(e) {
         console.log('movekeyup: player not found');
         return;
     }
-    player.setMoving(false);
+    player.players.setMoving(false);
 }
 function updateInput() {
     if (rightKey || leftKey || upKey || downKey) {
@@ -73,8 +73,8 @@ function updateInput() {
             console.log('updateInput: player not found');
             return;
         }
-        player.setDirection(move);
-        player.setMoving(true);
+        player.players.setDirection(move);
+        player.players.setMoving(true);
     }
     if (shootKey)
         //if(Date.now() - lastTick > 1000)//only shoot every 1 second

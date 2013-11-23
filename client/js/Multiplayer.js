@@ -57,14 +57,12 @@ function onSocketDisconnect() {
 // Move player
 function onMovePlayer(data) {
     var movePlayer = playerById(data.id);
-
 	// Player not found
 	if (!movePlayer) {
 	    addNewPlayer(data.id, data.username, data.x, data.y, data.direction);
 		return;
 	}
-
-	// Update player position
+    movePlayer = movePlayer.players;
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
 	movePlayer.setDirection(data.direction);
@@ -76,22 +74,17 @@ function onNewBullet(data) {
 	//add new lasers
     var newBullet = new Bullet(data.id, data.x, data.y, data.direction);
     newBullet.setOriginID(data.originID);
-    newBullet.setType(data.bulletType);
     lasers.push(newBullet);
 }
 
 // Remove player
 function onRemovePlayer(data) {
 	var removePlayer = playerById(data.id);
-
-	// Player not found
 	if (!removePlayer) {
 		console.log("Remove: Player not found: "+data.id);
 		return;
 	}
-
-	// Remove player from array
-	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
+	remotePlayers.splice(remotePlayers.indexOf(removePlayer.players), 1);
 }
 
 // Login
@@ -126,8 +119,8 @@ function onMovingPlayer(data) {
         console.log('Moving: player not found');
         return;
     }
-    player.setDirection(data.direction);
-    player.setMoving(true);
+    player.players.setDirection(data.direction);
+    player.players.setMoving(true);
 }
 function onShootBrick(data){
     var player = playerById(data.id);
@@ -135,7 +128,7 @@ function onShootBrick(data){
         console.log('shoot brick: player not found');
         return;
     }
-    player.setShootBrick(true);
+    player.players.setShootBrick(true);
 }
 function onNewDrop(data) {
     var newDrop = new Drop(data.id, data.type, data.x, data.y);
@@ -152,20 +145,7 @@ function onCollideDrop(data) {
         console.log('collide drop: player not found');
         return;
     }
-    result.setBulletType(data.bulletType);
-}
-/**************************************************
-** GAME FINDER FUNCTIONS
-**************************************************/
-// Find player by ID
-function playerById(id) {
-	var i;
-	for (i = 0; i < remotePlayers.length; i++) {
-		if (remotePlayers[i].getSocketID() == id)
-			return remotePlayers[i];
-	}
-	
-	return false;
+    result.players.setBulletType(data.bulletType);
 }
 // Find player by username
 function playerByUsername(username) {

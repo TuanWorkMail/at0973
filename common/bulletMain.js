@@ -4,7 +4,8 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         mapCollision = hitTest.mapCollision,
         Bullet = require('./dto/bullet').Bullet,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
-        socket = require('../server/js/socket').socket;
+        socket = require('../server/js/socket').socket,
+        playerById = require('./player').playerById;
 } else {
     lasers = [];
 }
@@ -61,7 +62,9 @@ function removeBullet(lasers) {
                 endOfArray=true;
             }
             if(lasers[i].getIsRemoved() || lasers[i].isRemoved) {
-                if(lasers[i].getType()==='piercing') continue;
+                var result = playerById(lasers[i].getOriginID());
+                if(result!==false)
+                    if(result.players.getBulletType()==='piercing') continue;
                 lasers.splice(i, 1);
                 //get out of loop
                 i = lasers.length;
