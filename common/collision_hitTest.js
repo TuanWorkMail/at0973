@@ -62,13 +62,13 @@ function shootDestruction() {
     var result = {};
         result.data=destructible;
     for (var i = 0; i < lasers.length; i++) {
-        if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
+        /*if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
             for(var j=0;j<remotePlayers.length;j++) {
                 if(lasers[i].getOriginID()===remotePlayers[j].getSocketID()) {
-                    //if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
+                    if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
                 }
             }
-        }
+        }*/
         var laser = lasers[i];
         var dimension = tmxloader.map.objectgroup['dimension'].objects[0],
             xtile = Math.round(laser.getX() / tmxloader.map.tileWidth),
@@ -78,94 +78,66 @@ function shootDestruction() {
             // STG = snap to grid
             xtileSTG = Math.round(laser.getX() / halfWidth) * 2,
             ytileSTG = Math.round(laser.getY() / halfHeight) * 2,
-            start, end;
+            xstart, xend, ystart, yend;
         switch (laser.getDirection()) {
             case 'up':
-                end = Math.round( (laser.getY()+laser.getSpeed()) / tmxloader.map.tileHeight),
-                start = ytile;
+                xstart = xtileSTG - 1;
+                xend = xtileSTG + 1;
+                ystart = ytile;
+                yend = Math.round( (laser.getY() + laser.getSpeed()) / tmxloader.map.tileHeight);
                 break;
             case 'down':
-                start = laser.getX()-laser.getSpeed();
+                xstart = xtileSTG - 1;
+                xend = xtileSTG + 1;
+                ystart = Math.round( (laser.getY() - laser.getSpeed()) / tmxloader.map.tileHeight);
+                yend = ytile;
                 break;
             case 'left':
-                start = laser.getY()+laser.getSpeed();
+                xstart = xtile;
+                xend = Math.round( (laser.getX() + laser.getSpeed()) / tmxloader.map.tileWidth);
+                ystart = ytileSTG - 1;
+                yend = ytileSTG + 1;
                 break;
             case 'right':
-                start = laser.getY()-laser.getSpeed();
+                xstart = Math.round( (laser.getX() - laser.getSpeed()) / tmxloader.map.tileWidth);
+                xend = xtile;
+                ystart = ytileSTG - 1;
+                yend = ytileSTG + 1;
                 break;
         }
-        for(var j=0; j>=-1; j--)
-            for(var k=start; k<end; k++){
-                if(destructible[xtileSTG+j][k]!=='0'){
-                    for(var l=xtileSTG-2; l<=xtileSTG+1; l++) {
-                        destructible[l][k] = '0';
-                    }
-                    //return;
-                }
+        for(var j=xstart; j<xend; j++){
+            for(var k=ystart; k<yend; k++){
+                if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)) ;
             }
-        /*switch (laser.getDirection()) {
-            case 'up':
-                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
-                for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
-                    if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
-                        result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
-                        //destroy 4 brick at impact
-                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            result.data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
-                        }
-                        lasers[i].isRemoved = true;
-                        break;
-                    }
-                }
-                break;
-            case 'down':
-                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
-                for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
-                    if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
-                        result.data[Math.floor((lasers[i].x - 1) / 10)][Math.floor(((lasers[i].y + behindpresent) / 10))] != 0) {
-                        //destroy 4 brick at impact
-                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            result.data[Math.floor((lasers[i].x + the4tinybrick) / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] = 0;
-                        }
-                        lasers[i].isRemoved = true;
-                        break;
-                    }
-                }
-                break;
-            case 'left':
-                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
-                for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
-                    if (result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
-                        result.data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
-                        //destroy 4 brick at impact
-                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
-                        }
-                        lasers[i].isRemoved = true;
-                        break;
-                    }
-                }
-                break;
-            case 'right':
-                //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
-                for (var behindpresent = -10; behindpresent <= 0; behindpresent = behindpresent + 10) {
-                    var x1 = Math.floor((lasers[i].x + behindpresent) / 10),
-                        y1 = Math.floor(lasers[i].y / 10),
-                        x2 = Math.floor(((lasers[i].x + behindpresent) / 10)),
-                        y2 = Math.floor((lasers[i].y - 1) / 10);
-                    if (result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor(lasers[i].y / 10)] != 0 ||
-                        result.data[Math.floor(((lasers[i].x + behindpresent) / 10))][Math.floor((lasers[i].y - 1) / 10)] != 0) {
-                        //destroy 4 brick at impact
-                        for (var the4tinybrick = -11; the4tinybrick < 20; the4tinybrick = the4tinybrick + 10) {
-                            result.data[Math.floor((lasers[i].x + behindpresent) / 10)][Math.floor((lasers[i].y + the4tinybrick) / 10)] = 0;
-                        }
-                        lasers[i].isRemoved = true;
-                        break;
-                    }
-                }
-                break;
-        }*/
+        }
     }
+}
+function removeDestructible(direction, x, y, xSTG, ySTG) {
+    var xstart, xend, ystart, yend,
+        destructible = session.getDestructible();
+    if(destructible[x][y]==='0') return false;
+    switch(direction) {
+        case 'up':
+        case 'down':
+            xstart = xSTG - 2;
+            xend = xSTG + 2;
+            ystart = y;
+            yend = y + 1;
+            break;
+        case 'left':
+        case 'right':
+            xstart = x;
+            xend = x + 1;
+            ystart = ySTG - 2;
+            yend = ySTG + 2;
+            break;
+    }
+    for(var m=xstart; m<xend; m++) {
+        for(var n=ystart; n<yend; n++){
+            destructible[m][n] = '0';
+        }
+    }
+    return true;
 }
 
 function hitTestBot() {
