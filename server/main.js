@@ -65,6 +65,7 @@ function loop() {
             player.movingPlayer();
             bulletMain.moveLaser();
             botClass.moveBot();
+            hitTest.shootDestruction();
         }
         hitTest.outOfMapBullet();
         hitTest.hitTestBot();
@@ -72,7 +73,6 @@ function loop() {
             botStupid.BotShootInterval(bots, 1);
         hitTest.hitTestPlayer();
         hitTest.hitTestEagle();
-        hitTest.shootDestruction();
         dropcheck.collideDrop();
         player.checkHitPoint();
     }

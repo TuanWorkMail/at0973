@@ -4,7 +4,8 @@
         sockets = require('../server/js/socket').sockets,
         layerByName = TMX_Engine.layerByName,
         Drop = require('./dto/drop').Drop,
-        helper = require('./helper');
+        helper = require('./helper'),
+        clone2DArray = helper.clone2DArray;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
@@ -56,33 +57,53 @@ function shootDestruction() {
     var remotePlayers = session.getRemotePlayers(),
         destructible = session.getDestructible();
     // this one for client, server create in session.js
-    if(destructible.length==0) {
-        var result2 = layerByName('destructible');
-        for(var i=0; i<result2.data.length; i++) {
-            destructible[i] = [];
-            for(var j=0; j<result2.data[i].length; j++)
-                destructible[i][j] = result2.data[i][j];
-        }
-    }
+    if(destructible.length==0)
+        clone2DArray(layerByName('destructible').data, destructible);
     var result = {};
         result.data=destructible;
     for (var i = 0; i < lasers.length; i++) {
         if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
             for(var j=0;j<remotePlayers.length;j++) {
                 if(lasers[i].getOriginID()===remotePlayers[j].getSocketID()) {
-                    if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
+                    //if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
                 }
             }
         }
-        var justanumber = 2;
         var laser = lasers[i];
+        var dimension = tmxloader.map.objectgroup['dimension'].objects[0],
+            xtile = Math.round(laser.getX() / tmxloader.map.tileWidth),
+            ytile = Math.round(laser.getY() / tmxloader.map.tileHeight),
+            halfWidth = dimension.width / 2,
+            halfHeight = dimension.height / 2,
+            // STG = snap to grid
+            xtileSTG = Math.round(laser.getX() / halfWidth) * 2,
+            ytileSTG = Math.round(laser.getY() / halfHeight) * 2,
+            start, end;
         switch (laser.getDirection()) {
             case 'up':
-                var xtile = Math.floor(laser.getX() / tmxloader.map.tileWidth),
-                    ytile = Math.floor(laser.getY() / tmxloader.map.tileHeight);
+                end = Math.round( (laser.getY()+laser.getSpeed()) / tmxloader.map.tileHeight),
+                start = ytile;
+                break;
+            case 'down':
+                start = laser.getX()-laser.getSpeed();
+                break;
+            case 'left':
+                start = laser.getY()+laser.getSpeed();
+                break;
+            case 'right':
+                start = laser.getY()-laser.getSpeed();
                 break;
         }
-        switch (laser.getDirection()) {
+        for(var j=0; j>=-1; j--)
+            for(var k=start; k<end; k++){
+                if(destructible[xtileSTG+j][k]!=='0'){
+                    for(var l=xtileSTG-2; l<=xtileSTG+1; l++) {
+                        destructible[l][k] = '0';
+                    }
+                    //return;
+                }
+            }
+        /*switch (laser.getDirection()) {
             case 'up':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
@@ -143,7 +164,7 @@ function shootDestruction() {
                     }
                 }
                 break;
-        }
+        }*/
     }
 }
 

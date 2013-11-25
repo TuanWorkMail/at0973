@@ -52,13 +52,13 @@ tank5.main = (function() {
             for(var i=0;i<loopRounded;i++) {
                 movingPlayer();
                 moveLaser();
+                shootDestruction();
             }
             //drawMap();
             //shipCollision();
             outOfMapBullet();
             updateInput();
             document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
-            shootDestruction();
             drawBot();
             drawPlayer();
             drawLaser();
