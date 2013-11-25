@@ -80,6 +80,10 @@ function shootDestruction() {
             case 'up':
                 var xtile = Math.floor(laser.getX() / tmxloader.map.tileWidth),
                     ytile = Math.floor(laser.getY() / tmxloader.map.tileHeight);
+                break;
+        }
+        switch (laser.getDirection()) {
+            case 'up':
                 //check behind and at the bullet because the bullet can travel over the brick(bullet travel at 15 pixel while the brick is 10px)
                 for (var behindpresent = 10; behindpresent >= 0; behindpresent = behindpresent - 10) {
                     if (result.data[Math.floor(lasers[i].x / 10)][Math.floor((lasers[i].y + behindpresent) / 10)] != 0 ||
@@ -167,7 +171,7 @@ function hitTestBot() {
                 for(var k=0; k<remotePlayers.length; k++) {
                     if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
-                        if(remotePlayers[k].getBotKill()>=4) {
+                        if(remotePlayers[k].getBotKill()>=2) {
                             remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
                             sockets.in('r'+session.getRoomID()).emit("shoot brick",{id:remotePlayers[k].getSocketID()});
                         }

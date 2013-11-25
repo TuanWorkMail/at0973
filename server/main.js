@@ -53,11 +53,7 @@ function loop() {
         delta = now - lastTick;
     lastTick = now;
     var loopUnrounded = delta/fixedDelta + loopUnused;
-    remainder = loopUnrounded - Math.floor(loopUnrounded);
-    if(remainder>0.5) {
-        loopRounded = Math.floor(loopUnrounded) + 1;
-    } else
-        loopRounded = Math.floor(loopUnrounded);
+    loopRounded = Math.round(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
