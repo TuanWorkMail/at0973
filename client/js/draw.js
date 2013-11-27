@@ -8,7 +8,8 @@ var viewport,
     canvasOverhead,
     contextOverhead,
     spriteSheet,
-    spriteSheet2;
+    spriteSheet2,
+    eagle = new Image();
 function createStackedCanvases() {
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
         height = tmxloader.map.height * tmxloader.map.tileHeight;
@@ -41,6 +42,7 @@ function createStackedCanvases() {
     spriteSheet.src = "../common/map/" + tmxloader.map.tilesets[0].src;
     spriteSheet2 = new Image();
     spriteSheet2.src = "images/tank5.png";
+    eagle.src = "images/eagle.png";
 }
 function Viewport(x, y, width, height) {
     this.x = x;
@@ -68,6 +70,7 @@ function drawMap() {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
 
         if(tmxloader.map.layers[i].name == 'overhead' || tmxloader.map.layers[i].name == 'destructible') continue;
+        if(!tmxloader.map.layers[i].visible) continue;
 
         //for every horizontal tile in viewport
         for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
@@ -105,51 +108,40 @@ function drawMap() {
     }
 }
 
-function drawLayer(layer, context) {
+function drawLayer(layer, context, mode) {
     if(layer.length==0) return;
-
-    viewport.x = viewport_x //- viewport.halfWidth;
-    viewport.y = viewport_y //- viewport.halfHeight;
-
-    if (viewport.x < 0) viewport.x = 0;
-    if (viewport.y < 0) viewport.y = 0;
-    //number of tiles in map multiply by tile width(pixel) minus viewport width(pixel)
-    if (viewport.x > tmxloader.map.width * tmxloader.map.tileWidth - viewport.width)
-        viewport.x = tmxloader.map.width * tmxloader.map.tileWidth - viewport.width;
-    if (viewport.y > tmxloader.map.height * tmxloader.map.tileHeight - viewport.height)
-        viewport.y = tmxloader.map.height * tmxloader.map.tileHeight - viewport.height;
+    var multiplier = 1;
+    if(typeof mode !== 'undefined') multiplier = 4;
+    //number of tiles per row of tilesheet
+    var NoOfTiles = tmxloader.map.tilesets[0].width / tmxloader.map.tilesets[0].tileWidth,
+        spritew = tmxloader.map.tilesets[0].tileWidth / multiplier,
+        spriteh = tmxloader.map.tilesets[0].tileHeight / multiplier,
+        draww = tmxloader.map.tileWidth / multiplier,
+        drawh = tmxloader.map.tileHeight / multiplier;
 
         //for every horizontal tile in viewport
-        for (var xp = 0; xp < (viewport.width / tmxloader.map.tileWidth + 1) ; ++xp) {
+        for (var xp = 0; xp < tmxloader.map.width * multiplier ; ++xp) {
             //for every vertical tile in viewport
-            for (var yp = 0; yp < viewport.height / tmxloader.map.tileHeight ; ++yp) {
+            for (var yp = 0; yp < tmxloader.map.height * multiplier ; ++yp) {
                 //find the position of the first tile within viewport
-                var tile_x = Math.floor(viewport.x / tmxloader.map.tileWidth) + xp;
-                var tile_y = Math.floor(viewport.y / tmxloader.map.tileHeight) + yp;
+                var tile_x = xp;
+                var tile_y = yp;
 
-                if (tile_x >= 0 && (tile_x < tmxloader.map.width) && tile_y >= 0 && (tile_y < tmxloader.map.height)) {
                     //if there is a tile at X Y
                     if (layer[tile_x][tile_y] != 0) {
-
                         var gid = layer[tile_x][tile_y];
-
-                        //number of tiles per row of tilesheet
-                        var NoOfTiles = tmxloader.map.tilesets[0].width / tmxloader.map.tilesets[0].tileWidth;
-
                         //gid%NoOfTiles: position in a row
                         //gid%NoOfTiles-1: first sprite have X = 1 - 1 = 0
                         //(gid%NoOfTiles-1)*tmxloader.map.tilesets[0].tileWidth: X coordinate of the sprite
-                        var spriteX = (gid - 1) % NoOfTiles * tmxloader.map.tilesets[0].tileWidth;
-                        //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
-                        var spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight;
-
+                        var spriteX = (gid - 1) % NoOfTiles * tmxloader.map.tilesets[0].tileWidth,
+                            //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
+                            spriteY = Math.floor(gid / NoOfTiles) * tmxloader.map.tilesets[0].tileHeight,
+                            drawX = xp * tmxloader.map.tileWidth / multiplier,
+                            drawY = yp * tmxloader.map.tileHeight / multiplier;
                         //draw the sprite at X Y, place it at its place according to the viewport
-                        context.drawImage(spriteSheet, spriteX, spriteY, tmxloader.map.tilesets[0].tileWidth,
-                            tmxloader.map.tilesets[0].tileHeight, (xp * tmxloader.map.tileWidth) -
-                                (viewport.x % tmxloader.map.tileWidth), (yp * tmxloader.map.tileHeight) -
-                                (viewport.y % tmxloader.map.tileHeight), tmxloader.map.tileWidth, tmxloader.map.tileHeight);
+                        context.drawImage(spriteSheet, spriteX, spriteY, spritew, spriteh, drawX, drawY, draww, drawh);
                     }
-                }
+
             }
         }
 
@@ -187,6 +179,7 @@ function drawLaser() {
     }
 }
 function drawPlayer() {
+    var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; i++) {
         var direction = remotePlayers[i].getDirection(),
             x = remotePlayers[i].getX(),
@@ -204,7 +197,7 @@ function drawPlayer() {
 }
 function drawingBot(object) {
     if(object.getType() == 'dumb') {
-        switch(object.direction) {
+        switch(object.getDirection()) {
             case 'right':
                 drawTile(5, object.getX(), object.getY());
                 break;
@@ -221,7 +214,7 @@ function drawingBot(object) {
                 console.log(object.getDirection()+' is not direction');
         }
     } else {
-        switch(object.direction) {
+        switch(object.getDirection()) {
             case 'right':
                 drawTile(22, object.getX(), object.getY());
                 break;
@@ -264,8 +257,6 @@ function drawEndScreen() {
 }
 function drawEagle() {
     var drawpoint = tmxloader.map.objectgroup['eagle'].objects;
-    var eagle = new Image();
-    eagle.src = "images/eagle.png";
     for(var i=0; i<drawpoint.length; i++) {
         var x = drawpoint[i].x,
             y = drawpoint[i].y;

@@ -4,12 +4,12 @@ function onBotBroadcast(data) {
     if (bot!=false) {
         bot.setX(data.x);
         bot.setY(data.y);
-        bot.direction=data.direction;
+        bot.setDirection(data.direction);
         bot.type = data.type;
         return;
     }
     var newBot = new Bot(data.id, data.x, data.y, data.type);
-    newBot.direction = data.direction;
+    newBot.setDirection(data.direction);
     remoteBots.push(newBot);
 }
 function onBotDie(data) {

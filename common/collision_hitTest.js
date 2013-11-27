@@ -107,7 +107,12 @@ function shootDestruction() {
         }
         for(var j=xstart; j<xend; j++){
             for(var k=ystart; k<yend; k++){
-                if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)) ;
+                if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)){
+                    //laser.setIsRemoved(true);
+                    //continue;
+                    lasers.splice(i, 1);
+                    return;
+                }
             }
         }
     }

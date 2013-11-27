@@ -3,6 +3,7 @@ var tmxloader = require('./TMX_Engine').tmxloader,
 //input: bot array
 //move the bot according to there foundPath
 exports.movingBot = function (bots) {
+    if(bots.pathFound.length===0) return;
     //bot current coordianate is calculate base on ship_w/h, not tileWidth/height
     var pixelX = bots.pathFound[bots.whereNow + 1][0] * bots.getWidth(),
         pixelY = bots.pathFound[bots.whereNow + 1][1] * bots.getHeight(),
@@ -13,20 +14,20 @@ exports.movingBot = function (bots) {
         //down or up
         if (differenceY > 0) {
             bots.setY(bots.getY() - bots.speed);
-            bots.direction = 'up';
+            bots.setDirection('up');
         } else {
             bots.setY(bots.getY() + bots.speed);
-            bots.direction = 'down';
+            bots.setDirection('down');
         }
         //go horizontally
     } else if (differenceY == 0 && differenceX != 0) {
         //right or left
         if (differenceX > 0) {
             bots.setX(bots.getX() - bots.speed);
-            bots.direction = 'left';
+            bots.setDirection('left');
         } else {
             bots.setX(bots.getX() + bots.speed);
-            bots.direction = 'right';
+            bots.setDirection('right');
         }
     } else {
         bots.whereNow++;
@@ -39,6 +40,10 @@ exports.botRandomPath = function (object) {
     var check = true,
         randomNumber = require('./../../common/helper').randomNumber,
         pathFinder = require('./BotPathFinder').pathFinder,
+        botDestination;
+    if(typeof tmxloader.map.objectgroup['destination']==='undefined')
+        return [];
+    else
         botDestination = tmxloader.map.objectgroup['destination'].objects;
     while (check) {
         //pathStart/end calculate base on ship_w/h, not tileWidth/Height

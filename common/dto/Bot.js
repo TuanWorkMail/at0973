@@ -13,27 +13,13 @@ function Bot(id, startX, startY, type) {
         pathFound,
         whereNow = 0,
         to,
-        direction,
+        direction = 'up',
         speed,
         image,
         width = 40,
         height = 40;
 
     if (type == 'dumb') {
-        switch (randomNumber(1, 4)) {
-            case 1:
-                direction = 'up';
-                break;
-            case 2:
-                direction = 'down';
-                break;
-            case 3:
-                direction = 'left';
-                break;
-            case 4:
-                direction = 'right';
-                break;
-        }
         speed = 2;
     } else if (type == 'smart') {
         speed = 4;
@@ -73,7 +59,6 @@ function Bot(id, startX, startY, type) {
         pathFound: pathFound,
         whereNow: whereNow,
         to: to,
-        direction: direction,
         speed: speed,
         image: image,
         width: width,

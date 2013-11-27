@@ -8,8 +8,6 @@
         lastRoomID = 0,                                             // auto increment roomID
         dto = {};
     dto.Player = require('./dto/Player').Player;
-} else if(typeof remotePlayers === 'undefined'){
-    var remotePlayers = session.getRemotePlayers();
 }
 function checkHitPoint () {
     var remotePlayers = session.getRemotePlayers();

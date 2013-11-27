@@ -1,5 +1,6 @@
 window.onload = setSocketEventHandlers;
-var tank5 = {};
+var tank5 = {},
+    session;
 tank5.main = (function() {
     var shipSpeed = 5,
         fps = 60,
@@ -16,6 +17,7 @@ tank5.main = (function() {
     function init() {
         var width = tmxloader.map.width * tmxloader.map.tileWidth,
             height = tmxloader.map.height * tmxloader.map.tileHeight;
+        session = new Session(0);
         createStackedCanvases();
         // pop up login
         var centerPlaceholder = document.getElementById('center'),
@@ -27,9 +29,10 @@ tank5.main = (function() {
         document.addEventListener('keydown', keyDown, false);
         document.addEventListener('keyup', keyUp, false);
 
-        drawMap();
-        drawLayer(layerByName('overhead').data, contextOverhead);
-        drawEagle();
+        setTimeout(function() {
+            drawMap();
+            drawLayer(layerByName('overhead').data, contextOverhead);
+            drawEagle();}, 2000);
 
         //START THE GAME
         gameLoop();

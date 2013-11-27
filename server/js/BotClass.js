@@ -31,7 +31,7 @@ exports.moveBot=function () {
         }
         var sockets = require('./socket').sockets;
         sockets.in('r'+session.getRoomID()).emit("bot broadcast", { id: bots[bot].id, x: bots[bot].getX(),
-            y: bots[bot].getY(), direction: bots[bot].direction, type: bots[bot].type });
+            y: bots[bot].getY(), direction: bots[bot].getDirection(), type: bots[bot].type });
     }
 }
 //add new bot to the array
@@ -55,7 +55,6 @@ function createBot() {
         } else {
             newBot = new Bot(id, x, y, 'dumb');
         }
-        // Add new player to the remote players array
         bots.push(newBot);
         whereSpawn++;
     }

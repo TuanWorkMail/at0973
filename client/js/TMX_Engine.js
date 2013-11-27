@@ -32,10 +32,11 @@ tmxloader.Tileset = function (firstgid, name, tileWidth, tileHeight, src, width,
     this.height = height;
     //this.properties = properties;
 }
-tmxloader.Layer = function (layerName, width, height/*, properties*/) {
+tmxloader.Layer = function (layerName, width, height, visible/*, properties*/) {
     this.name = layerName;
     this.width = width;
     this.height = height;
+    this.visible = visible;
     this.data = new Array(width);
     //this.properties = properties;
     //THIS ONE HAS BEEN FIXED A LOT
@@ -152,8 +153,13 @@ tmxloader.load = function (url) {
         $data = $layer[i].getElementsByTagName("data")[0];
         $lwidth = $layer[i].getAttribute("width");
         $lheight = $layer[i].getAttribute("height");
+        var $visible;
+        if($layer[i].getAttribute("visible")===null)
+            $visible = true;
+        else
+            $visible = false;
         //var properties = tmxloader.parseProperties($(this));
-        tmxloader.map.layers[layerCount] = new tmxloader.Layer($layer[i].getAttribute("name"), $lwidth, $lheight/*, properties*/);
+        tmxloader.map.layers[layerCount] = new tmxloader.Layer($layer[i].getAttribute("name"), $lwidth, $lheight, $visible/*, properties*/);
         if ($data.getAttribute("encoding") == "csv") {
 
             console.log("Processing CSV");

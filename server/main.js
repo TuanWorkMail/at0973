@@ -1,7 +1,7 @@
 
 //RESTART for changes to applied        RESTART for changes to applied      RESTART for changes to applied
 
-var map = 'classic1';                                                                   // map name
+var map = 'big';                                                                   // map name
 TMX_Engine = require('./js/TMX_Engine.js').loadMap('../common/map/'+map+'.tmx', init);  // load map as soon as possible
 // LOCAL SCOPE
 var util = require("util"),
@@ -94,21 +94,6 @@ function onSocketConnection(client) {
     client.on("move key up", onMoveKeyUp);
     client.on("shoot key down", onShootKeyDown);
 }
-function onClientDisconnect() {
-    var removePlayer = false;
-    for(var j=0; j<allSession.length; j++) {
-        for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
-            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
-                allSession[j].getRemotePlayers().splice(i, 1);
-                // NEED FIX
-                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
-                removePlayer = true;
-            }
-        }
-    }
-    if (!removePlayer)
-        util.log("Remove: Player not found: "+this.id);
-}
 function onLogin(data) {
     var that = this;
     //connection.connect();
@@ -130,6 +115,21 @@ function onLogin(data) {
         }
     });
     //connection.end();
+}
+function onClientDisconnect() {
+    var removePlayer = false;
+    for(var j=0; j<allSession.length; j++) {
+        for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
+            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
+                allSession[j].getRemotePlayers().splice(i, 1);
+                // NEED FIX
+                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
+                removePlayer = true;
+            }
+        }
+    }
+    if (!removePlayer)
+        util.log("Remove: Player not found: "+this.id);
 }
 function onRegister(data) {
     var that = this;

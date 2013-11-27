@@ -2,9 +2,10 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.Session = Session;
     var TMX_Engine = require('../../server/js/TMX_Engine'),
         helper = require('../helper'),
-        layerByName = TMX_Engine.layerByName;
-} else
-    var session = new Session(0);
+        clone2DArray = helper.clone2DArray,
+        layerByName = TMX_Engine.layerByName,
+        splitBigTile = require('../split-big-tile').splitBigTile;
+}
 
 function Session(roomid) {
     var roomid = roomid,
@@ -17,10 +18,11 @@ function Session(roomid) {
     var whereSpawn = 0,
         bots = [];
 
-    if(typeof require!=='undefined' && typeof exports !== 'undefined') {
+    //destructible = splitBigTile(layerByName('destructible').data);
+    //if(typeof require!=='undefined' && typeof exports !== 'undefined') {
         var result2 = layerByName('destructible');
-        helper.clone2DArray(result2.data, destructible);
-    }
+        clone2DArray(result2.data, destructible);
+    //}
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }

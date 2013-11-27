@@ -31,6 +31,11 @@ function keyDown(e) {
     if (e.keyCode == 32) {
         shootKey = true;
     }
+    switch(e.keyCode){
+        case 37: case 39: case 38:  case 40:    // Arrow keys
+        case 32: e.preventDefault(); break;     // Space
+        default: break;                         // do not block other keys
+    }
 }
 //Checks to see if a pressed key has been released and stops the ships movement if it has
 function keyUp(e) {
