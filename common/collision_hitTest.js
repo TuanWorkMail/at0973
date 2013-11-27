@@ -29,6 +29,7 @@ function mapCollision(x, y, w, h, type) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
         if (tmxloader.map.layers[i].name == 'destructible') continue;
         if (tmxloader.map.layers[i].name == 'background' || tmxloader.map.layers[i].name == 'overhead') continue;
+        if (!tmxloader.map.layers[i].visible) continue;
         if (type == 'bullet') {
             if (tmxloader.map.layers[i].name == 'water' || tmxloader.map.layers[i].name == 'destructible') continue;
         } else {
@@ -220,7 +221,7 @@ function hitTestEagle() {
 function outOfMapBullet() {
     if(lasers.length==0) return;
     var endOfArray = false;
-    while(!endOfArray) {
+    //while(!endOfArray) {
         for (var i = 0; i < lasers.length; i++) {
             var laser = lasers[i];
             if(i==lasers.length-1) {
@@ -229,11 +230,11 @@ function outOfMapBullet() {
             if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight ||
                 laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
                 lasers.splice(i, 1);
-                //get out of loop
-                i = lasers.length;
+                //restart loop
+                i = 0;
             }
         }
-    }
+    //}
 }
 
 //Runs a couple of loops to see if any of the lasers have hit any of the enemies

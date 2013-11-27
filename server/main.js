@@ -1,7 +1,7 @@
 
 //RESTART for changes to applied        RESTART for changes to applied      RESTART for changes to applied
 
-var map = 'big';                                                                   // map name
+var map = 'classic1';                                                                   // map name
 TMX_Engine = require('./js/TMX_Engine.js').loadMap('../common/map/'+map+'.tmx', init);  // load map as soon as possible
 // LOCAL SCOPE
 var util = require("util"),

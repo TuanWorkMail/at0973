@@ -35,10 +35,11 @@ var Tileset = function (firstgid, name, tileWidth, tileHeight, src, width, heigh
     this.height = height;
 
 };
-var Layer = function (layerName, width, height) {
+var Layer = function (layerName, width, height, visible) {
     this.name = layerName;
     this.width = width;
     this.height = height;
+    this.visible = visible;
     this.data = new Array(width);
 
     //THIS ONE HAS BEEN FIXED A LOT
@@ -111,7 +112,12 @@ function parseMap(result, callback) {   // run callback after map loaded
         var $data = $layer[i].data[0];
         var $lwidth = $layer[i].$.width;
         var $lheight = $layer[i].$.height;
-        tmxloader.map.layers[i] = new Layer($layer[i].$.name, $lwidth, $lheight);
+        var $visible;
+        if(typeof $layer[i].$.visible==='undefined')
+            $visible = true;
+        else
+            $visible = false;
+        tmxloader.map.layers[i] = new Layer($layer[i].$.name, $lwidth, $lheight, $visible);
         if ($data.$.encoding == "csv") {
 
             //console.log("Processing CSV");

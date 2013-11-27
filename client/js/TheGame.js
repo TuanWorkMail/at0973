@@ -57,9 +57,9 @@ tank5.main = (function() {
                 moveLaser();
                 shootDestruction();
             }
+            outOfMapBullet();
             //drawMap();
             //shipCollision();
-            outOfMapBullet();
             updateInput();
             document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
             drawBot();
