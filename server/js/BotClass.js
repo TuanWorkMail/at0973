@@ -52,7 +52,6 @@ function createBot() {
             x = enemiesGroup[whereSpawn].x,
             y = enemiesGroup[whereSpawn].y,
             newBot;
-        console.log(whereSpawn);
         //every 3 bot is smart
         if (whereSpawn % 2 == 0) {
             newBot = new Bot(id, x, y, 'dumb');

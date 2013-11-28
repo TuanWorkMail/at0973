@@ -67,12 +67,6 @@ function removeBullet(lasers) {
                 endOfArray=true;
             }
             if(lasers[i].getIsRemoved() || lasers[i].isRemoved) {
-                var result = playerById(lasers[i].getOriginID());
-                if(result===false)
-                    if(typeof require === 'undefined' && typeof exports === 'undefined'){
-                        console.log('remove bullet: player not found');
-                        return;
-                    } else return;
                 //if(result.players.getBulletType()==='piercing') continue;
                 lasers.splice(i, 1);
                 //get out of loop

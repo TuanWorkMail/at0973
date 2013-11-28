@@ -28,7 +28,6 @@ function checkLive(object) {
         //alive = false;
         //continueLoop = false;
         var id = [], score = [];
-        if(remotePlayers.length<2) return;      // make sure the following don't throw error
         for(var i=0;i<2;i++) {
             id[i]=remotePlayers[i].getUserID();
             score[i]=remotePlayers[i].getLive();
