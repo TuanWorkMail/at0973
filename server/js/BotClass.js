@@ -1,6 +1,6 @@
 var botSmart = require('./BotSmart'),
     helper = require('../../common/helper'),
-    botsLength = 2;
+    botsLength = 99;
 /*
 var pathStart,
     pathStartX,
@@ -38,25 +38,30 @@ exports.moveBot=function () {
 function createBot() {
     var enemiesGroup = require('./TMX_Engine').tmxloader.map.objectgroup['bot'].objects,
         Bot = require('./../../common/dto/Bot').Bot;
-    //reset spawn point when reach the last point
-    if (whereSpawn == enemiesGroup.length) {
-        whereSpawn = 0;
+    if (botsLength > enemiesGroup.length){
+        botsLength = enemiesGroup.length;
     }
-    while (bots.length < botsLength && whereSpawn < enemiesGroup.length) {
+    while (bots.length < botsLength) {
+        var whereSpawn = session.getWhereSpawn();
+        //reset spawn point when reach the last point
+        if (whereSpawn >= enemiesGroup.length) {
+            whereSpawn = 0;
+        }
         // Initialise the new bot
         var id = helper.createUUID('xxxx'),
             x = enemiesGroup[whereSpawn].x,
-            y = enemiesGroup[whereSpawn].y;
+            y = enemiesGroup[whereSpawn].y,
+            newBot;
         console.log(whereSpawn);
         //every 3 bot is smart
         if (whereSpawn % 2 == 0) {
+            newBot = new Bot(id, x, y, 'dumb');
+        } else {
             newBot = new Bot(id, x, y, 'smart');
             newBot.pathFound = botSmart.botRandomPath(newBot);
-        } else {
-            newBot = new Bot(id, x, y, 'dumb');
         }
         bots.push(newBot);
-        whereSpawn++;
+        session.setWhereSpawn(whereSpawn+1);
     }
 }
 

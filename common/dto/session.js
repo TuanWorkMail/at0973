@@ -12,7 +12,8 @@ function Session(roomid) {
         remotePlayers = [],
         lasers = [],
         destructible = [],
-        drop = [];
+        drop = [],
+        combinedLayer = [];
 
     //where bot will spawn, each map have a number of predefined point
     var whereSpawn = 0,
@@ -29,16 +30,19 @@ function Session(roomid) {
     function getLasers() { return lasers }
     function getDestructible() {return destructible}
     function getDrop() {return drop}
+    function getWhereSpawn(){return whereSpawn} function setWhereSpawn(para){whereSpawn=para}
+    function getCombinedLayer(){return combinedLayer} function setCombinedLayer(para){combinedLayer=para}
 
     return {
 
-        whereSpawn: whereSpawn,
         bots: bots,
 
         getDestructible: getDestructible,
         getRoomID: getRoomID,
         getLasers: getLasers,
         getRemotePlayers: getRemotePlayers,
-        getDrop: getDrop
+        getDrop: getDrop,
+        getWhereSpawn: getWhereSpawn, setWhereSpawn: setWhereSpawn,
+        getCombinedLayer: getCombinedLayer, setCombinedLayer: setCombinedLayer
     }
 }

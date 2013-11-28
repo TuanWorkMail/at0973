@@ -6,20 +6,21 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         socket = require('../server/js/socket').socket,
         playerById = require('./player').playerById;
-} else {
-    lasers = [];
+    exports.moveLaser = moveLaser;
+    exports.shooting = shooting;
 }
-//input: x,y,direction of the bullet
-//push new bullet into array and emit to server
-//client only
-function shooting(x,y,direction) {
-    var id = helper.createUUID('xxxx');
-    var newBullet = new Bullet(id, x, y, direction);
+function shooting(x,y,direction, originID, id) {
+    var _id;
+    if(typeof id==='undefined'){
+        _id = helper.createUUID('xxxx')
+    } else {
+        _id = id;
+    }
+    var newBullet = new Bullet(_id, x, y, direction);
+    newBullet.setOriginID(originID);
     lasers.push(newBullet);
-    return id;
+    return _id;
 }
-
-
 //If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
     for (var i = 0; i < lasers.length; i++) {
@@ -75,8 +76,4 @@ function removeBullet(lasers) {
             }
         }
     }
-}
-
-if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    exports.moveLaser = moveLaser;
 }

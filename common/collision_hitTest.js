@@ -111,8 +111,9 @@ function shootDestruction() {
                 if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)){
                     //laser.setIsRemoved(true);
                     //continue;
-                    lasers.splice(i, 1);
-                    return;
+
+                    //lasers.splice(i, 1);
+                    //return;
                 }
             }
         }
@@ -121,6 +122,7 @@ function shootDestruction() {
 function removeDestructible(direction, x, y, xSTG, ySTG) {
     var xstart, xend, ystart, yend,
         destructible = session.getDestructible();
+
     if(destructible[x][y]==='0') return false;
     switch(direction) {
         case 'up':
@@ -221,7 +223,7 @@ function hitTestEagle() {
 function outOfMapBullet() {
     if(lasers.length==0) return;
     var endOfArray = false;
-    //while(!endOfArray) {
+    while(!endOfArray) {
         for (var i = 0; i < lasers.length; i++) {
             var laser = lasers[i];
             if(i==lasers.length-1) {
@@ -231,10 +233,10 @@ function outOfMapBullet() {
                 laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
                 lasers.splice(i, 1);
                 //restart loop
-                i = 0;
+                i = lasers.length;
             }
         }
-    //}
+    }
 }
 
 //Runs a couple of loops to see if any of the lasers have hit any of the enemies

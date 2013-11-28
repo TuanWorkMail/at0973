@@ -1,7 +1,7 @@
 
 //RESTART for changes to applied        RESTART for changes to applied      RESTART for changes to applied
 
-var map = 'classic1';                                                                   // map name
+var map = 'big';                                                                   // map name
 TMX_Engine = require('./js/TMX_Engine.js').loadMap('../common/map/'+map+'.tmx', init);  // load map as soon as possible
 // LOCAL SCOPE
 var util = require("util"),
@@ -15,8 +15,11 @@ var util = require("util"),
     bulletMain = require('../common/bulletMain'),
     Bullet = require('../common/dto/bullet').Bullet,
     dropcheck = require('./js/drop-check'),
-    lastTick,                                               // calculate delta time
-    lastBotTick,                                            // for stupid bot auto shoot
+    combinelayer = require('../common/combine-layer'),
+    combine16to1tile = combinelayer.combine16to1tile,
+    lastTick = Date.now(),                                  // calculate delta time
+    last1second = Date.now(),
+    lastBotTick = Date.now(),                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
     sessionID = 0,                                          // auto incremental session id
     mysql = require('mysql'),
@@ -30,8 +33,6 @@ var util = require("util"),
 // GLOBAL SCOPE
 allSession = [];// array contain all session
 session = {};
-//these are just local make global, need to be refactored
-whereSpawn = 0;
 bots = [];
 alive = true;
 lasers = [];
@@ -42,7 +43,6 @@ function init() {
     allSession.push(newSession);
     // Start listening for events
     sockets.on("connection", onSocketConnection);
-    lastTick = Date.now();
     setTimeout(loop, 1000);
 }
 function loop() {
@@ -50,34 +50,34 @@ function loop() {
         fixedDelta = 1000/60,
         loopRounded,
         remainder,
-        delta = now - lastTick;
+        delta = now - lastTick,
+        d1second = now - last1second;
     lastTick = now;
     var loopUnrounded = delta/fixedDelta + loopUnused;
     loopRounded = Math.round(loopUnrounded);
     loopUnused = loopUnrounded - loopRounded;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
-        whereSpawn = allSession[j].whereSpawn;
         bots = allSession[j].bots;
         lasers = allSession[j].getLasers();
+        if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         if(session.getRemotePlayers().length < 1 || loopRounded < 1) continue;
         for(var i=0;i<loopRounded;i++) {
             player.movingPlayer();
             bulletMain.moveLaser();
+            hitTest.outOfMapBullet();
             botClass.moveBot();
             hitTest.shootDestruction();
         }
-        hitTest.outOfMapBullet();
         hitTest.hitTestBot();
-        if(lastBotTick-now>=1000)
-            botStupid.BotShootInterval(bots, 1);
+        if(lastBotTick-now>=1000) botStupid.BotShootInterval(bots, 1);
         hitTest.hitTestPlayer();
         hitTest.hitTestEagle();
         dropcheck.collideDrop();
         player.checkHitPoint();
     }
-
-    lastBotTick = now;
+    if(d1second>1000) last1second = now;
+    if(lastBotTick-now>=1000) lastBotTick = now;
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
@@ -187,8 +187,8 @@ function onShootKeyDown() {
         x = ship_x - 1;
         y = ship_y + ship_h / 2;
     }
-    var id = _shooting(x, y, direction, result.lasers, this.id, bulletType);
-    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id, bulletType: bulletType });
+    var id = bulletMain.shooting(x, y, direction, this.id);
+    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id });
     shootLastTick = now;
 }
 exports.onEndMatch = function(data) {
@@ -216,10 +216,4 @@ exports.onEndMatch = function(data) {
     });
     //connection.end();
 }
-function _shooting(x,y,direction, lasers, originID, bulletType) {
-    var id = helper.createUUID('xxxx'),
-        newBullet = new Bullet(id, x, y, direction);
-    newBullet.setOriginID(originID);
-    lasers.push(newBullet);
-    return id;
-}
+

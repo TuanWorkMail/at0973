@@ -1,6 +1,9 @@
+// GLOBAL SCOPE
 window.onload = setSocketEventHandlers;
 var tank5 = {},
-    session;
+    session,
+    lasers;
+// LOCAL SCOPE
 tank5.main = (function() {
     var shipSpeed = 5,
         fps = 60,
@@ -18,6 +21,7 @@ tank5.main = (function() {
         var width = tmxloader.map.width * tmxloader.map.tileWidth,
             height = tmxloader.map.height * tmxloader.map.tileHeight;
         session = new Session(0);
+        lasers = session.getLasers();
         createStackedCanvases();
         // pop up login
         var centerPlaceholder = document.getElementById('center'),
@@ -55,9 +59,9 @@ tank5.main = (function() {
             for(var i=0;i<loopRounded;i++) {
                 movingPlayer();
                 moveLaser();
+                outOfMapBullet();
                 shootDestruction();
             }
-            outOfMapBullet();
             //drawMap();
             //shipCollision();
             updateInput();
