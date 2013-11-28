@@ -1,6 +1,8 @@
 var botSmart = require('./BotSmart'),
     helper = require('../../common/helper'),
-    botsLength = 99;
+    tmxloader = require('./TMX_Engine').tmxloader,
+    botsLimit = 99,
+    alternate = false;
 /*
 var pathStart,
     pathStartX,
@@ -10,7 +12,7 @@ var pathStart,
     thePathX,
     thePathY,
     c,//currently headed to which target in thePath
-    //enemiesGroup,
+    //botGroup,
 
     //grid = new PF.Grid(20, 20, world),
     //finder = new PF.AStarFinder(),
@@ -36,31 +38,44 @@ exports.moveBot=function () {
 }
 //add new bot to the array
 function createBot() {
-    var enemiesGroup = require('./TMX_Engine').tmxloader.map.objectgroup['bot'].objects,
-        Bot = require('./../../common/dto/Bot').Bot;
-    if (botsLength > enemiesGroup.length){
-        botsLength = enemiesGroup.length;
+    var botGroup = tmxloader.map.objectgroup['bot'].objects,
+        bossGroup = tmxloader.map.objectgroup['boss'].objects,
+        Bot = require('./../../common/dto/Bot').Bot,
+        maxLength = botGroup.length+bossGroup.length;
+    if (botsLimit > maxLength){
+        botsLimit = maxLength;
     }
-    while (bots.length < botsLength) {
-        var whereSpawn = session.getWhereSpawn();
-        //reset spawn point when reach the last point
-        if (whereSpawn >= enemiesGroup.length) {
-            whereSpawn = 0;
-        }
-        // Initialise the new bot
+    while (bots.length < botsLimit) {
+        var whereSpawn = session.getWhereSpawn(),
+            bossCount = session.getBossCount(),
+            botLength = session.getBotLength(),
+            bossLength = session.getBossLength();
         var id = helper.createUUID('xxxx'),
-            x = enemiesGroup[whereSpawn].x,
-            y = enemiesGroup[whereSpawn].y,
-            newBot;
-        //every 3 bot is smart
-        if (whereSpawn % 2 == 0) {
-            newBot = new Bot(id, x, y, 'dumb');
+            x, y, type, newBot;
+        if(alternate){
+            if (whereSpawn >= botGroup.length) {
+                whereSpawn = 0;
+            }
+            x = botGroup[whereSpawn].x;
+            y = botGroup[whereSpawn].y;
+            type = 'dumb';
+            session.setWhereSpawn(whereSpawn+1);
+            alternate = false;
         } else {
-            newBot = new Bot(id, x, y, 'smart');
+            if (bossCount >= bossGroup.length){
+                bossCount = 0;
+            }
+            x = bossGroup[bossCount].x;
+            y = bossGroup[bossCount].y;
+            type = 'smart';
+            session.setBossCount(bossCount+1);
+            alternate = true;
+        }
+        newBot = new Bot(id, x, y, type);
+        if(type==='smart') {
             newBot.pathFound = botSmart.botRandomPath(newBot);
         }
         bots.push(newBot);
-        session.setWhereSpawn(whereSpawn+1);
     }
 }
 

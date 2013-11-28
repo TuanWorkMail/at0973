@@ -16,13 +16,16 @@ function Bot(id, startX, startY, type) {
         direction = 'up',
         speed,
         image,
+        hitPoint,
         width = 40,
         height = 40;
 
     if (type == 'dumb') {
         speed = 2;
+        hitPoint = 1;
     } else if (type == 'smart') {
         speed = 4;
+        hitPoint = 10;
     }
 
 
@@ -47,6 +50,8 @@ function Bot(id, startX, startY, type) {
     function setImage(para) { image = para; }
     function getWidth() { return width; }
     function setWidth(para) { width = para; }
+    function getHitPoint() { return hitPoint; }
+    function setHitPoint(para) { hitPoint = para;}
     function getHeight() { return height; }
     function setHeight(para) { height = para; }
 
@@ -83,6 +88,7 @@ function Bot(id, startX, startY, type) {
         setSpeed: setSpeed,
         getImage: getImage,
         setImage: setImage,
+        getHitPoint: getHitPoint, setHitPoint: setHitPoint,
         getWidth: getWidth,
         setWidth: setWidth,
         getHeight: getHeight,

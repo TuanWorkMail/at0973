@@ -13,17 +13,14 @@ function Session(roomid) {
         lasers = [],
         destructible = [],
         drop = [],
-        combinedLayer = [];
-
-    //where bot will spawn, each map have a number of predefined point
-    var whereSpawn = 0,
+        combinedLayer = [],
+        whereSpawn = 0,
+        bossSpawnCount = 0,
+        botLength = 0,
+        bossLength = 0,
         bots = [];
 
-    //destructible = splitBigTile(layerByName('destructible').data);
-    //if(typeof require!=='undefined' && typeof exports !== 'undefined') {
-        var result2 = layerByName('destructible');
-        clone2DArray(result2.data, destructible);
-    //}
+    clone2DArray(layerByName('destructible').data, destructible);
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }
@@ -32,6 +29,10 @@ function Session(roomid) {
     function getDrop() {return drop}
     function getWhereSpawn(){return whereSpawn} function setWhereSpawn(para){whereSpawn=para}
     function getCombinedLayer(){return combinedLayer} function setCombinedLayer(para){combinedLayer=para}
+    function getBossSpawnCount(){return bossSpawnCount} function setBossSpawnCount(para){bossSpawnCount=para}
+    function getBotLength(){return botLength} function setBotLength(para){botLength=para}
+    function getBossLength(){return bossLength} function setBossLength(para){bossLength=para}
+
 
     return {
 
@@ -43,6 +44,9 @@ function Session(roomid) {
         getRemotePlayers: getRemotePlayers,
         getDrop: getDrop,
         getWhereSpawn: getWhereSpawn, setWhereSpawn: setWhereSpawn,
-        getCombinedLayer: getCombinedLayer, setCombinedLayer: setCombinedLayer
+        getCombinedLayer: getCombinedLayer, setCombinedLayer: setCombinedLayer,
+        getBossCount: getBossSpawnCount, setBossCount: setBossSpawnCount,
+        getBotLength: getBotLength, setBotLength: setBotLength,
+        getBossLength: getBossLength, setBossLength: setBossLength
     }
 }
