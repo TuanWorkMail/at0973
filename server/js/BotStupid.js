@@ -6,9 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 var mapCollision = require('./../../common/collision_hitTest').mapCollision,
-    stupidShoot=false;
-//stupid bot shooting every 2s
-setInterval(function() {stupidShoot=true;}, 1000 * 2);
+    shooting = require('../../common/bulletMain').shooting;
 //stupid bot just go straight, if stuck turn randomly
 exports.goStraight = function (object) {
     //flag to check if hit the wall
@@ -59,13 +57,12 @@ exports.goStraight = function (object) {
                 break;
         }
 
-}
+};
 
 //input: bot array, interval in SECOND
 //call this function outside of gameLoop
 //every predefine time, stupid bot will shoot
-exports.BotShootInterval=function (bots, interval) {
-    if(stupidShoot) {
+exports.BotShootInterval=function (bots) {
         for(var i=0;i<bots.length;i++) {
             if(bots[i].type=='dumb') {
                 switch (bots[i].getDirection()) {
@@ -84,8 +81,4 @@ exports.BotShootInterval=function (bots, interval) {
                 }
             }
         }
-    }
-    stupidShoot=false;
-}
-
-exports.stupidShoot=stupidShoot;
+};

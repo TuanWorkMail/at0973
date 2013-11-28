@@ -70,14 +70,14 @@ function loop() {
             hitTest.shootDestruction();
         }
         hitTest.hitTestBot();
-        if(lastBotTick-now>=1000) botStupid.BotShootInterval(bots, 1);
+        if(now-lastBotTick>=1000) botStupid.BotShootInterval(bots);
         hitTest.hitTestPlayer();
         hitTest.hitTestEagle();
         dropcheck.collideDrop();
         player.checkHitPoint();
     }
     if(d1second>1000) last1second = now;
-    if(lastBotTick-now>=1000) lastBotTick = now;
+    if(now-lastBotTick>=1000) lastBotTick = now;
     setTimeout(loop, 1000/60);
 }
 function onSocketConnection(client) {
@@ -163,15 +163,14 @@ function onMoveKeyUp() {
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {
-    var result = player.playerById(this.id);
-    if(!result) return;
     var now = Date.now();
     if(now-shootLastTick<1000) return;
+    var result = player.playerById(this.id);
+    if(!result) return;
     var ship_x = result.players.getX(),
         ship_y = result.players.getY(),
         ship_w = result.players.getWidth(),
         ship_h = result.players.getHeight(),
-        bulletType = result.players.getBulletType(),
         x, y,
         direction = result.players.getDirection();
     if (direction == 'up') {

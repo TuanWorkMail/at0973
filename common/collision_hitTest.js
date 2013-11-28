@@ -106,11 +106,14 @@ function shootDestruction() {
                 yend = ytileSTG + 1;
                 break;
         }
+        var hit = false;
         for(var j=xstart; j<xend; j++){
+            if(hit)continue;
             for(var k=ystart; k<yend; k++){
+                if(hit)continue;
                 if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)){
-                    //laser.setIsRemoved(true);
-                    //continue;
+                    laser.setIsRemoved(true);
+                    hit = true;
 
                     //lasers.splice(i, 1);
                     //return;
