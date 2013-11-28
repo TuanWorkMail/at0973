@@ -65,20 +65,26 @@ exports.goStraight = function (object) {
 exports.BotShootInterval=function (bots) {
         for(var i=0;i<bots.length;i++) {
             if(bots[i].type=='dumb') {
+                var x, y;
                 switch (bots[i].getDirection()) {
                     case 'up':
-                        shooting(bots[i].getX() + bots[i].getWidth() / 2, bots[i].getY() - 1, bots[i].getDirection());
+                        x = bots[i].getX() + bots[i].getWidth() / 2;
+                        y = bots[i].getY() - 1;
                         break;
                     case 'down':
-                        shooting(bots[i].getX() + bots[i].getWidth() / 2, bots[i].getY() + bots[i].getHeight() + 1, bots[i].getDirection());
+                        x = bots[i].getX() + bots[i].getWidth() / 2;
+                        y = bots[i].getY() + bots[i].getHeight() + 1;
                         break;
                     case 'right':
-                        shooting(bots[i].getX() + bots[i].getWidth() + 1, bots[i].getY() + bots[i].getHeight() / 2, bots[i].getDirection());
+                        x = bots[i].getX() + bots[i].getWidth() + 1;
+                        y = bots[i].getY() + bots[i].getHeight() / 2;
                         break;
                     case 'left':
-                        shooting(bots[i].getX() - 1, bots[i].getY() + bots[i].getHeight() / 2, bots[i].getDirection());
+                        x = bots[i].getX() - 1;
+                        y = bots[i].getY() + bots[i].getHeight() / 2;
                         break;
                 }
+                shooting(x, y, bots[i].getDirection(), bots[i].getID(), '', session.getRoomID());
             }
         }
 };

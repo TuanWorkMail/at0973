@@ -186,8 +186,7 @@ function onShootKeyDown() {
         x = ship_x - 1;
         y = ship_y + ship_h / 2;
     }
-    var id = bulletMain.shooting(x, y, direction, this.id);
-    sockets.in('r'+result.roomID).emit("new bullet", { id: id, x: x, y: y, direction: direction, originID: this.id });
+    var id = bulletMain.shooting(x, y, direction, this.id, '', result.roomID);
     shootLastTick = now;
 }
 exports.onEndMatch = function(data) {
