@@ -62,6 +62,7 @@ tank5.main = (function() {
                 moveLaser();
                 outOfMapBullet();
                 shootDestruction();
+                removeBullet();
             }
             //drawMap();
             //shipCollision();

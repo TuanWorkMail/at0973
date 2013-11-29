@@ -30,7 +30,6 @@ function mapCollision(x, y, w, h, type) {
         var name,
             array;
         if(i>=tmxloader.map.layers.length){        // after end of layer array
-            if(type === 'bullet') return false;
             name = '';
             if(i===tmxloader.map.layers.length) {
                 array = session.getDestructible();
@@ -61,16 +60,28 @@ function mapCollision(x, y, w, h, type) {
 
 function shootDestruction() {
     var remotePlayers = session.getRemotePlayers(),
-        destructible = session.getDestructible();
+        destructible = session.getDestructible(),
+        indestructible = session.getIndestructible(),
+        count=0;
+    while(count<2){
+        var array;
+        if(count===0){
+            array = destructible;
+        } else {
+            array = indestructible;
+        }
     for (var i = 0; i < lasers.length; i++) {
-        /*if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
+        var laser = lasers[i];
+        if(count!==0 && laser.getOriginID().length===20){// bullet shot by player not bot
             for(var j=0;j<remotePlayers.length;j++) {
-                if(lasers[i].getOriginID()===remotePlayers[j].getSocketID()) {
-                    if(!remotePlayers[j].getShootBrick()) return;               // can player shoot down brick?
+                if(laser.getOriginID()===remotePlayers[j].getSocketID()) {
+                    if(remotePlayers[j].getBulletType()!=='piercing') {
+                        return;
+                    }
                 }
             }
-        }*/
-        var laser = lasers[i];
+        }
+        if(count!==0 && laser.getOriginID().length!==20) continue;
         var dimension = tmxloader.map.objectgroup['dimension'].objects[0],
             xtile = Math.round(laser.getX() / tmxloader.map.tileWidth),
             ytile = Math.round(laser.getY() / tmxloader.map.tileHeight),
@@ -108,7 +119,7 @@ function shootDestruction() {
         }
         for(var j=xstart; j<xend; j++){
             for(var k=ystart; k<yend; k++){
-                if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG)){
+                if(removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG, array)){
                     laser.setIsRemoved(true);
                     // get out of loop
                     j = xend;
@@ -120,12 +131,13 @@ function shootDestruction() {
             }
         }
     }
+        count++;
+    }
 }
-function removeDestructible(direction, x, y, xSTG, ySTG) {
-    var xstart, xend, ystart, yend,
-        destructible = session.getDestructible();
+function removeDestructible(direction, x, y, xSTG, ySTG, array) {
+    var xstart, xend, ystart, yend;
 
-    if(destructible[x][y]==='0') return false;
+    if(array[x][y]==='0') return false;
     switch(direction) {
         case 'up':
         case 'down':
@@ -144,7 +156,7 @@ function removeDestructible(direction, x, y, xSTG, ySTG) {
     }
     for(var m=xstart; m<xend; m++) {
         for(var n=ystart; n<yend; n++){
-            destructible[m][n] = '0';
+            array[m][n] = '0';
         }
     }
     return true;

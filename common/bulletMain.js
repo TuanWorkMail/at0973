@@ -9,6 +9,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         sockets = require('../server/js/socket').sockets;
     exports.moveLaser = moveLaser;
     exports.shooting = shooting;
+    exports.removeBullet = removeBullet;
 }
 function shooting(x,y,direction, originID, bulletid, roomid) {
     var _id;
@@ -51,14 +52,14 @@ function moveLaser() {
             laser.setIsRemoved(true);
         }
     }
-    removeBullet(lasers);
+    //removeBullet();
 }
 
 function renderBulletDestroyed(bulletObject) {
 
 }
 
-function removeBullet(lasers) {
+function removeBullet() {
     if(lasers.length==0) return;
     var endOfArray = false;
     while(!endOfArray) {

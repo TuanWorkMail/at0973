@@ -68,8 +68,10 @@ function loop() {
             hitTest.outOfMapBullet();
             botClass.moveBot();
             hitTest.shootDestruction();
+            bulletMain.removeBullet();
         }
         hitTest.hitTestBot();
+        //TODO: change 1000 to 500 will throw error,
         if(now-lastBotTick>=1000) botStupid.BotShootInterval(bots);
         hitTest.hitTestPlayer();
         hitTest.hitTestEagle();
