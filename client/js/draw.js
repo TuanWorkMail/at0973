@@ -68,8 +68,8 @@ function drawMap() {
 
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
-
-        if(tmxloader.map.layers[i].name == 'overhead' || tmxloader.map.layers[i].name == 'destructible') continue;
+        var name = tmxloader.map.layers[i].name;
+        if(name == 'overhead' || name == 'destructible' || name == 'indestructible') continue;
         if(!tmxloader.map.layers[i].visible) continue;
 
         //for every horizontal tile in viewport

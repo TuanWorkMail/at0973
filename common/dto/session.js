@@ -8,10 +8,10 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 }
 
 function Session(roomid) {
-    var roomid = roomid,
-        remotePlayers = [],
+    var remotePlayers = [],
         lasers = [],
         destructible = [],
+        indestructible = [],
         drop = [],
         combinedLayer = [],
         whereSpawn = 0,
@@ -21,11 +21,13 @@ function Session(roomid) {
         bots = [];
 
     clone2DArray(layerByName('destructible').data, destructible);
+    clone2DArray(layerByName('indestructible').data, indestructible);
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }
     function getLasers() { return lasers }
     function getDestructible() {return destructible}
+    function getIndestructible() {return indestructible}
     function getDrop() {return drop}
     function getWhereSpawn(){return whereSpawn} function setWhereSpawn(para){whereSpawn=para}
     function getCombinedLayer(){return combinedLayer} function setCombinedLayer(para){combinedLayer=para}
@@ -39,6 +41,7 @@ function Session(roomid) {
         bots: bots,
 
         getDestructible: getDestructible,
+        getIndestructible: getIndestructible,
         getRoomID: getRoomID,
         getLasers: getLasers,
         getRemotePlayers: getRemotePlayers,

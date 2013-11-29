@@ -46,6 +46,7 @@ tank5.main = (function() {
         clearCanvas();
         scoreTotal();
         drawLayer(session.getDestructible(), ctx);
+        drawLayer(session.getIndestructible(), ctx);
         if (gameStarted) {
             var now = Date.now(),
                 fixedDelta = 1000/60,

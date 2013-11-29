@@ -26,24 +26,29 @@ function mapCollision(x, y, w, h, type) {
     if (x < 0 || x + w > width || y < 0 || y + h > height)
         return true;
     //for every layer in map
-    for (var i = 0; i < tmxloader.map.layers.length; i++) {
-        if (tmxloader.map.layers[i].name == 'destructible') continue;
-        if (tmxloader.map.layers[i].name == 'background' || tmxloader.map.layers[i].name == 'overhead') continue;
-        if (!tmxloader.map.layers[i].visible) continue;
-        if (type == 'bullet') {
-            if (tmxloader.map.layers[i].name == 'water' || tmxloader.map.layers[i].name == 'destructible') continue;
-        } else {
-            for (var j = 0; j < wNOT; j++) {
-                for (var k = 0; k < hNOT; k++) {
-                    if (session.getDestructible()[xTile + j][yTile + k] != 0) {
-                        return true;
-                    }
-                }
+    for (var i = 0; i < tmxloader.map.layers.length + 2; i++) {
+        var name,
+            array;
+        if(i>=tmxloader.map.layers.length){        // after end of layer array
+            if(type === 'bullet') return false;
+            name = '';
+            if(i===tmxloader.map.layers.length) {
+                array = session.getDestructible();
+            } else {
+                array = session.getIndestructible();
             }
+        } else {
+            name = tmxloader.map.layers[i].name;
+            array = tmxloader.map.layers[i].data;
         }
+        if (name == 'background' || name == 'overhead' || name == 'destructible' || name == 'indestructible') continue;
+        if(i<tmxloader.map.layers.length){
+            if (!tmxloader.map.layers[i].visible) continue;
+        }
+        if (type == 'bullet' && name == 'water') continue;
         for (var j = 0; j < wNOT; j++) {
             for (var k = 0; k < hNOT; k++) {
-                if (tmxloader.map.layers[i].data[xTile + j][yTile + k] != 0) {
+                if (array[xTile + j][yTile + k] != 0) {
                     return true;
                 }
             }
@@ -57,11 +62,6 @@ function mapCollision(x, y, w, h, type) {
 function shootDestruction() {
     var remotePlayers = session.getRemotePlayers(),
         destructible = session.getDestructible();
-    // this one for client, server create in session.js
-    if(destructible.length==0)
-        clone2DArray(layerByName('destructible').data, destructible);
-    var result = {};
-        result.data=destructible;
     for (var i = 0; i < lasers.length; i++) {
         /*if(lasers[i].getOriginID().length===20){                                // bullet shot by player not bot
             for(var j=0;j<remotePlayers.length;j++) {
@@ -163,7 +163,7 @@ function hitTestBot() {
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
                 sockets.in('r'+session.getRoomID()).emit("bot die", { count: botArray[obj].id });
                 // CREATE DROP
-                if(botArray[obj].getType()==='dumb'){
+                if(botArray[obj].getType()==='smart'){
                     var id = helper.createUUID('xxxx'),
                         type = 'piercing',
                         x = botArray[obj].getX(),
@@ -173,8 +173,6 @@ function hitTestBot() {
                     sockets.in('r'+session.getRoomID()).emit("new drop",{id: id,type: type,x: x,y: y});
                 }
                 // MOVE THE ABOVE OUT
-                botArray.splice(obj, 1);
-                lasers[i].isRemoved = true;
                 for(var k=0; k<remotePlayers.length; k++) {
                     if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
@@ -184,18 +182,20 @@ function hitTestBot() {
                         }
                     }
                 }
+                lasers[i].isRemoved = true;
+                botArray.splice(obj, 1);
             }
         }
     }
 }
 
 function hitTestPlayer() {
+    if(session.getRemotePlayers().length<2) return; // make sure checkLive() don't throw error
     var remotePlayers = session.getRemotePlayers(),
         ship_xw,
         ship_yh;
     for (var i = 0; i < lasers.length; i++) {
         for (var obj = 0; obj < remotePlayers.length; ++obj) {
-            if(remotePlayers.length<2) return;  // make sure checkLive() don't throw error
             ship_xw = remotePlayers[obj].getX() + remotePlayers[obj].getWidth();
             ship_yh = remotePlayers[obj].getY() + remotePlayers[obj].getHeight();
             if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
