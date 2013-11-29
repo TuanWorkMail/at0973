@@ -153,23 +153,27 @@ function removeDestructible(direction, x, y, xSTG, ySTG) {
 function hitTestBot() {
     var remotePlayers = session.getRemotePlayers(),
         enemy_xw,
-        enemy_yh;
+        enemy_yh,
+        botArray = bots;    // this to make webstorm not throwing warning
     for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < bots.length; ++obj) {
-            enemy_xw = bots[obj].getX() + bots[obj].getWidth();
-            enemy_yh = bots[obj].getY() + bots[obj].getHeight();
-            if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>bots[obj].getX() && lasers[i].y>bots[obj].getY()) {
-                sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
-                if(bots[obj].getType()==='dumb'){
+        if(lasers[i].getOriginID().length!==20) continue;  // bot don't shoot each other
+        for (var obj = 0; obj < botArray.length; ++obj) {
+            enemy_xw = botArray[obj].getX() + botArray[obj].getWidth();
+            enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
+            if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
+                sockets.in('r'+session.getRoomID()).emit("bot die", { count: botArray[obj].id });
+                // CREATE DROP
+                if(botArray[obj].getType()==='dumb'){
                     var id = helper.createUUID('xxxx'),
                         type = 'piercing',
-                        x = bots[obj].getX(),
-                        y = bots[obj].getY(),
+                        x = botArray[obj].getX(),
+                        y = botArray[obj].getY(),
                         newDrop = new Drop(id, type, x, y);
                     session.getDrop().push(newDrop);
                     sockets.in('r'+session.getRoomID()).emit("new drop",{id: id,type: type,x: x,y: y});
                 }
-                bots.splice(obj, 1);
+                // MOVE THE ABOVE OUT
+                botArray.splice(obj, 1);
                 lasers[i].isRemoved = true;
                 for(var k=0; k<remotePlayers.length; k++) {
                     if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
