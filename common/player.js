@@ -1,6 +1,6 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
-        socketListener = require('../server/socket-listener'),
+        serverListener = require('../server/server-listener'),
         sockets = require('../server/js/socket').sockets,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
@@ -33,7 +33,7 @@ function checkLive(object) {
             score[i]=remotePlayers[i].getLive();
         }
         var data = { id1: id[0], id2:id[1], score1: score[0], score2: score[1] };
-        socketListener.onEndMatch(data);
+        serverListener.onEndMatch(data);
         util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
     }

@@ -1,2 +1,2 @@
-node --debug-brk socket-listener.js
+node --debug-brk server-listener.js
 pause
