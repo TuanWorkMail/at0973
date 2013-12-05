@@ -6,7 +6,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         socket = require('../server/js/socket').socket,
         playerById = require('./player').playerById,
-        sockets = require('../server/js/socket').sockets;
+        broadcastToRoom = require('../server/js/socket').broadcastToRoom;
     exports.moveLaser = moveLaser;
     exports.shooting = shooting;
     exports.removeBullet = removeBullet;
@@ -22,7 +22,7 @@ function shooting(x,y,direction, originID, bulletid, roomid) {
     newBullet.setOriginID(originID);
     lasers.push(newBullet);
     if(typeof roomid!=='undefined' && typeof require !== 'undefined' && typeof exports !== 'undefined'){
-        sockets.in('r'+roomid).emit("new bullet", { id: _id, x: x, y: y, direction: direction, originID: originID });
+        broadcastToRoom(roomid, "new bullet", {id: _id, x: x, y: y, direction: direction, originID: originID});
     }
     return _id;
 }

@@ -1,2 +1,2 @@
-node server-listener.js
+supervisor -w js,../common,main.js main.js
 pause

@@ -1,7 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var TMX_Engine = require('./../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
-        sockets = require('../server/js/socket').sockets,
+        broadcastToRoom = require('../server/js/socket').broadcastToRoom,
         layerByName = TMX_Engine.layerByName,
         Drop = require('./dto/drop').Drop,
         helper = require('./helper'),
@@ -173,7 +173,7 @@ function hitTestBot() {
             enemy_xw = botArray[obj].getX() + botArray[obj].getWidth();
             enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
-                sockets.in('r'+session.getRoomID()).emit("bot die", { count: botArray[obj].id });
+                broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id })
                 // CREATE DROP
                 if(botArray[obj].getType()==='smart'){
                     var id = helper.createUUID('xxxx'),
@@ -182,7 +182,7 @@ function hitTestBot() {
                         y = botArray[obj].getY(),
                         newDrop = new Drop(id, type, x, y);
                     session.getDrop().push(newDrop);
-                    sockets.in('r'+session.getRoomID()).emit("new drop",{id: id,type: type,x: x,y: y});
+                    broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
                 }
                 // MOVE THE ABOVE OUT
                 for(var k=0; k<remotePlayers.length; k++) {
@@ -190,7 +190,7 @@ function hitTestBot() {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
                         if(remotePlayers[k].getBotKill()>=2) {
                             remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
-                            sockets.in('r'+session.getRoomID()).emit("shoot brick",{id:remotePlayers[k].getSocketID()});
+                            broadcastToRoom(session.getRoomID(),"shoot brick",{id:remotePlayers[k].getSocketID()});
                         }
                     }
                 }

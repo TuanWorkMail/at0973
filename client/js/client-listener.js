@@ -88,7 +88,7 @@ function onRemovePlayer(data) {
 // Login
 function onLogin(data) {
     if (typeof data.errormessage !== 'undefined' ) {
-        document.getElementById('error-message').innerHTML = data.errormessage;
+        document.getElementById('error-message').innerHTML = data.error;
     } else {
         document.getElementById('login').style.display = 'none';
         document.getElementById('alluser').style.display = 'none';

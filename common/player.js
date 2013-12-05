@@ -1,7 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
-        serverListener = require('../server/server-listener'),
-        sockets = require('../server/js/socket').sockets,
+        main = require('../server/main'),
+        broadcastToRoom = require('../server/js/socket').broadcastToRoom,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
         Session = require('../common/dto/session').Session,
@@ -33,7 +33,7 @@ function checkLive(object) {
             score[i]=remotePlayers[i].getLive();
         }
         var data = { id1: id[0], id2:id[1], score1: score[0], score2: score[1] };
-        serverListener.onEndMatch(data);
+        main.onEndMatch(data);
         util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
     }
@@ -41,7 +41,7 @@ function checkLive(object) {
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
     for (var obj = 0; obj < bots.length; ++obj) {
-        sockets.in('r'+session.getRoomID()).emit("bot die", { count: bots[obj].id });
+        broadcastToRoom(session.getRoomID(),"bot die", { count: bots[obj].id });
     }
     bots.length = 0;
     whereSpawn = 0;
@@ -57,7 +57,7 @@ function reset(para) {
         remotePlayers[i].setDirection(direction);
         remotePlayers[i].setHitPoint(10);
         if(para=='end match') remotePlayers[i].setLive(2);
-        sockets.in('r'+session.getRoomID()).emit("move player", { id: remotePlayers[i].getSocketID(),
+        broadcastToRoom(session.getRoomID(),"move player", { id: remotePlayers[i].getSocketID(),
             username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
 }

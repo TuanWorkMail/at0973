@@ -1,4 +1,4 @@
-var sockets = require('./socket').sockets;
+var broadcastToRoom = require('./socket').broadcastToRoom;
 exports.collideDrop = function() {
     var drops = session.getDrop(),
         remotePlayers = session.getRemotePlayers();
@@ -13,7 +13,7 @@ exports.collideDrop = function() {
                 player_xw = player_x + remotePlayers[j].getWidth(),
                 player_yh = player_y + remotePlayers[j].getHeight();
             if (drop_x < player_xw && drop_y < player_yh && drop_xw > player_x && drop_yh > player_y) {
-                sockets.in('r'+session.getRoomID()).emit("collide drop",{socketID: remotePlayers[j].getSocketID(),
+                broadcastToRoom(session.getRoomID(),"collide drop",{socketID: remotePlayers[j].getSocketID(),
                     dropID: drops[i].getID(),bulletType: 'piercing'});
                 remotePlayers[j].setBulletType('piercing');
                 drops.splice(i, 1);

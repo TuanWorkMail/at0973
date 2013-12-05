@@ -8,4 +8,7 @@ io.configure(function () {
     // Restrict log output
     io.set("log level", 2);
 });
+exports.broadcastToRoom = function(roomID, string, object){
+    io.sockets.in('r' + roomID).emit(string, object);
+};
 exports.sockets = io.sockets;
