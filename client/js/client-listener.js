@@ -40,10 +40,10 @@ function onStart(data) {
     tmxloader.load("../common/map/" + data.map + ".tmx");
     var alluser = '';
     alluser += '<table><tr><th>Username</th><th>Won</th></tr>';
-    for(var i=0; i<data.alluser.length; i++) {
+    for(var i=0; i<data.all_user.length; i++) {
         alluser += '<tr>';
-        alluser += '<td>'+data.alluser[i].Username+'</td>';
-        alluser += '<td>'+data.alluser[i].Won+'</td>';
+        alluser += '<td>'+data.all_user[i].Username+'</td>';
+        alluser += '<td>'+data.all_user[i].Won+'</td>';
         alluser += '</tr>';
     }
     alluser += '</table>';

@@ -1,4 +1,5 @@
-var broadcastToRoom = require('./socket').broadcastToRoom,
+var local_remote = 'local',
+    broadcastToRoom = require('./socket').broadcastToRoom,
     util = require('util'),
     runQuery = require('./mysql').runQuery,
     loginRegister = require('./login-register'),
@@ -7,7 +8,7 @@ exports.onSocketConnection = function(socket) {
     runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
         if (err) util.log(err);
         else {
-            socket.emit('start', {map: 'big', alluser: rows});
+            socket.emit('start', {map: 'big', all_user: rows});
         }
     });
     socket.on("disconnect", onClientDisconnect);
@@ -16,7 +17,7 @@ exports.onSocketConnection = function(socket) {
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
     socket.on("shoot key down", onShootKeyDown);
-}
+};
 function onLogin(data) {
     loginRegister.login(data.username, data.password, this);
 }

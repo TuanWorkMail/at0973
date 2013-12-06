@@ -78,7 +78,7 @@ var ObjectGroup = function (groupname, width, height) {
     this.objects = [];
 
 };
-function loadMap (src, callback) {          // run callback after map loaded
+function loadMapOld (src, callback) {          // run callback after map loaded
     readFile(src, parseMap, callback);
 };
 function readFile(src, callback1, callback2) {  // run callback1 after file loaded
@@ -91,7 +91,15 @@ function readFile(src, callback1, callback2) {  // run callback1 after file load
         });
     });
 }
-function parseMap(result, callback) {   // run callback after map loaded
+function loadMap(src, callback) {                       // run callback after map loaded
+    var parser = new xml2js.Parser(),
+        buffer = fs.readFileSync(src),                  // read xml
+        result = {};
+    parser.parseString(buffer, function (err, data) {   // parse xml
+        if(err) {util.log(err); return;}                // log error
+        result = data;
+    });
+
     //console.log('Parsing...' + result.map.$.version);
 
     var $width = result.map.$.width;
@@ -110,8 +118,8 @@ function parseMap(result, callback) {   // run callback after map loaded
         //console.log("Processing Layer: " + ($layer[i].$.name));
 
         var $data = $layer[i].data[0];
-        var $lwidth = $layer[i].$.width;
-        var $lheight = $layer[i].$.height;
+            $lwidth = $layer[i].$.width;
+            $lheight = $layer[i].$.height;
         var $visible;
         if(typeof $layer[i].$.visible==='undefined')
             $visible = true;
@@ -131,12 +139,12 @@ function parseMap(result, callback) {   // run callback after map loaded
     for (i = 0; i < $tileset.length; i++) {
         var $firstgid = $tileset[i].$.firstgid;
         var $name = $tileset[i].$.name;
-        var $tilewidth = $tileset[i].$.tilewidth;
-        var $tileheight = $tileset[i].$.tileheight;
+            $tilewidth = $tileset[i].$.tilewidth;
+            $tileheight = $tileset[i].$.tileheight;
         var $image = $tileset[i].image[0];
         var $src = $image.$.source;
-        var $width = $image.$.width;
-        var $height = $image.$.height;
+            $width = $image.$.width;
+            $height = $image.$.height;
         tmxloader.map.tilesets.push(new Tileset($firstgid, $name, $tilewidth, $tileheight, $src, $width, $height));
     }
     tmxloader.map.objectgroup = {};
