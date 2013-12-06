@@ -1,12 +1,17 @@
-var local_remote = 'local',
+var util = require('util');
+local_remote = 'local';
+util.log('production environment');
+// Set up Socket.IO to listen on port 8000
+var io = require("socket.io").listen(8000),		    // Socket.IO
     broadcastToRoom = require('./js/socket').broadcastToRoom,
-    util = require('util'),
     runQuery = require('./js/mysql').runQuery,
     loginRegister = require('./js/login-register'),
     player = require('../common/player'),
-    sockets = require('./js/socket').sockets,
     main = require('./js/main');
-sockets.on("connection", function(socket) {
+io.configure(function () {
+    io.set("log level", 2);
+});
+io.sockets.on("connection", function(socket) {
     runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
         if (err) util.log(err);
         else {
@@ -14,41 +19,15 @@ sockets.on("connection", function(socket) {
         }
     });
     socket.on("disconnect", onClientDisconnect);
-    socket.on("login", onLogin);
-    socket.on("register", onRegister);
+    socket.on("login", loginRegister.login);
+    socket.on("register", loginRegister.register);
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
     socket.on("shoot key down", onShootKeyDown);
+    socket.on("broadcast to room", onBroadcastToRoom);
 });
-main.init();
 function onLogin(data) {
     loginRegister.login(data.username, data.password, this);
-}
-function onClientDisconnect() {
-    var removePlayer = false;
-    allSession = allSession;
-    for(var j=0; j<allSession.length; j++) {
-        for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
-            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
-                allSession[j].getRemotePlayers().splice(i, 1);
-                // NEED FIX
-                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
-                removePlayer = true;
-            }
-        }
-    }
-    if (!removePlayer)
-        util.log("Remove: Player not found: "+this.id);
-}
-function onRegister(data) {
-    var that = this;
-    //connection.connect();
-    connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
-        if (err) that.emit("register", { result: 'username already existed' });
-        else
-            that.emit("register", { result: 'register successfully, now please login' });
-    });
-    //connection.end();
 }
 function onMoveKeyDown(data) {
     var players = player.playerById(this.id);
@@ -99,3 +78,23 @@ function onShootKeyDown() {
     require('../common/bulletMain').shooting(x, y, direction, this.id, '', result.roomID);
     shootLastTick = now;
 }
+function onClientDisconnect() {
+    var removePlayer = false;
+    allSession = allSession;
+    for(var j=0; j<allSession.length; j++) {
+        for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
+            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
+                allSession[j].getRemotePlayers().splice(i, 1);
+                // NEED FIX
+                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
+                removePlayer = true;
+            }
+        }
+    }
+    if (!removePlayer)
+        util.log("Remove: Player not found: "+this.id);
+}
+function onBroadcastToRoom(data){
+    if(local_remote==='local') return;
+    sockets.in('r' + data.roomID).emit(data.string, data.object);
+};

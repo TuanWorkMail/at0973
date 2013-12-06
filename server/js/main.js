@@ -1,5 +1,4 @@
 //RESTART server for changes to applied
-
 var mapName = 'big';
 function init() {
     require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
@@ -9,12 +8,10 @@ function init() {
     allSession.push(newSession);
     setTimeout(loop, 1000);
 }
-exports.init = init;
 function loop() {
     var now = Date.now(),
         fixedDelta = 1000/60,
         loopRounded,
-        remainder,
         delta = now - lastTick,
         d1second = now - last1second;
     lastTick = now;
@@ -100,5 +97,11 @@ session = {};
 bots = [];
 alive = true;
 lasers = [];
+if(typeof local_remote==='undefined') {
+    local_remote='remote';
+    util.log('debugging environment');
+}
 
 
+
+init();

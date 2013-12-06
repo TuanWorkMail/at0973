@@ -8,7 +8,7 @@ var mySocketID,
 
 //io.connect will connect you to a Socket.IO server by using
 //the first parameter as the server address.
-socket = io.connect(serverURL, { port: 8000, transports: ["websocket"] });
+socket = io.connect(serverURL, { port: 8000 });
 
 /**************************************************
 ** GAME EVENT HANDLERS
