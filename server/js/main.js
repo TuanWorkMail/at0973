@@ -2,14 +2,14 @@
 
 var mapName = 'big';
 function init() {
+    require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
     //create a new blank session
     var newSession = new Session(sessionID);
     sessionID++;
     allSession.push(newSession);
-    // Start listening for events
-    sockets.on("connection", onSocketConnection);
     setTimeout(loop, 1000);
 }
+exports.init = init;
 function loop() {
     var now = Date.now(),
         fixedDelta = 1000/60,
@@ -76,18 +76,17 @@ exports.onEndMatch = function(data) {
 
 // LOCAL SCOPE
 var util = require("util"),
-    onSocketConnection = require('./js/socket-listener').onSocketConnection,
-    helper = require('../common/helper'),
-    botClass = require('./js/BotClass.js'),
-    botStupid = require('./js/BotStupid'),
-    hitTest = require('../common/collision_hitTest'),
-    sockets = require('./js/socket').sockets,
-    player = require('../common/player'),
-    Session = require('../common/dto/session').Session,
-    bulletMain = require('../common/bulletMain'),
-    Bullet = require('../common/dto/bullet').Bullet,
-    dropcheck = require('./js/drop-check'),
-    combinelayer = require('../common/combine-layer'),
+    helper = require('../../common/helper'),
+    botClass = require('./BotClass.js'),
+    botStupid = require('./BotStupid'),
+    hitTest = require('../../common/collision_hitTest'),
+    sockets = require('./socket').sockets,
+    player = require('../../common/player'),
+    Session = require('../../common/dto/session').Session,
+    bulletMain = require('../../common/bulletMain'),
+    Bullet = require('../../common/dto/bullet').Bullet,
+    dropcheck = require('./drop-check'),
+    combinelayer = require('../../common/combine-layer'),
     combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
@@ -102,5 +101,4 @@ bots = [];
 alive = true;
 lasers = [];
 
-TMX_Engine = require('./js/TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx', init);  // load map as soon as possible
 

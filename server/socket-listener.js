@@ -1,10 +1,12 @@
 var local_remote = 'local',
-    broadcastToRoom = require('./socket').broadcastToRoom,
+    broadcastToRoom = require('./js/socket').broadcastToRoom,
     util = require('util'),
-    runQuery = require('./mysql').runQuery,
-    loginRegister = require('./login-register'),
-    player = require('../../common/player');
-exports.onSocketConnection = function(socket) {
+    runQuery = require('./js/mysql').runQuery,
+    loginRegister = require('./js/login-register'),
+    player = require('../common/player'),
+    sockets = require('./js/socket').sockets,
+    main = require('./js/main');
+sockets.on("connection", function(socket) {
     runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
         if (err) util.log(err);
         else {
@@ -17,7 +19,8 @@ exports.onSocketConnection = function(socket) {
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
     socket.on("shoot key down", onShootKeyDown);
-};
+});
+main.init();
 function onLogin(data) {
     loginRegister.login(data.username, data.password, this);
 }
@@ -93,6 +96,6 @@ function onShootKeyDown() {
         x = ship_x - 1;
         y = ship_y + ship_h / 2;
     }
-    require('../../common/bulletMain').shooting(x, y, direction, this.id, '', result.roomID);
+    require('../common/bulletMain').shooting(x, y, direction, this.id, '', result.roomID);
     shootLastTick = now;
 }

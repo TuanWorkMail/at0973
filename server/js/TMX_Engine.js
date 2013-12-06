@@ -172,7 +172,7 @@ function loadMap(src, callback) {                       // run callback after ma
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
-    callback();
+    //callback();
 }
 exports.layerByName = function(name) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {
