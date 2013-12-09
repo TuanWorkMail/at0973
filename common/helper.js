@@ -1,4 +1,5 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    console = require('util');
     exports.createUUID = createUUID;
     exports.randomNumber = randomNumber;
     exports.clone2DArray = clone2DArray;
@@ -26,4 +27,9 @@ function clone2DArray(source, clone) {
     for (var i = 0; i < source.length; i++) {
         clone[i] = source[i].slice(0);
     }
+}
+var debug = {};
+debug.log = function(string) {console.log(string)}
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+    exports.debug = debug;
 }

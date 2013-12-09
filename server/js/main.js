@@ -89,6 +89,7 @@ var util = require("util"),
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot
     loopUnused = 0,                                         // % of loop left
+
     sessionID = 0;                                          // auto incremental session id
 
 // GLOBAL SCOPE

@@ -1,6 +1,3 @@
-var util = require('util');
-local_remote = 'local';
-util.log('production environment');
 function onLogin(data) {
     loginRegister.login(data.username, data.password, this);
 }
@@ -77,6 +74,9 @@ function broadcastToRoom(roomID, string, object){
     io.sockets.in('r' + roomID).emit(string, object);
 }
 exports.broadcastToRoom = broadcastToRoom;
+var util = require('util');
+local_remote = 'local';
+util.log('production environment');
 var io = require("socket.io").listen(8000),		    // Socket.IO
     runQuery = require('./js/mysql').runQuery,
     loginRegister = require('./js/login-register'),

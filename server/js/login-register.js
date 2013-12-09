@@ -1,7 +1,7 @@
 var broadcastToRoom = require('../socket-listener').broadcastToRoom,
     mysql = require('./mysql'),
     util = require('util'),
-    player = require('../../common/player');
+    playerAddNew = require('../../common/player.add-new');
 exports.login = function(data){
     var that = this;
     mysql.runQuery('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password],
@@ -13,7 +13,7 @@ exports.login = function(data){
                 } else {
                     rows[0].Username = rows[0].Username;
                     that.emit("login", { username: rows[0].Username, userID: rows[0].ID });
-                    var newPlayer = player.newPlayer(that.id, rows[0].Username, rows[0].ID),
+                    var newPlayer = playerAddNew.newPlayer(that.id, rows[0].Username, rows[0].ID),
                         roomID = newPlayer.roomID;
                     newPlayer = newPlayer.newPlayer;
                     that.join('r' + roomID);
