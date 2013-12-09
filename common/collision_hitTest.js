@@ -1,7 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var TMX_Engine = require('./../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
-        broadcastToRoom = require('../server/js/socket').broadcastToRoom,
+        broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
         layerByName = TMX_Engine.layerByName,
         Drop = require('./dto/drop').Drop,
         helper = require('./helper'),

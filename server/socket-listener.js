@@ -1,31 +1,6 @@
 var util = require('util');
 local_remote = 'local';
 util.log('production environment');
-// Set up Socket.IO to listen on port 8000
-var io = require("socket.io").listen(8000),		    // Socket.IO
-    broadcastToRoom = require('./js/socket').broadcastToRoom,
-    runQuery = require('./js/mysql').runQuery,
-    loginRegister = require('./js/login-register'),
-    player = require('../common/player'),
-    main = require('./js/main');
-io.configure(function () {
-    io.set("log level", 2);
-});
-io.sockets.on("connection", function(socket) {
-    runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
-        if (err) util.log(err);
-        else {
-            socket.emit('start', {map: 'big', all_user: rows});
-        }
-    });
-    socket.on("disconnect", onClientDisconnect);
-    socket.on("login", loginRegister.login);
-    socket.on("register", loginRegister.register);
-    socket.on("move key down", onMoveKeyDown);
-    socket.on("move key up", onMoveKeyUp);
-    socket.on("shoot key down", onShootKeyDown);
-    socket.on("broadcast to room", onBroadcastToRoom);
-});
 function onLogin(data) {
     loginRegister.login(data.username, data.password, this);
 }
@@ -96,5 +71,32 @@ function onClientDisconnect() {
 }
 function onBroadcastToRoom(data){
     if(local_remote==='local') return;
-    sockets.in('r' + data.roomID).emit(data.string, data.object);
-};
+    broadcastToRoom(data.roomID, data.string, data.object);
+}
+function broadcastToRoom(roomID, string, object){
+    io.sockets.in('r' + roomID).emit(string, object);
+}
+exports.broadcastToRoom = broadcastToRoom;
+var io = require("socket.io").listen(8000),		    // Socket.IO
+    runQuery = require('./js/mysql').runQuery,
+    loginRegister = require('./js/login-register'),
+    player = require('../common/player'),
+    main = require('./js/main');
+io.configure(function () {
+    io.set("log level", 2);
+});
+io.sockets.on("connection", function(socket) {
+    runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
+        if (err) util.log(err);
+        else {
+            socket.emit('start', {map: 'big', all_user: rows});
+        }
+    });
+    socket.on("disconnect", onClientDisconnect);
+    socket.on("login", loginRegister.login);
+    socket.on("register", loginRegister.register);
+    socket.on("move key down", onMoveKeyDown);
+    socket.on("move key up", onMoveKeyUp);
+    socket.on("shoot key down", onShootKeyDown);
+    socket.on("broadcast to room", onBroadcastToRoom);
+});

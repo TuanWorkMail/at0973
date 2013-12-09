@@ -6,7 +6,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         socket = require('../server/js/socket').socket,
         playerById = require('./player').playerById,
-        broadcastToRoom = require('../server/js/socket').broadcastToRoom;
+        broadcastToRoom = require('../server/socket-listener').broadcastToRoom;
     exports.moveLaser = moveLaser;
     exports.shooting = shooting;
     exports.removeBullet = removeBullet;

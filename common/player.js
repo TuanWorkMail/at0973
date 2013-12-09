@@ -1,7 +1,7 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util'),
         main = require('../server/js/main'),
-        broadcastToRoom = require('../server/js/socket').broadcastToRoom,
+        broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         mapCollision = require('./collision_hitTest').mapCollision,
         Session = require('../common/dto/session').Session,

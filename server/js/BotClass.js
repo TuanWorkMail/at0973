@@ -31,7 +31,7 @@ exports.moveBot=function () {
         } else if (bots[bot].getType() == 'dumb') {
             require('./BotStupid').goStraight(bots[bot]);
         }
-        require('./socket').broadcastToRoom(session.getRoomID(),"bot broadcast", { id: bots[bot].id,
+        require('../socket-listener').broadcastToRoom(session.getRoomID(),"bot broadcast", { id: bots[bot].id,
             x: bots[bot].getX(), y: bots[bot].getY(), direction: bots[bot].getDirection(), type: bots[bot].type });
     }
 }

@@ -1,4 +1,4 @@
-var broadcastToRoom = require('./socket').broadcastToRoom;
+var broadcastToRoom = require('../socket-listener').broadcastToRoom;
 exports.collideDrop = function() {
     var drops = session.getDrop(),
         remotePlayers = session.getRemotePlayers();
