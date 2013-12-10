@@ -44,9 +44,9 @@ tank5.main = (function() {
 //The main function of the game, it calls all the other functions needed to make the game run
     function gameLoop() {
         clearCanvas();
-        scoreTotal();
         drawLayer(session.getDestructible(), ctx);
         drawLayer(session.getIndestructible(), ctx);
+        scoreTotal();
         if (gameStarted) {
             var now = Date.now(),
                 fixedDelta = 1000/60,

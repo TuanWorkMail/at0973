@@ -173,7 +173,7 @@ function hitTestBot() {
             enemy_xw = botArray[obj].getX() + botArray[obj].getWidth();
             enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
-                broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id })
+                broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id });
                 // CREATE DROP
                 if(botArray[obj].getType()==='smart'){
                     var id = helper.createUUID('xxxx'),
@@ -188,7 +188,6 @@ function hitTestBot() {
                 for(var k=0; k<remotePlayers.length; k++) {
                     if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
-                        //XXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxx
                         debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
                         if(remotePlayers[k].getBotKill()>=2) {
                             remotePlayers[k].setShootBrick(true);                       // now can shoot down brick

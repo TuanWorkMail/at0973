@@ -9,7 +9,8 @@ var viewport,
     contextOverhead,
     spriteSheet,
     spriteSheet2,
-    eagle = new Image();
+    eagle = new Image(),
+    playNow = new Image();
 function createStackedCanvases() {
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
         height = tmxloader.map.height * tmxloader.map.tileHeight;
@@ -43,6 +44,7 @@ function createStackedCanvases() {
     spriteSheet2 = new Image();
     spriteSheet2.src = "images/tank5.png";
     eagle.src = "images/eagle.png";
+    playNow.src = 'images/play-now.png';
 }
 function Viewport(x, y, width, height) {
     this.x = x;
@@ -234,14 +236,10 @@ function drawingBot(object) {
 }
 function drawStartScreen() {
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
-        height = tmxloader.map.height * tmxloader.map.tileHeight;
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 50px VT323';
-    ctx.fillText('Canvas Shooter', width / 2 - 150, height / 2);
-    ctx.font = 'bold 20px VT323';
-    ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
-    ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
-    ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
+        height = tmxloader.map.height * tmxloader.map.tileHeight,
+        drawX = width/2-playNow.width/2,
+        drawY = height/2-playNow.height/2;
+    ctx.drawImage(playNow, drawX, drawY);
     canvasOverhead.addEventListener('click', gameStart, false);
 }
 function drawEndScreen() {
@@ -272,4 +270,16 @@ function drawDrop() {
             y = drops[i].getY();
         ctx.drawImage(drop, 0, 0, 40, 40, x, y, 40, 40);
     }
+}
+function drawStartScreen_old() {
+    var width = tmxloader.map.width * tmxloader.map.tileWidth,
+        height = tmxloader.map.height * tmxloader.map.tileHeight;
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 50px VT323';
+    ctx.fillText('Canvas Shooter', width / 2 - 150, height / 2);
+    ctx.font = 'bold 20px VT323';
+    ctx.fillText('Click to Play', width / 2 - 56, height / 2 + 30);
+    ctx.fillText('Use arrow keys to move', width / 2 - 100, height / 2 + 60);
+    ctx.fillText('Use the x key to shoot', width / 2 - 100, height / 2 + 90);
+    canvasOverhead.addEventListener('click', gameStart, false);
 }
