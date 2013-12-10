@@ -4,7 +4,8 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         helper = require('../helper'),
         clone2DArray = helper.clone2DArray,
         layerByName = TMX_Engine.layerByName,
-        splitBigTile = require('../split-big-tile').splitBigTile;
+        splitBigTile = require('../split-big-tile').splitBigTile,
+        Team = require('./team').Team;
 }
 
 function Session(roomid) {
@@ -23,6 +24,10 @@ function Session(roomid) {
 
     clone2DArray(layerByName('destructible').data, destructible);
     clone2DArray(layerByName('indestructible').data, indestructible);
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+        team.push(new Team('up'));
+        team.push(new Team('down'));
+    }
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }

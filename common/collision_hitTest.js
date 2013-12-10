@@ -5,7 +5,8 @@
         layerByName = TMX_Engine.layerByName,
         Drop = require('./dto/drop').Drop,
         helper = require('./helper'),
-        clone2DArray = helper.clone2DArray;
+        clone2DArray = helper.clone2DArray,
+        debug = require('./helper').debug;
     exports.mapCollision = mapCollision;
     exports.shootDestruction = shootDestruction;
     exports.hitTestBot = hitTestBot;
@@ -187,6 +188,8 @@ function hitTestBot() {
                 for(var k=0; k<remotePlayers.length; k++) {
                     if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                         remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
+                        //XXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxx
+                        debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
                         if(remotePlayers[k].getBotKill()>=2) {
                             remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
                             broadcastToRoom(session.getRoomID(),"shoot brick",{id:remotePlayers[k].getSocketID()});
@@ -199,7 +202,6 @@ function hitTestBot() {
         }
     }
 }
-
 function hitTestPlayer() {
     if(session.getRemotePlayers().length<2) return; // make sure checkLive() don't throw error
     var remotePlayers = session.getRemotePlayers(),

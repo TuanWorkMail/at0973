@@ -19,6 +19,7 @@ function loop() {
     loopUnused = loopUnrounded - loopRounded;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
+        //todo all socket event QUEUE to process in loop(), make allSession private
         bots = allSession[j].bots;
         lasers = allSession[j].getLasers();
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
@@ -32,6 +33,7 @@ function loop() {
             bulletMain.removeBullet();
         }
         hitTest.hitTestBot();
+        teamSumKill.totalKill();
         //TODO: change 1000 to 500 will throw error,
         if(now-lastBotTick>=1000) botStupid.BotShootInterval(bots);
         hitTest.hitTestPlayer();
@@ -68,7 +70,10 @@ exports.onEndMatch = function(data) {
         if (err) util.log(err);
     });
     //connection.end();
-}
+};
+exports.getSession=function(){
+    return session;
+};
 
 // LOCAL SCOPE
 var util = require("util"),
@@ -83,6 +88,7 @@ var util = require("util"),
     Bullet = require('../../common/dto/bullet').Bullet,
     dropcheck = require('./drop-check'),
     combinelayer = require('../../common/combine-layer'),
+    teamSumKill = require('./team.sum-kill'),
     combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),

@@ -1,5 +1,5 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    console = require('util');
+    var util = require('util');
     exports.createUUID = createUUID;
     exports.randomNumber = randomNumber;
     exports.clone2DArray = clone2DArray;
@@ -29,7 +29,11 @@ function clone2DArray(source, clone) {
     }
 }
 var debug = {};
-debug.log = function(string) {console.log(string)}
+debug.log = function(string) {
+    var console = console;
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') console = util;
+    console.log(string)
+}
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.debug = debug;
 }
