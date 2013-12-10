@@ -9,6 +9,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 
 function Session(roomid) {
     var remotePlayers = [],
+        team = [],
         lasers = [],
         destructible = [],
         indestructible = [],
@@ -25,6 +26,7 @@ function Session(roomid) {
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }
+    function getTeam(){return team}
     function getLasers() { return lasers }
     function getDestructible() {return destructible}
     function getIndestructible() {return indestructible}
@@ -45,6 +47,7 @@ function Session(roomid) {
         getRoomID: getRoomID,
         getLasers: getLasers,
         getRemotePlayers: getRemotePlayers,
+        getTeam:getTeam,
         getDrop: getDrop,
         getWhereSpawn: getWhereSpawn, setWhereSpawn: setWhereSpawn,
         getCombinedLayer: getCombinedLayer, setCombinedLayer: setCombinedLayer,

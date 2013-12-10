@@ -3,8 +3,7 @@ var mapName = 'big';
 function init() {
     require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
     //create a new blank session
-    var newSession = new Session(sessionID);
-    sessionID++;
+    var newSession = new Session(0);
     allSession.push(newSession);
     setTimeout(loop, 1000);
 }
@@ -27,7 +26,7 @@ function loop() {
         for(var i=0;i<loopRounded;i++) {
             player.movingPlayer();
             bulletMain.moveLaser();
-            hitTest.outOfMapBullet();
+            hitTest.bulletCollision();
             botClass.moveBot();
             hitTest.shootDestruction();
             bulletMain.removeBullet();
@@ -88,9 +87,8 @@ var util = require("util"),
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot
-    loopUnused = 0,                                         // % of loop left
+    loopUnused = 0;                                         // % of loop left
 
-    sessionID = 0;                                          // auto incremental session id
 
 // GLOBAL SCOPE
 allSession = [];// array contain all session

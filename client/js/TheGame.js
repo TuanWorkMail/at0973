@@ -60,7 +60,7 @@ tank5.main = (function() {
             for(var i=0;i<loopRounded;i++) {
                 movingPlayer();
                 moveLaser();
-                outOfMapBullet();
+                bulletCollision();
                 shootDestruction();
                 removeBullet();
             }

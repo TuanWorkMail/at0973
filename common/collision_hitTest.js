@@ -11,7 +11,7 @@
     exports.hitTestBot = hitTestBot;
     exports.hitTestPlayer = hitTestPlayer;
     exports.hitTestEagle = hitTestEagle;
-    exports.outOfMapBullet = outOfMapBullet;
+    exports.bulletCollision = bulletCollision;
 }
 //iput:x,y,w,h,type(bullet/tank)
 function mapCollision(x, y, w, h, type) {
@@ -27,10 +27,9 @@ function mapCollision(x, y, w, h, type) {
         return true;
     //for every layer in map
     for (var i = 0; i < tmxloader.map.layers.length + 2; i++) {
-        var name,
+        var name = '',
             array;
         if(i>=tmxloader.map.layers.length){        // after end of layer array
-            name = '';
             if(i===tmxloader.map.layers.length) {
                 array = session.getDestructible();
             } else {
@@ -236,7 +235,7 @@ function hitTestEagle() {
         }
     }
 }
-function outOfMapBullet() {
+function bulletCollision() {
     if(lasers.length==0) return;
     var endOfArray = false;
     while(!endOfArray) {
@@ -250,7 +249,10 @@ function outOfMapBullet() {
                 lasers.splice(i, 1);
                 //restart loop
                 i = lasers.length;
+            }else if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
+                laser.setIsRemoved(true);
             }
         }
     }
+
 }

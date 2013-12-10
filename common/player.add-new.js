@@ -1,5 +1,9 @@
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-    var tmxloader = require('../server/js/TMX_Engine').tmxloader;
+    var tmxloader = require('../server/js/TMX_Engine').tmxloader,
+        Session = require('./dto/Session').Session,
+        debug = require('./helper').debug,
+        dto = {};
+    dto.Player = require('./dto/Player').Player;
     exports.newPlayer = newPlayer;
     var lastRoomID = 0;                                            // auto increment roomID
 }
@@ -11,32 +15,29 @@ function newPlayer(socketID, username, userID) {
     var player = addNewPlayer(socketID, username, x, y, direction);
     if (!player) return false;
     player.newPlayer.setUserID(userID);
-    player.newPlayer.setPosition(result.name);
+    player.newPlayer.setTeamName(direction);
     return {newPlayer: player.newPlayer, roomID: player.roomID};
 }
 function spawnPlayer(position) {
     var spawn = tmxloader.map.objectgroup['spawn'].objects,
-        x = spawn[position % spawn.length].x,
-        y = spawn[position % spawn.length].y,
-        name = spawn[position % spawn.length].name,
-        direction;
-    if (name == '0')
-        direction = 'up';
-    else
-        direction = 'down';
+        point = position % spawn.length,
+        x = spawn[point].x,
+        y = spawn[point].y,
+        direction = spawn[point].name;
+    debug.log('x: '+x+' y: '+y+' direction: '+direction);
     return {x: x, y: y, direction: direction}
 }
 //add new player to array
 function addNewPlayer(id, username, x, y, direction) {
-    // Initialise the new player
     var roomID = 0,
         newPlayer = new dto.Player(x, y, direction);
     newPlayer.setSocketID(id);
     newPlayer.setUsername(username);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-        if(allSession[allSession.length-1].getRemotePlayers().length>=2) {
+        allSession = allSession;
+        if(allSession[allSession.length-1].getRemotePlayers().length>=tmxloader.map.objectgroup['spawn'].objects.length) {
             roomID = newRoomID();
-            newSession = new Session(roomID);
+            var newSession = new Session(roomID);
             allSession.push(newSession);
         }
         var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();
@@ -44,7 +45,7 @@ function addNewPlayer(id, username, x, y, direction) {
     } else {
         //WHY remotePlayers CHANGE, THIS IS A QUICK PATCH, NEED TO LOOK INTO IT
         //theres already remoteplayer up top, but i need to get it again here
-        var remotePlayers = session.getRemotePlayers();
+        remotePlayers = session.getRemotePlayers();
     }
     remotePlayers.push(newPlayer);
     return {newPlayer: remotePlayers[remotePlayers.indexOf(newPlayer)], roomID: roomID};

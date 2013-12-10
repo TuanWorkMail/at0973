@@ -48,9 +48,6 @@ function moveLaser() {
                 laser.setX(laser.getX() - laser.getSpeed());
                 break;
         }
-        if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
-            laser.setIsRemoved(true);
-        }
     }
     //removeBullet();
 }

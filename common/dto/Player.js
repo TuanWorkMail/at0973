@@ -7,11 +7,8 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
-dto.Player = function(startX, startY, direction) {
-    var x = startX,
-		y = startY,
-        direction = direction,
-		uuid,
+dto.Player = function(x, y, direction) {
+    var uuid,
         userID,
         socketID,
         username,
@@ -24,6 +21,7 @@ dto.Player = function(startX, startY, direction) {
         moving = false,
         score = 0,
         position,
+        teamName = direction,
         shootBrick = false,     // ability to shoot brick
         botKill = 0,            // number of bot killed
         bulletType = 'normal';
@@ -66,6 +64,7 @@ dto.Player = function(startX, startY, direction) {
         getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
         getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};
 
+    function getTeamName(){return teamName}function setTeamName(para){teamName=para}
 	// Define which variables and methods can be accessed
 	return {
         socketID: socketID,
@@ -85,12 +84,13 @@ dto.Player = function(startX, startY, direction) {
 		getLive: getLive, setLive: setLive,
 		getHitPoint: getHitPoint, setHitPoint: setHitPoint,
         getPosition: getPosition, setPosition: setPosition,
+        getTeamName:getTeamName,setTeamName:setTeamName,
         getMoving: getMoving, setMoving: setMoving,
         getShootBrick: getShootBrick, setShootBrick: setShootBrick,
         getBotKill: getBotKill, setBotKill: setBotKill,
         getBulletType: getBulletType, setBulletType: setBulletType
 	}
-}
+};
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.Player = dto.Player;
 }
