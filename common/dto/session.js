@@ -34,7 +34,9 @@ function Session(roomid) {
     function getTeam(){return team}
     function getLasers() { return lasers }
     function getDestructible() {return destructible}
+    function setDestructible(para) {destructible=para}
     function getIndestructible() {return indestructible}
+    function setIndestructible(para) {indestructible=para}
     function getDrop() {return drop}
     function getWhereSpawn(){return whereSpawn} function setWhereSpawn(para){whereSpawn=para}
     function getCombinedLayer(){return combinedLayer} function setCombinedLayer(para){combinedLayer=para}
@@ -48,7 +50,9 @@ function Session(roomid) {
         bots: bots,
 
         getDestructible: getDestructible,
+        setDestructible: setDestructible,
         getIndestructible: getIndestructible,
+        setIndestructible: setIndestructible,
         getRoomID: getRoomID,
         getLasers: getLasers,
         getRemotePlayers: getRemotePlayers,

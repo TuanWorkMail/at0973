@@ -183,18 +183,25 @@ function drawLaser() {
 function drawPlayer() {
     var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; i++) {
-        var direction = remotePlayers[i].getDirection(),
+        var gid = 0,
             x = remotePlayers[i].getX(),
             y = remotePlayers[i].getY();
-        if (direction=='right') {
-            drawTile(1, x, y);
-        } else if (direction=='left') {
-            drawTile(4, x, y);
-        } if (direction=='up') {
-            drawTile(3, x, y);
-        } else if (direction=='down') {
-            drawTile(2, x, y);
+        if(remotePlayers[i].getTeamName()==='up'){
+            switch(remotePlayers[i].getDirection()){
+                case 'right': gid = 1; break;
+                case 'left': gid = 4; break;
+                case 'up': gid = 3; break;
+                case 'down': gid = 2; break;
+            }
+        } else {
+            switch(remotePlayers[i].getDirection()){
+                case 'right': gid = 17; break;
+                case 'left': gid = 20; break;
+                case 'up': gid = 19; break;
+                case 'down': gid = 18; break;
+            }
         }
+        drawTile(gid, x, y);
     }
 }
 function drawingBot(object) {

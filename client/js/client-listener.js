@@ -25,7 +25,7 @@ function setSocketEventHandlers() {
 	socket.on("login", onLogin);
 	socket.on("test", onTest);
 	socket.on("register", onRegister);
-	socket.on("end match", onEndMatch);
+	socket.on("reset", onReset);
     socket.on("moving player", onMovingPlayer);
     socket.on("shoot brick", onShootBrick);
     socket.on("new drop", onNewDrop);
@@ -59,7 +59,8 @@ function onMovePlayer(data) {
     var movePlayer = playerById(data.id);
 	// Player not found
 	if (!movePlayer) {
-	    addNewPlayer(data.id, data.username, data.x, data.y, data.direction);
+	    var newPlayer = addNewPlayer(data.id, data.username, data.x, data.y, data.direction).newPlayer;
+        newPlayer.setTeamName(data.team);
 		return;
 	}
     movePlayer = movePlayer.players;
@@ -106,8 +107,16 @@ function onRegister(data) {
 }
 
 // End
-function onEndMatch(data) {
-    alive = false;
+function onReset(data) {
+    debug.log('reset!');
+    remoteBots.length = 0;
+    lasers.length = 0;
+    var destructible = [], indestructible = [];
+    clone2DArray(layerByName('destructible').data, destructible);
+    clone2DArray(layerByName('indestructible').data, indestructible);
+    session.setDestructible(destructible);
+    session.setIndestructible(indestructible);
+    //alive = false;
 }
 
 // Moving player

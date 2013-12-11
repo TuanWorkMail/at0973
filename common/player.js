@@ -7,7 +7,8 @@
         Session = require('../common/dto/session').Session,
         dto = {},
         helper = require('./helper'),
-        debug = helper.debug;
+        debug = helper.debug,
+        reset = require('./session.restart').reset;
     dto.Player = require('./dto/Player').Player;
 }
 function checkHitPoint () {
@@ -37,29 +38,6 @@ function checkLive(object) {
         main.onEndMatch(data);
         util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
-    }
-}
-function reset(para) {
-    var remotePlayers = session.getRemotePlayers();
-    for (var obj = 0; obj < bots.length; ++obj) {
-        broadcastToRoom(session.getRoomID(),"bot die", { count: bots[obj].id });
-    }
-    bots.length = 0;
-    whereSpawn = 0;
-    lasers.length = 0;
-    // respawn player
-    for (var i = 0; i < remotePlayers.length; i++) {
-        var result = spawnPlayer(i),
-            x = result.x,
-            y = result.y,
-            direction = result.direction;
-        remotePlayers[i].setX(x);
-        remotePlayers[i].setY(y);
-        remotePlayers[i].setDirection(direction);
-        remotePlayers[i].setHitPoint(10);
-        if(para=='end match') remotePlayers[i].setLive(2);
-        broadcastToRoom(session.getRoomID(),"move player", { id: remotePlayers[i].getSocketID(),
-            username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
 }
 var lastDirection = 'left';

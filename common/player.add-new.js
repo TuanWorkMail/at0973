@@ -5,6 +5,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         dto = {};
     dto.Player = require('./dto/Player').Player;
     exports.newPlayer = newPlayer;
+    exports.spawnPlayer = spawnPlayer;
     var lastRoomID = 0;                                            // auto increment roomID
 }
 function newPlayer(socketID, username, userID) {
@@ -52,5 +53,5 @@ function addNewPlayer(id, username, x, y, direction) {
 }
 function newRoomID() {
     lastRoomID++;
-    return (lastRoomID);
+    return lastRoomID;
 }

@@ -30,7 +30,7 @@ function clone2DArray(source, clone) {
 }
 var debug = {};
 debug.log = function(string) {
-    var console = console;
+    console = console;
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') console = util;
     console.log(string)
 }

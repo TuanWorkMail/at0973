@@ -1,5 +1,6 @@
 //RESTART server for changes to applied
 var mapName = 'big';
+exports.mapName = mapName;
 function init() {
     require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
     //create a new blank session

@@ -89,7 +89,7 @@ io.sockets.on("connection", function(socket) {
     runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
         if (err) util.log(err);
         else {
-            socket.emit('start', {map: 'big', all_user: rows});
+            socket.emit('start', {map: main.mapName, all_user: rows});
         }
     });
     socket.on("disconnect", onClientDisconnect);

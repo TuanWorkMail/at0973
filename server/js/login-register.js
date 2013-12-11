@@ -19,7 +19,8 @@ exports.login = function(data){
                     that.join('r' + roomID);
                     util.log('new player userID: ' + rows[0].ID + ' and username: ' + rows[0].Username);
                     broadcastToRoom(roomID,"move player", { id: that.id, username: rows[0].Username,
-                        x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection() });
+                        x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(),
+                        team: newPlayer.getTeamName() });
                 }
             }
         }
