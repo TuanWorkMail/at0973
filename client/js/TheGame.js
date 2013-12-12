@@ -9,6 +9,7 @@ tank5.main = (function() {
         fps = 60,
         ship_w = 40, ship_h = 40,
         lastTick = Date.now(),//delta time
+        lastfpstick = Date.now(),
         loopUnused = 0,//percent left of last loop
     //which direction the ship is facing
         direction,
@@ -67,7 +68,10 @@ tank5.main = (function() {
             //drawMap();
             //shipCollision();
             updateInput();
-            document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
+            if(now-lastfpstick>500){
+                document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
+                lastfpstick = now;
+            }
             drawBot();
             drawPlayer();
             drawLaser();

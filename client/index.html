@@ -18,27 +18,6 @@
             display: none;
         }
     </style>
-    <script>
-        function login() {
-            var username = document.getElementById('username').value,
-                password = document.getElementById('password').value;
-            socket.emit("login", { username: username, password: password });
-        }
-        function register() {
-            var username = document.getElementById('registerUser').value,
-                password = document.getElementById('registerPass').value;
-            socket.emit("register", { username: username, password: password });
-        }
-        function showhide(which) {
-            if(which=='login') {
-                document.getElementById('login').style.display = 'none';
-                document.getElementById('register').style.display = 'block';
-            } else {
-                document.getElementById('login').style.display = 'block';
-                document.getElementById('register').style.display = 'none';
-            }
-        }
-    </script>
 </head>
 <body>
     <div class="centerPlaceholder" id="center">
@@ -57,9 +36,10 @@
             <a href="#" onclick="showhide('register');">login</a>
         </div>
     </div>
-    <span id="showfps" style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10">fps: 60</span>
-    <span id='alluser' style="position: absolute; top: 0px; left: 0px; background: #fff; z-index: 10"></span>
+    <span id="showfps" style="position: absolute; color: #ffff00; z-index: 10">fps: 60</span>
+    <span id='alluser' style="position: absolute; background: #fff; z-index: 10"></span>
 
+    <script src="js/index.button-event.js"></script>
     <script src="js/movebot.js"></script>
     <script src="js/other.js"></script>
     <script src="js/lib/shim.js"></script>
