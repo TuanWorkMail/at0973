@@ -6,9 +6,6 @@ exports.reset = reset;
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
     broadcastToRoom(session.getRoomID(),'reset');
-    for (var obj = 0; obj < bots.length; ++obj) {continue;
-        broadcastToRoom(session.getRoomID(),"bot die", { count: bots[obj].id });
-    }
     bots.length = 0;
     lasers.length = 0;
     var destructible = [], indestructible = [];

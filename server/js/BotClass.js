@@ -38,9 +38,12 @@ exports.moveBot=function () {
 //add new bot to the array
 function createBot() {
     var botGroup = tmxloader.map.objectgroup['bot'].objects,
-        bossGroup = tmxloader.map.objectgroup['boss'].objects,
+        bossGroup = [],
         Bot = require('./../../common/dto/Bot').Bot,
         maxLength = botGroup.length+bossGroup.length;
+    if(typeof tmxloader.map.objectgroup['boss'] !== "undefined"){
+        bossGroup = tmxloader.map.objectgroup['boss'].objects;
+    }
     if (botsLimit > maxLength){
         botsLimit = maxLength;
     }
@@ -61,6 +64,7 @@ function createBot() {
             session.setWhereSpawn(whereSpawn+1);
             alternate = false;
         } else {
+            if(bossGroup.length !== 0){
             if (bossCount >= bossGroup.length){
                 bossCount = 0;
             }
@@ -68,6 +72,7 @@ function createBot() {
             y = bossGroup[bossCount].y;
             type = 'smart';
             session.setBossCount(bossCount+1);
+            }
             alternate = true;
         }
         newBot = new Bot(id, x, y, type);

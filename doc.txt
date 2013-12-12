@@ -1,2 +1,4 @@
 map original is big tile, from the big tile make destructible into 4x4 smaller tile, check collision use small tile, bot smart use big tile, when shootDestruction() check if all 4x4 is 0 and change big tile
 [after have 4x4, hook that to shootDestruction()]
+[reset]
+use spawnPlayer()

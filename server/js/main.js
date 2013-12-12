@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'big';
+var mapName = 'classic1';
 exports.mapName = mapName;
 function init() {
     require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
