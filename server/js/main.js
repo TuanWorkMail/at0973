@@ -27,7 +27,7 @@ function loop() {
         lasers = allSession[j].getLasers();
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         checkPlayerCount();
-        if(!session.getStart() || loopRounded < 1) continue;
+        if(!allSession[j].getStart()) continue;
         for(var i=0;i<loopRounded;i++) {
             player.movingPlayer();
             bulletMain.moveLaser();
@@ -36,6 +36,7 @@ function loop() {
             hitTest.shootDestruction();
             bulletMain.removeBullet();
         }
+        if(loopRounded < 1) continue;
         hitTest.hitTestBot();
         teamSumKill.totalKill();
         //TODO: change 1000 to 500 will throw error,

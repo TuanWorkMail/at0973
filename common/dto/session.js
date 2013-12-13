@@ -44,7 +44,8 @@ function Session(roomid) {
     function getBossSpawnCount(){return bossSpawnCount} function setBossSpawnCount(para){bossSpawnCount=para}
     function getBotLength(){return botLength} function setBotLength(para){botLength=para}
     function getBossLength(){return bossLength} function setBossLength(para){bossLength=para}
-    function getStart(){return start}function setStart(para){start=para}
+    function getStart(){return start}function setStart(para){
+        start=para}
 
     return {
 
