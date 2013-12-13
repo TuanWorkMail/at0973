@@ -89,12 +89,12 @@ function onRemovePlayer(data) {
 
 // Login
 function onLogin(data) {
-    if (typeof data.errormessage !== 'undefined' ) {
+    if (typeof data.error !== 'undefined' ) {
         document.getElementById('error-message').innerHTML = data.error;
     } else {
         document.getElementById('login').style.display = 'none';
         document.getElementById('alluser').style.display = 'none';
-        drawStartScreen();
+        showStartScreen = true;
     }
 }
 
@@ -158,14 +158,7 @@ function onCollideDrop(data) {
 }
 var countdown = 5;
 function onStartCountDown(){
-    document.getElementById('waiting').style.display = 'block';
-    if(countdown<=0){
-        document.getElementById('waiting').style.display = 'none';
-        return;
-    }
-    document.getElementById('waiting').innerHTML = ''+countdown;
-    countdown--;
-    setTimeout(onStartCountDown, 1000);
+    startCountdown();
 }
 // Find player by username
 function playerByUsername(username) {

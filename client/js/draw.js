@@ -10,7 +10,8 @@ var viewport,
     spriteSheet,
     spriteSheet2,
     eagle = new Image(),
-    playNow = new Image();
+    playNow = new Image(),
+    showStartScreen = false;
 function createStackedCanvases() {
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
         height = tmxloader.map.height * tmxloader.map.tileHeight;
@@ -242,6 +243,7 @@ function drawingBot(object) {
     }
 }
 function drawStartScreen() {
+    if(!showStartScreen) return;
     var width = tmxloader.map.width * tmxloader.map.tileWidth,
         height = tmxloader.map.height * tmxloader.map.tileHeight,
         drawX = width/2-playNow.width/2,

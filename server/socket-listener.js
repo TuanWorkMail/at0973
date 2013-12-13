@@ -95,6 +95,7 @@ io.sockets.on("connection", function(socket) {
     socket.on("disconnect", onClientDisconnect);
     socket.on("login", loginRegister.login);
     socket.on("register", loginRegister.register);
+    socket.on("play now", loginRegister.onPlayNow);
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
     socket.on("shoot key down", onShootKeyDown);

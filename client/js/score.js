@@ -23,14 +23,29 @@ function scoreTotal() {
     ctx.fillText(lives, 68, 30);
     */
     if (!gameStarted) {
-        //drawStartScreen();
+        drawStartScreen();
     }
     if (!alive) {
         drawEndScreen();
     }
 }
-
+var countdown = 5,
+    countdownStarted = false;
+function startCountdown(){
+    if(!countdownStarted) countDown();
+    countdownStarted = true;
+}
+function countDown(){
+    countdown--;
+    if(countdown<=0){
+        document.getElementById('waiting').style.display = 'none';
+        return;
+    }
+    document.getElementById('waiting').innerHTML = ''+countdown;
+    setTimeout(countDown, 1000);
+}
 function gameStart() {
+    socket.emit("play now");
     document.getElementById('waiting').style.display = 'block';
     tank5.main.setGameStarted(true);
     canvas.removeEventListener('click', gameStart, false);
