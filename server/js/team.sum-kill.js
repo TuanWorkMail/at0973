@@ -1,11 +1,14 @@
-var getSession = require('./main').getSession,
+var main = require('./main'),
     lastTeamKills = [],
+    lastTeamScore = [],
     debug = require('../../common/helper').debug;
 lastTeamKills[0]=0;
 lastTeamKills[1]=0;
+lastTeamScore[0]=0;
+lastTeamScore[1]=0;
+
 exports.totalKill = function(){
-    var session = getSession(),
-        team = session.getTeam(),
+    var team = main.session.getTeam(),
         remotePlayers = session.getRemotePlayers();
     for(var j=0;j<team.length;j++){
         team[j].setKill(0);

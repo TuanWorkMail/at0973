@@ -23,7 +23,7 @@ function scoreTotal() {
     ctx.fillText(lives, 68, 30);
     */
     if (!gameStarted) {
-        drawStartScreen();
+        //drawStartScreen();
     }
     if (!alive) {
         drawEndScreen();
@@ -31,6 +31,7 @@ function scoreTotal() {
 }
 
 function gameStart() {
+    document.getElementById('waiting').style.display = 'block';
     tank5.main.setGameStarted(true);
     canvas.removeEventListener('click', gameStart, false);
 }

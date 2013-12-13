@@ -13,6 +13,11 @@ function newPlayer(socketID, username, userID) {
         x = result.x,
         y = result.y,
         direction = result.direction;
+    if(allSession[allSession.length-1].getRemotePlayers().length>=tmxloader.map.objectgroup['spawn'].objects.length) {
+        var roomID = newRoomID();
+        var newSession = new Session(roomID);
+        allSession.push(newSession);
+    }
     var player = addNewPlayer(socketID, username, x, y, direction);
     if (!player) return false;
     player.newPlayer.setUserID(userID);
@@ -36,11 +41,6 @@ function addNewPlayer(id, username, x, y, direction) {
     newPlayer.setUsername(username);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         allSession = allSession;
-        if(allSession[allSession.length-1].getRemotePlayers().length>=tmxloader.map.objectgroup['spawn'].objects.length) {
-            roomID = newRoomID();
-            var newSession = new Session(roomID);
-            allSession.push(newSession);
-        }
         var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();
         roomID = allSession[allSession.length - 1].getRoomID();
     } else {

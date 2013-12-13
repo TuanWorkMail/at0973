@@ -30,6 +30,7 @@ function setSocketEventHandlers() {
     socket.on("shoot brick", onShootBrick);
     socket.on("new drop", onNewDrop);
     socket.on("collide drop", onCollideDrop);
+    socket.on("start count down", onStartCountDown);
 };
 function onSocketConnected() {
     console.log("Connected to socket server");
@@ -93,6 +94,7 @@ function onLogin(data) {
     } else {
         document.getElementById('login').style.display = 'none';
         document.getElementById('alluser').style.display = 'none';
+        drawStartScreen();
     }
 }
 
@@ -153,6 +155,17 @@ function onCollideDrop(data) {
         return;
     }
     result.players.setBulletType(data.bulletType);
+}
+var countdown = 5;
+function onStartCountDown(){
+    document.getElementById('waiting').style.display = 'block';
+    if(countdown<=0){
+        document.getElementById('waiting').style.display = 'none';
+        return;
+    }
+    document.getElementById('waiting').innerHTML = ''+countdown;
+    countdown--;
+    setTimeout(onStartCountDown, 1000);
 }
 // Find player by username
 function playerByUsername(username) {

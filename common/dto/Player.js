@@ -7,16 +7,19 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
-dto.Player = function(x, y, direction) {
-    var uuid,
+dto.Player = function(spawnX, spawnY, spawnDirection) {
+    var x = spawnX,
+        y = spawnY,
+        direction = spawnDirection,
+        uuid,
         userID,
         socketID,
         username,
         width = 40,
         height = 40,
         speed = 5,
-        hitPoint = 10,
-        live = 9,
+        hitPoint = 1,
+        live = 99,
         defaultLive = 1,
         moving = false,
         score = 0,
@@ -63,20 +66,23 @@ dto.Player = function(x, y, direction) {
         getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para;},
         getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
         getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};
-
     function getTeamName(){return teamName}function setTeamName(para){teamName=para}
-	// Define which variables and methods can be accessed
+    function getSpawnX(){return spawnX}
+    function getSpawnY(){return spawnY}
+    function getSpawnDirection(){return spawnDirection}
+
 	return {
         socketID: socketID,
-		getX: getX,
-		getY: getY,
-		setX: setX,
-		setY: setY,
+        getSpawnX:getSpawnX,
+        getSpawnY:getSpawnY,
+        getSpawnDirection:getSpawnDirection,
+		getX: getX, setX: setX,
+		getY: getY, setY: setY,
+        getDirection: getDirection, setDirection: setDirection,
 		getUUID: getUUID, setUUID: setUUID,
         getUserID: getUserID, setUserID: setUserID,
         getSocketID: getSocketID, setSocketID: setSocketID,
         getUsername: getUsername, setUsername: setUsername,
-		getDirection: getDirection, setDirection: setDirection,
 		getWidth: getWidth, setWidth: setWidth,
 		getHeight: getHeight, setHeight: setHeight,
 		getSpeed: getSpeed, setSpeed: setSpeed,

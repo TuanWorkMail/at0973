@@ -1,6 +1,7 @@
 //RESTART server for changes to applied
 var mapName = 'classic1';
 exports.mapName = mapName;
+setTimeout = setTimeout;
 function init() {
     require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
     //create a new blank session
@@ -20,11 +21,13 @@ function loop() {
     loopUnused = loopUnrounded - loopRounded;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
+        exports.session = allSession[j];
         //todo all socket event QUEUE to process in loop(), make allSession private
         bots = allSession[j].bots;
         lasers = allSession[j].getLasers();
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
-        if(session.getRemotePlayers().length < 1 || loopRounded < 1) continue;
+        checkPlayerCount();
+        if(!session.getStart() || loopRounded < 1) continue;
         for(var i=0;i<loopRounded;i++) {
             player.movingPlayer();
             bulletMain.moveLaser();
@@ -72,9 +75,6 @@ exports.onEndMatch = function(data) {
     });
     //connection.end();
 };
-exports.getSession=function(){
-    return session;
-};
 
 // LOCAL SCOPE
 var util = require("util"),
@@ -90,6 +90,7 @@ var util = require("util"),
     dropcheck = require('./drop-check'),
     combinelayer = require('../../common/combine-layer'),
     teamSumKill = require('./team.sum-kill'),
+    checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
     combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
