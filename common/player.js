@@ -15,9 +15,9 @@ function checkHitPoint () {
     var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() <= 0 && alive) {
-            util.log('player ' + remotePlayers[i].getUsername() + ' die');
+            debug.log('player ' + remotePlayers[i].getUsername() + ' die');
             remotePlayers[i].setLive(remotePlayers[i].getLive() - 1);
-            util.log('live: ' + remotePlayers[i].getLive());
+            debug.log('live: ' + remotePlayers[i].getLive());
             checkLive(remotePlayers[i]);
         }
     }
@@ -36,7 +36,7 @@ function checkLive(object) {
         }
         var data = { id1: id[0], id2:id[1], score1: score[0], score2: score[1] };
         main.onEndMatch(data);
-        util.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
+        debug.log('id1: '+id[0]+', id2:'+id[1]+', score1: '+score[0]+', score2: '+score[1]);
         reset('end match');
     }
 }

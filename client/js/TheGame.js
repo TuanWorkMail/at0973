@@ -1,6 +1,7 @@
 // GLOBAL SCOPE
 window.onload = setSocketEventHandlers;
-var tank5 = {},
+var debugLogLevel = 1,
+    tank5 = {},
     session,
     lasers;
 // LOCAL SCOPE

@@ -62,7 +62,7 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         getPosition = function () { return position; },
         setPosition = function (para) { position = para; },
         getHitPoint = function () { return hitPoint; },
-        setHitPoint = function (para) { hitPoint = para;console.log('hp!')},
+        setHitPoint = function (para) { hitPoint = para; },
         getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para;},
         getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
         getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};

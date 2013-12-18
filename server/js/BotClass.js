@@ -2,7 +2,7 @@ var botSmart = require('./BotSmart'),
     helper = require('../../common/helper'),
     tmxloader = require('./TMX_Engine').tmxloader,
     botsLimit = 99,
-    alternate = false;
+    alternate = 'stupid';
 /*
 var pathStart,
     pathStartX,
@@ -40,10 +40,13 @@ function createBot() {
     var botGroup = tmxloader.map.objectgroup['bot'].objects,
         bossGroup = [],
         Bot = require('./../../common/dto/Bot').Bot,
-        maxLength = botGroup.length+bossGroup.length;
+        maxLength;
     if(typeof tmxloader.map.objectgroup['boss'] !== "undefined"){
         bossGroup = tmxloader.map.objectgroup['boss'].objects;
+    } else if(alternate!=='stupid') {
+        alternate='stupid';
     }
+    maxLength = botGroup.length+bossGroup.length;
     if (botsLimit > maxLength){
         botsLimit = maxLength;
     }
@@ -54,7 +57,7 @@ function createBot() {
             bossLength = session.getBossLength();
         var id = helper.createUUID('xxxx'),
             x, y, type, newBot;
-        if(alternate){
+        if(alternate==='stupid'){
             if (whereSpawn >= botGroup.length) {
                 whereSpawn = 0;
             }
@@ -62,7 +65,7 @@ function createBot() {
             y = botGroup[whereSpawn].y;
             type = 'dumb';
             session.setWhereSpawn(whereSpawn+1);
-            alternate = false;
+            alternate = 'smart';
         } else {
             if(bossGroup.length !== 0){
             if (bossCount >= bossGroup.length){
@@ -73,7 +76,7 @@ function createBot() {
             type = 'smart';
             session.setBossCount(bossCount+1);
             }
-            alternate = true;
+            alternate = 'stupid';
         }
         newBot = new Bot(id, x, y, type);
         if(type==='smart') {

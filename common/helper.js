@@ -29,11 +29,12 @@ function clone2DArray(source, clone) {
     }
 }
 var debug = {};
-debug.log = function(string) {
-    console = console;
-    if (typeof require !== 'undefined' && typeof exports !== 'undefined') console = util;
-    console.log(string)
-}
+debug.log = function(string, level) {
+    if(typeof level==='undefined') level=0;
+    if(level<debugLogLevel) return;
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') util.log(string);
+    else console.log(string);
+};
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.debug = debug;
 }

@@ -1,5 +1,6 @@
 //RESTART server for changes to applied
 var mapName = 'classic1';
+debugLogLevel = 1;
 exports.mapName = mapName;
 setTimeout = setTimeout;
 function init() {
@@ -56,7 +57,7 @@ exports.onEndMatch = function(data) {
         wonID,
         point = data.score1-data.score2;
     if(data.id1==data.id2) {
-        util.log('same id, app error, not stored on database');
+        debug.log('same id, app error, not stored on database');
         return;
     }
     if(data.score1-data.score2>0)
@@ -64,7 +65,7 @@ exports.onEndMatch = function(data) {
     else if(data.score2-data.score1>0)
         wonID=data.id2;
     else {
-        util.log('no winner specify, app error, not stored on database');
+        debug.log('no winner specify, app error, not stored on database');
         return;
     }
     //connection.connect();
@@ -92,6 +93,7 @@ var util = require("util"),
     combinelayer = require('../../common/combine-layer'),
     teamSumKill = require('./team.sum-kill'),
     checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
+    debug = require('../../common/helper').debug
     combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),

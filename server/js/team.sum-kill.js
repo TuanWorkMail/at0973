@@ -19,7 +19,7 @@ exports.totalKill = function(){
         }
         if(team[j].getKill()!==lastTeamKills[j]){
             lastTeamKills[j]=team[j].getKill();
-            debug.log('team '+team[j].getName()+' kills: '+team[j].getKill());
+            debug.log('team '+team[j].getName()+' kills: '+team[j].getKill(), 1);
         }
     }
 };
