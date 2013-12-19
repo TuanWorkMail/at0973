@@ -1,6 +1,7 @@
 //RESTART server for changes to applied
-var mapName = 'classic1';
+var mapName = 'big';
 debugLogLevel = 1;
+exports.minimumNoPlayer = 1;
 exports.mapName = mapName;
 setTimeout = setTimeout;
 function init() {

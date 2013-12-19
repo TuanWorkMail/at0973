@@ -1,11 +1,11 @@
 var tmxloader = require('./TMX_Engine').tmxloader,
     broadcastToRoom = require('../socket-listener').broadcastToRoom,
     main = require('./main'),
-    startCount = 0;
+    minimumNoPlayer = require('./main').minimumNoPlayer;
 exports.checkPlayerCount = function(){
     if(session.getStart()) return;
-    if(startCount===0) startCount = tmxloader.map.objectgroup['spawn'].objects.length;
-    if(session.getRemotePlayers().length >= startCount){
+    if(minimumNoPlayer===0) minimumNoPlayer = tmxloader.map.objectgroup['spawn'].objects.length;
+    if(session.getRemotePlayers().length >= minimumNoPlayer){
         broadcastToRoom(main.session.getRoomID(), 'start count down');
         setTimeout(function(){session.setStart(true)}, 5000);
     }

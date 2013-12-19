@@ -31,6 +31,7 @@ function mapCollision(x, y, w, h, type) {
         var name = '',
             array;
         if(i>=tmxloader.map.layers.length){        // after end of layer array
+            if(type==='bullet') continue;
             if(i===tmxloader.map.layers.length) {
                 array = session.getDestructible();
             } else {
