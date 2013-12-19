@@ -35,7 +35,7 @@ function loop() {
             bulletMain.moveLaser();
             hitTest.bulletCollision();
             botClass.moveBot();
-            hitTest.shootDestruction();
+            shootDestroyBrick();
             bulletMain.removeBullet();
         }
         if(loopRounded < 1) continue;
@@ -95,7 +95,8 @@ var util = require("util"),
     combinelayer = require('../../common/combine-layer'),
     teamSumKill = require('./team.sum-kill'),
     checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
-    debug = require('../../common/helper').debug
+    debug = require('../../common/helper').debug,
+    shootDestroyBrick = require('../../common/shoot-destroy-brick').shootDestroyBrick,
     combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
