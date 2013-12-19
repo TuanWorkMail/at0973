@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'big';
+var mapName = 'classic_small';
 debugLogLevel = 1;
 exports.minimumNoPlayer = 1;
 exports.mapName = mapName;
