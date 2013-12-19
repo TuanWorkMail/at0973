@@ -70,7 +70,8 @@ exports.onEndMatch = function(data) {
         return;
     }
     //connection.connect();
-    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);', [data.id1,data.id2,point], function (err, rows, fields) {
+    connection.query('INSERT INTO `tank5`.`matchhistory`(`Competitor1`,`Competitor2`,`PointLeft`)VALUES(?,?,?);',
+        [data.id1,data.id2,point], function (err, rows, fields) {
         if (err) util.log(err);
     });
     connection.query('UPDATE `tank5`.`user` SET `Won` = `Won`+1 WHERE `ID` = ?;', [wonID], function (err, rows, fields) {
