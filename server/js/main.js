@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'classic_small';
+var mapName = '1000_small';
 debugLogLevel = 1;
 exports.minimumNoPlayer = 1;
 exports.mapName = mapName;
@@ -92,12 +92,11 @@ var util = require("util"),
     bulletMain = require('../../common/bulletMain'),
     Bullet = require('../../common/dto/bullet').Bullet,
     dropcheck = require('./drop-check'),
-    combinelayer = require('../../common/combine-layer'),
+    combine16to1tile = require('../../common/combine-layer').combine16to1tile,
     teamSumKill = require('./team.sum-kill'),
     checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
     debug = require('../../common/helper').debug,
     shootDestroyBrick = require('../../common/shoot-destroy-brick').shootDestroyBrick,
-    combine16to1tile = combinelayer.combine16to1tile,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot

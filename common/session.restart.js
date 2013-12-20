@@ -1,7 +1,7 @@
 var spawnPlayer = require('./player.add-new').spawnPlayer,
     broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
-    clone2DArray = require('./helper').clone2DArray,
-    layerByName = require('../server/js/TMX_Engine').layerByName;
+    layerByName = require('../server/js/TMX_Engine').layerByName,
+    combine16to1tile = require('./combine-layer').combine16to1tile;
 exports.reset = reset;
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
@@ -9,10 +9,9 @@ function reset(para) {
     bots.length = 0;
     lasers.length = 0;
     var destructible = [], indestructible = [];
-    clone2DArray(layerByName('destructible').data, destructible);
-    clone2DArray(layerByName('indestructible').data, indestructible);
-    session.setDestructible(destructible);
-    session.setIndestructible(indestructible);
+    session.setDestructible(layerByName('destructible').data);
+    session.setIndestructible(layerByName('indestructible').data);
+    session.setCombinedLayer(combine16to1tile());
     // respawn player
     for (var i = 0; i < remotePlayers.length; i++) {
         var result = spawnPlayer(i),
