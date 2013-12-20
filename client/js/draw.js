@@ -159,6 +159,8 @@ function drawTile(gid, x, y, width, height) {
     var spriteX = (gid - 1) % NoOfTiles * 40;
     //Math.floor(gid/NoOfTiles): 10 per row, so 25 is on 25/10=2.5=> row 2
     var spriteY = Math.floor(gid / NoOfTiles) * 40;
+    x = Math.round(x);
+    y = Math.round(y);
 
     if(typeof width==='undefined' || typeof height === 'undefined') {
         ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);

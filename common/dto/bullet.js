@@ -1,18 +1,9 @@
 
 function Bullet(id, x, y, direction) {
-    /*
-    this.x = x;
-    this.y = y;
-    this.direction = direction;
-    this.isRemoved = isRemoved;
-    */
-    var id = id,
-        x = x,
-        y = y,
-        direction = direction,
-        isRemoved = false,
+    var isRemoved = false,
         originID = 0,
-        speed = 15;
+        speed = 15,
+        damage = 4;
 
     function getID() { return id; } function setID(para) { id = para; }
     function getX() { return x; } function setX(para) { x = para; }
@@ -21,6 +12,7 @@ function Bullet(id, x, y, direction) {
     function getIsRemoved() { return isRemoved; } function setIsRemoved(para) { isRemoved = para; }
     function getOriginID() {return originID} function setOriginID(para) {originID = para}
     function getSpeed(){return speed} function setSpeed(para){speed=para}
+    function getDamage(){return damage}function setDamage(para){damage=para}
 
     return {
         getID: getID, setID: setID,
@@ -30,6 +22,7 @@ function Bullet(id, x, y, direction) {
         getIsRemoved: getIsRemoved, setIsRemoved: setIsRemoved,
         getOriginID: getOriginID, setOriginID: setOriginID,
         getSpeed: getSpeed, setSpeed: setSpeed,
+        getDamage: getDamage, setDamage: setDamage,
 
         x: x,
         y: y,

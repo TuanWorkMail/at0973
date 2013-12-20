@@ -1,12 +1,13 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var TMX_Engine = require('./../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
-        broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
         layerByName = TMX_Engine.layerByName,
+        broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
         Drop = require('./dto/drop').Drop,
         helper = require('./helper'),
         clone2DArray = helper.clone2DArray,
-        debug = helper.debug;
+        debug = helper.debug,
+        botCheckHitPoint = require('../server/js/BotClass');
     exports.mapCollision = mapCollision;
     exports.hitTestBot = hitTestBot;
     exports.hitTestPlayer = hitTestPlayer;
@@ -71,30 +72,33 @@ function hitTestBot() {
             enemy_xw = botArray[obj].getX() + botArray[obj].getWidth();
             enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
-                broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id });
-                // CREATE DROP
-                if(botArray[obj].getType()==='smart'){
-                    var id = helper.createUUID('xxxx'),
-                        type = 'piercing',
-                        x = botArray[obj].getX(),
-                        y = botArray[obj].getY(),
-                        newDrop = new Drop(id, type, x, y);
-                    session.getDrop().push(newDrop);
-                    broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
-                }
-                // MOVE THE ABOVE OUT
-                for(var k=0; k<remotePlayers.length; k++) {
-                    if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
-                        remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
-                        debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
-                        if(remotePlayers[k].getBotKill()>=2) {
-                            remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
-                            broadcastToRoom(session.getRoomID(),"shoot brick",{id:remotePlayers[k].getSocketID()});
+                botArray[obj].setHitPoint(botArray[obj].getHitPoint() - lasers[i].getDamage());
+                lasers[i].isRemoved = true;
+                if(botArray[obj].getHitPoint()<=0){
+                    // CREATE DROP
+                    if(botArray[obj].getType()==='smart'){
+                        var id = helper.createUUID('xxxx'),
+                            type = 'piercing',
+                            x = botArray[obj].getX(),
+                            y = botArray[obj].getY(),
+                            newDrop = new Drop(id, type, x, y);
+                        session.getDrop().push(newDrop);
+                        broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
+                    }
+                    for(var k=0; k<remotePlayers.length; k++) {
+                        if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
+                            remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
+                            debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
+                            if(remotePlayers[k].getBotKill()>=2) {
+                                remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
+                                broadcastToRoom(session.getRoomID(),"shoot brick",{id:remotePlayers[k].getSocketID()});
+                            }
                         }
                     }
+                    // MOVE THE ABOVE OUT
+                    broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id });
+                    botArray.splice(obj, 1);
                 }
-                lasers[i].isRemoved = true;
-                botArray.splice(obj, 1);
             }
         }
     }
@@ -109,7 +113,7 @@ function hitTestPlayer() {
             ship_xw = remotePlayers[obj].getX() + remotePlayers[obj].getWidth();
             ship_yh = remotePlayers[obj].getY() + remotePlayers[obj].getHeight();
             if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
-                remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - 4);
+                remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - lasers[i].getDamage());
                 lasers[i].isRemoved = true;
             }
         }
