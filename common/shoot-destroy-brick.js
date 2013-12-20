@@ -24,42 +24,37 @@ function shootDestroyBrick() {
                 ytile = Math.round(laser.getY() / tmxloader.map.tileHeight),
                 halfWidth = playerDimension.width / 2,
                 halfHeight = playerDimension.height / 2,
-            // STG = snap to grid
+                // STG = snap to grid
                 xtileSTG = Math.round(laser.getX() / halfWidth) * 2,
                 ytileSTG = Math.round(laser.getY() / halfHeight) * 2,
-                xstart, xend, ystart, yend,
+                xstart = xtileSTG - 1,
+                xend = xtileSTG + 1,
+                ystart = ytileSTG - 1,
+                yend = ytileSTG + 1,
                 xincrement = 1,
                 yincrement = 1;
             switch (laser.getDirection()) {
                 case 'up':
-                    xstart = xtileSTG - 1;
-                    xend = xtileSTG + 1;
-                    ystart = ytile;
-                    yend = Math.round( (laser.getY() + laser.getSpeed()) / tmxloader.map.tileHeight);
-                    increment = -1;
+                    ystart = Math.round( (laser.getY() + laser.getSpeed()) / tmxloader.map.tileHeight);
+                    yend = ytile;
+                    yincrement = -1;
                     break;
                 case 'down':
-                    xstart = xtileSTG - 1;
-                    xend = xtileSTG + 1;
                     ystart = Math.round( (laser.getY() - laser.getSpeed()) / tmxloader.map.tileHeight);
                     yend = ytile;
                     break;
                 case 'left':
-                    xstart = xtile;
-                    xend = Math.round( (laser.getX() + laser.getSpeed()) / tmxloader.map.tileWidth);
-                    ystart = ytileSTG - 1;
-                    yend = ytileSTG + 1;
-                    increment = -1;
+                    xstart = Math.round( (laser.getX() + laser.getSpeed()) / tmxloader.map.tileWidth);
+                    xend = xtile;
+                    xincrement = -1;
                     break;
                 case 'right':
                     xstart = Math.round( (laser.getX() - laser.getSpeed()) / tmxloader.map.tileWidth);
                     xend = xtile;
-                    ystart = ytileSTG - 1;
-                    yend = ytileSTG + 1;
                     break;
             }
-            for(var j=xstart; j<xend; j=j+xincrement){
-                for(var k=ystart; k<yend; k=k+yincrement){
+            for(var j=xstart; j * xincrement < xend * xincrement; j = j + xincrement){
+                for(var k=ystart; k * yincrement < yend * yincrement; k = k + yincrement){
                     if(array[j][k]==='0') continue;
                     laser.setIsRemoved(true);
                     var destroy = true;
