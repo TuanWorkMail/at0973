@@ -22,10 +22,10 @@ function Bot(id, startX, startY, type) {
 
     if (type == 'dumb') {
         speed = 2;
-        hitPoint = 1;
+        hitPoint = 10;
     } else if (type == 'smart') {
         speed = 4;
-        hitPoint = 10;
+        hitPoint = 1;
     }
 
 

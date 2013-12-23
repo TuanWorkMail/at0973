@@ -78,6 +78,7 @@ tank5.main = (function() {
             drawPlayer();
             drawLaser();
             drawDrop();
+            animation.renderAnimation();
         }
         requestAnimationFrame(gameLoop);
     }

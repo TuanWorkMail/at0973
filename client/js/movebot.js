@@ -16,10 +16,12 @@ function onBotDie(data) {
     var bot = botById(data.count);
     if (bot!=false) {
         for (var i = 0; i < remoteBots.length; i++) {
-            if (remoteBots[i].id == data.count)
+            if (remoteBots[i].id == data.count){
+                animationQueue.push(new animation.Animation('explosion', remoteBots[i].getX(), remoteBots[i].getY()));
                 remoteBots.splice(i, 1);
+                return;
+            }
         }
-        return;
     }
     console.log('bot '+data.count+' not found');
     console.log(remoteBots.length);

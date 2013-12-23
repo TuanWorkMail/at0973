@@ -25,7 +25,6 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         score = 0,
         position,
         teamName = direction,
-        shootBrick = false,     // ability to shoot brick
         botKill = 0,            // number of bot killed
         bulletType = 'normal';
 
@@ -63,7 +62,6 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         setPosition = function (para) { position = para; },
         getHitPoint = function () { return hitPoint; },
         setHitPoint = function (para) { hitPoint = para; },
-        getShootBrick = function () { return shootBrick; }, setShootBrick = function (para) { shootBrick = para;},
         getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
         getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};
     function getTeamName(){return teamName}function setTeamName(para){teamName=para}
@@ -92,7 +90,6 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         getPosition: getPosition, setPosition: setPosition,
         getTeamName:getTeamName,setTeamName:setTeamName,
         getMoving: getMoving, setMoving: setMoving,
-        getShootBrick: getShootBrick, setShootBrick: setShootBrick,
         getBotKill: getBotKill, setBotKill: setBotKill,
         getBulletType: getBulletType, setBulletType: setBulletType
 	}

@@ -27,7 +27,6 @@ function setSocketEventHandlers() {
 	socket.on("register", onRegister);
 	socket.on("reset", onReset);
     socket.on("moving player", onMovingPlayer);
-    socket.on("shoot brick", onShootBrick);
     socket.on("new drop", onNewDrop);
     socket.on("collide drop", onCollideDrop);
     socket.on("start count down", onStartCountDown);
@@ -130,14 +129,6 @@ function onMovingPlayer(data) {
     }
     player.players.setDirection(data.direction);
     player.players.setMoving(true);
-}
-function onShootBrick(data){
-    var player = playerById(data.id);
-    if (!player) {
-        console.log('shoot brick: player not found');
-        return;
-    }
-    player.players.setShootBrick(true);
 }
 function onNewDrop(data) {
     var newDrop = new Drop(data.id, data.type, data.x, data.y);

@@ -89,10 +89,6 @@ function hitTestBot() {
                         if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                             remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
                             debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
-                            if(remotePlayers[k].getBotKill()>=2) {
-                                remotePlayers[k].setShootBrick(true);                       // now can shoot down brick
-                                broadcastToRoom(session.getRoomID(),"shoot brick",{id:remotePlayers[k].getSocketID()});
-                            }
                         }
                     }
                     // MOVE THE ABOVE OUT

@@ -151,7 +151,10 @@ function drawLayer(layer, context, mode) {
 }
 function drawTile(gid, x, y, width, height) {
     //number of tiles per row of tilesheet
-    var NoOfTiles = 320 / 40;
+    var NoOfTiles = 320 / 40,
+        width = width,
+        height = height,
+        dimension = tmxloader.map.objectgroup['dimension'].objects[0];
 
     //gid%NoOfTiles: position in a row
     //gid%NoOfTiles-1: first sprite have X = 1 - 1 = 0
@@ -163,10 +166,10 @@ function drawTile(gid, x, y, width, height) {
     y = Math.round(y);
 
     if(typeof width==='undefined' || typeof height === 'undefined') {
-        ctx.drawImage(spriteSheet2, spriteX, spriteY, 40, 40, x, y, 40, 40);
-    } else {
-        ctx.drawImage(spriteSheet2, spriteX, spriteY, width, height, x, y, width, height);
+        width=dimension.width;
+        height=dimension.height;
     }
+    ctx.drawImage(spriteSheet2, spriteX, spriteY, width, height, x, y, width, height);
 }
 //Clears the canvas so it can be updated
 function clearCanvas() {
