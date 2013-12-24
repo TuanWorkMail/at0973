@@ -42,11 +42,11 @@ exports.onPlayNow = function(){
     broadcastToRoom(roomID,"move player", { id: this.id, username: rows[0].Username,
         x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(),
         team: newPlayer.getTeamName() });
-}
-exports.logonUserById = logonUserById;
+};
 function logonUserById(id){
     for(var i=0;i<logonUsers.length;i++){
         if(logonUsers[i]===id) return logonUsers[i];
     }
     return false;
 }
+exports.logonUserById = logonUserById;
