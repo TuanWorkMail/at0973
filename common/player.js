@@ -8,7 +8,8 @@
         dto = {},
         helper = require('./helper'),
         debug = helper.debug,
-        reset = require('./session.restart').reset;
+        reset = require('./session.restart').reset,
+        spawnPlayer = require('./player.add-new').spawnPlayer;
     dto.Player = require('./dto/Player').Player;
 }
 function checkHitPoint () {
@@ -24,8 +25,14 @@ function checkHitPoint () {
 }
 function checkLive(object) {
     var remotePlayers = session.getRemotePlayers();
-    if (object.getLive() > 0) {
-        reset('');
+    //if (object.getLive() > 0) {
+    if(1===1){
+        var result = spawnPlayer(object.getSpawnPoint());
+        object.setX(result.x);
+        object.setY(result.y);
+        object.setDirection(result.direction);
+        object.setHitPoint(10);
+        //reset('');
     } else if (object.getLive() <= 0) {
         //alive = false;
         //continueLoop = false;

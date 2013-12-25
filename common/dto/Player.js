@@ -4,14 +4,12 @@ if (typeof dto === 'undefined') {
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var tmxloader = require('../../server/js/TMX_Engine').tmxloader;
 }
+var defaultLive = 1;
 /**************************************************
 ** CLIENT PLAYER CLASS
 **************************************************/
-dto.Player = function(spawnX, spawnY, spawnDirection) {
-    var x = spawnX,
-        y = spawnY,
-        direction = spawnDirection,
-        uuid,
+dto.Player = function(x, y, direction, spawnPoint) {
+    var uuid,
         userID,
         socketID,
         username,
@@ -20,7 +18,6 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         speed = 5,
         hitPoint = 1,
         live = 99,
-        defaultLive = 1,
         moving = false,
         score = 0,
         position,
@@ -64,16 +61,12 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         setHitPoint = function (para) { hitPoint = para; },
         getBotKill = function(){return botKill}, setBotKill = function(para){botKill=para},
         getBulletType = function(){return bulletType}, setBulletType = function(para){bulletType=para};
+
     function getTeamName(){return teamName}function setTeamName(para){teamName=para}
-    function getSpawnX(){return spawnX}
-    function getSpawnY(){return spawnY}
-    function getSpawnDirection(){return spawnDirection}
+    function getSpawnPoint(){return spawnPoint}
 
 	return {
         socketID: socketID,
-        getSpawnX:getSpawnX,
-        getSpawnY:getSpawnY,
-        getSpawnDirection:getSpawnDirection,
 		getX: getX, setX: setX,
 		getY: getY, setY: setY,
         getDirection: getDirection, setDirection: setDirection,
@@ -91,6 +84,7 @@ dto.Player = function(spawnX, spawnY, spawnDirection) {
         getTeamName:getTeamName,setTeamName:setTeamName,
         getMoving: getMoving, setMoving: setMoving,
         getBotKill: getBotKill, setBotKill: setBotKill,
+        getSpawnPoint:getSpawnPoint,
         getBulletType: getBulletType, setBulletType: setBulletType
 	}
 };

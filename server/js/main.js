@@ -1,6 +1,6 @@
 //RESTART server for changes to applied
 var mapName = '1000_small';
-debugLogLevel = 1;
+debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
 setTimeout = setTimeout;
