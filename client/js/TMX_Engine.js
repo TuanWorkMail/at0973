@@ -131,7 +131,7 @@ tmxloader.load = function (url) {
 
     $version = xmlDoc.getElementsByTagName("map")[0].getAttribute("version");
 
-    console.log('Parsing...' + $version);
+    debug.log('Parsing...' + $version);
 
     $width = xmlDoc.getElementsByTagName("map")[0].getAttribute("width");
     $height = xmlDoc.getElementsByTagName("map")[0].getAttribute("height");
@@ -140,15 +140,15 @@ tmxloader.load = function (url) {
     //var properties = tmxloader.parseProperties($xml);
     tmxloader.map = new tmxloader.Map($width, $height, $tilewidth, $tileheight, xmlDoc.getElementsByTagName("map").length/*, properties*/);
 
-    console.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
-    console.log("Found " + xmlDoc.getElementsByTagName("layer").length + " Layers");
+    debug.log('Creating Map...' + tmxloader.map.width + " x " + tmxloader.map.height + " Tiles: " + tmxloader.map.tileWidth + " x " + tmxloader.map.tileHeight);
+    debug.log("Found " + xmlDoc.getElementsByTagName("layer").length + " Layers");
 
     var layerCount = 0;
     var $layer = xmlDoc.getElementsByTagName("layer");
     for (i = 0; i < $layer.length; i++) {
         //$xml.find('layer').each(function () {
 
-        console.log("Processing Layer: " + ($layer[i].getAttribute("name")));
+        debug.log("Processing Layer: " + ($layer[i].getAttribute("name")));
 
         $data = $layer[i].getElementsByTagName("data")[0];
         $lwidth = $layer[i].getAttribute("width");
@@ -162,7 +162,7 @@ tmxloader.load = function (url) {
         tmxloader.map.layers[layerCount] = new tmxloader.Layer($layer[i].getAttribute("name"), $lwidth, $lheight, $visible/*, properties*/);
         if ($data.getAttribute("encoding") == "csv") {
 
-            console.log("Processing CSV");
+            debug.log("Processing CSV");
 
             //because firefox xmlHttpRequest parse xml with maximum 4096 character,
             //this loop glue all the pieces together
@@ -172,7 +172,7 @@ tmxloader.load = function (url) {
             }
             tmxloader.map.layers[layerCount].loadCSV(eData);
         } else {
-            console.log("Unsupported Encoding Scheme");
+            debug.log("Unsupported Encoding Scheme");
         }
         ++layerCount;//REAPLACE THIS WITH I
     }
@@ -201,7 +201,7 @@ tmxloader.load = function (url) {
         $numobjects = $objectgroup[i].getElementsByTagName("object").length;
         $objectGroupName = $objectgroup[i].getAttribute("name");
 
-        console.log("Processing Object Group: " + $objectGroupName + " with " + $numobjects + " Objects");
+        debug.log("Processing Object Group: " + $objectGroupName + " with " + $numobjects + " Objects");
 
         //var properties = tmxloader.parseProperties($(this));
         tmxloader.map.objectgroup['' + $objectGroupName + ''] = new tmxloader.ObjectGroup($objectGroupName, $lwidth, $lheight/*, properties*/);
@@ -215,7 +215,7 @@ tmxloader.load = function (url) {
             $objectwidth = $object[j].getAttribute("width");
             $objectheight = $object[j].getAttribute("height");
 
-            console.log("Processing Object: " + $objectname);
+            debug.log("Processing Object: " + $objectname);
 
             //var properties = tmxloader.parseProperties($(this));
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new tmxloader.Object($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight/*, properties*/));

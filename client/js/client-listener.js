@@ -23,7 +23,6 @@ function setSocketEventHandlers() {
 	socket.on("bot broadcast", onBotBroadcast);
 	socket.on("bot die", onBotDie);
 	socket.on("login", onLogin);
-	socket.on("test", onTest);
 	socket.on("register", onRegister);
 	socket.on("reset", onReset);
     socket.on("moving player", onMovingPlayer);
@@ -32,8 +31,8 @@ function setSocketEventHandlers() {
     socket.on("start count down", onStartCountDown);
 };
 function onSocketConnected() {
-    console.log("Connected to socket server");
-    console.log("ID: " + this.socket.sessionid);
+    debug.log("Connected to socket server");
+    debug.log("ID: " + this.socket.sessionid);
     mySocketID = this.socket.sessionid;
 }
 function onStart(data) {
@@ -51,7 +50,7 @@ function onStart(data) {
     tank5.main.init();
 }
 function onSocketDisconnect() {
-	console.log("Disconnected from socket server");
+	debug.log("Disconnected from socket server");
 }
 
 // Move player
@@ -80,7 +79,7 @@ function onNewBullet(data) {
 function onRemovePlayer(data) {
 	var removePlayer = playerById(data.id);
 	if (!removePlayer) {
-		console.log("Remove: Player not found: "+data.id);
+		debug.log("Remove: Player not found: "+data.id);
 		return;
 	}
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer.players), 1);
@@ -96,12 +95,6 @@ function onLogin(data) {
         showStartScreen = true;
     }
 }
-
-// Testing
-function onTest(data) {
-    console.log(data.test);
-}
-
 // Register
 function onRegister(data) {
     document.getElementById('registererror').innerHTML = data.result;
@@ -124,7 +117,7 @@ function onReset(data) {
 function onMovingPlayer(data) {
     var player = playerById(data.id);
     if (!player) {
-        console.log('Moving: player not found');
+        debug.log('Moving: player not found');
         return;
     }
     player.players.setDirection(data.direction);
@@ -142,13 +135,13 @@ function onCollideDrop(data) {
     }
     var result = playerById(data.socketID);
     if(!result) {
-        console.log('collide drop: player not found');
+        debug.log('collide drop: player not found');
         return;
     }
     result.players.setBulletType(data.bulletType);
 }
-var countdown = 5;
-function onStartCountDown(){
+function onStartCountDown(data){
+    debug.log('countdown',1);
     startCountdown();
 }
 // Find player by username

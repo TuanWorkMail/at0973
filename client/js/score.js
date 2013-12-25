@@ -29,20 +29,16 @@ function scoreTotal() {
         drawEndScreen();
     }
 }
-var countdown = 5,
-    countdownStarted = false;
+var countdown = 0;
 function startCountdown(){
-    if(!countdownStarted) countDown();
-    countdownStarted = true;
-}
-function countDown(){
+    if(countdown===0) countdown = 5;
     countdown--;
-    if(countdown<=0){
+    if(countdown===0){
         document.getElementById('waiting').style.display = 'none';
         return;
     }
     document.getElementById('waiting').innerHTML = ''+countdown;
-    setTimeout(countDown, 1000);
+    setTimeout(startCountdown, 1000);
 }
 function gameStart() {
     socket.emit("play now");
