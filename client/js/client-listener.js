@@ -28,7 +28,7 @@ function setSocketEventHandlers() {
     socket.on("moving player", onMovingPlayer);
     socket.on("new drop", onNewDrop);
     socket.on("collide drop", onCollideDrop);
-    socket.on("start count down", onStartCountDown);
+    socket.on("start count down", onStartCountdown);
 };
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -105,11 +105,8 @@ function onReset(data) {
     debug.log('reset!');
     remoteBots.length = 0;
     lasers.length = 0;
-    var destructible = [], indestructible = [];
-    clone2DArray(layerByName('destructible').data, destructible);
-    clone2DArray(layerByName('indestructible').data, indestructible);
-    session.setDestructible(destructible);
-    session.setIndestructible(indestructible);
+    clone2DArray(layerByName('destructible').data, session.getDestructible());
+    clone2DArray(layerByName('indestructible').data, session.getIndestructible());
     //alive = false;
 }
 
@@ -139,10 +136,6 @@ function onCollideDrop(data) {
         return;
     }
     result.players.setBulletType(data.bulletType);
-}
-function onStartCountDown(data){
-    debug.log('countdown',1);
-    startCountdown();
 }
 // Find player by username
 function playerByUsername(username) {

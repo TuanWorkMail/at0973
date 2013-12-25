@@ -55,7 +55,7 @@ function onClientDisconnect() {
     allSession = allSession;
     for(var j=0; j<allSession.length; j++) {
         for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
-            if (allSession[j].getRemotePlayers()[i].getSocketID() == this.id) {
+            if (allSession[j].getRemotePlayers()[i].getSocketID() === this.id) {
                 allSession[j].getRemotePlayers().splice(i, 1);
                 // NEED FIX
                 //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
@@ -81,7 +81,8 @@ var io = require("socket.io").listen(8000),		    // Socket.IO
     runQuery = require('./js/mysql').runQuery,
     loginRegister = require('./js/login-register'),
     player = require('../common/player'),
-    main = require('./js/main');
+    main = require('./js/main'),
+    debug = require('../common/helper').debug;
 io.configure(function () {
     io.set("log level", 2);
 });

@@ -30,19 +30,22 @@ function scoreTotal() {
     }
 }
 var countdown = 0;
-function startCountdown(){
-    if(countdown===0) countdown = 5;
+function onStartCountdown(){
+    if(countdown===0) {
+        document.getElementById('waiting').style.display = 'block';
+        countdown = 5;
+    }
     countdown--;
     if(countdown===0){
         document.getElementById('waiting').style.display = 'none';
         return;
     }
     document.getElementById('waiting').innerHTML = ''+countdown;
-    setTimeout(startCountdown, 1000);
+    setTimeout(onStartCountdown, 1000);
 }
 function gameStart() {
-    socket.emit("play now");
     document.getElementById('waiting').style.display = 'block';
+    socket.emit("play now");
     tank5.main.setGameStarted(true);
-    canvas.removeEventListener('click', gameStart, false);
+    canvasOverhead.removeEventListener('click', gameStart, false);
 }
