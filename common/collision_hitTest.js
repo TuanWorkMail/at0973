@@ -88,7 +88,13 @@ function hitTestBot() {
                     for(var k=0; k<remotePlayers.length; k++) {
                         if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
                             remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
-                            debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '+remotePlayers[k].getBotKill());
+                            if(botArray[obj].getType()==='smart') {
+                                remotePlayers[k].setScore(remotePlayers[k].getScore()+1);
+                            } else {
+                                remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
+                            }
+                            debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '
+                                +remotePlayers[k].getBotKill()+' score: '+remotePlayers[k].getScore());
                         }
                     }
                     // MOVE THE ABOVE OUT

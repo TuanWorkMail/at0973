@@ -44,8 +44,6 @@ dto.Player = function(x, y, direction, spawnPoint) {
         setHeight = function (para) { height = para; },
         getSpeed = function () { return speed; },
         setSpeed = function (para) { speed = para; },
-        getScore = function () { return score; },
-        setScore = function (para) { score = para; },
         getLive = function () { return live; },
         setLive = function (para) {
             if(para>defaultLive)
@@ -64,6 +62,7 @@ dto.Player = function(x, y, direction, spawnPoint) {
 
     function getTeamName(){return teamName}function setTeamName(para){teamName=para}
     function getSpawnPoint(){return spawnPoint}
+    function getScore(){return score}function setScore(para){score=para}
 
 	return {
         socketID: socketID,

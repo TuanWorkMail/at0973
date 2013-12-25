@@ -12,14 +12,17 @@ exports.totalKill = function(){
         remotePlayers = session.getRemotePlayers();
     for(var j=0;j<team.length;j++){
         team[j].setKill(0);
+        team[j].setScore(0);
         for(var i=0;i<remotePlayers.length;i++){
             if(remotePlayers[i].getTeamName()===team[j].getName()) {
                 team[j].setKill(team[j].getKill()+remotePlayers[i].getBotKill());
+                team[j].setScore(team[j].getScore()+remotePlayers[i].getScore());
             }
         }
-        if(team[j].getKill()!==lastTeamKills[j]){
+        if(team[j].getKill()!==lastTeamKills[j] || team[j].getScore()!==lastTeamScore[j]){
             lastTeamKills[j]=team[j].getKill();
-            debug.log('team '+team[j].getName()+' kills: '+team[j].getKill(), 1);
+            lastTeamScore[j]=team[j].getScore();
+            debug.log('team '+team[j].getName()+' kills: '+team[j].getKill()+' score: '+team[j].getScore(), 1);
         }
     }
 };
