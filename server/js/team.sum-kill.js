@@ -1,7 +1,8 @@
 var main = require('./main'),
     lastTeamKills = [],
     lastTeamScore = [],
-    debug = require('../../common/helper').debug;
+    debug = require('../../common/helper').debug,
+    broadcastToRoom = require('../socket-listener').broadcastToRoom;
 lastTeamKills[0]=0;
 lastTeamKills[1]=0;
 lastTeamScore[0]=0;
@@ -23,6 +24,7 @@ exports.totalKill = function(){
             lastTeamKills[j]=team[j].getKill();
             lastTeamScore[j]=team[j].getScore();
             debug.log('team '+team[j].getName()+' kills: '+team[j].getKill()+' score: '+team[j].getScore(), 1);
+            broadcastToRoom(main.session.getRoomID(), 'team score', {team:team[j].getName(),score:team[j].getScore()});
         }
     }
 };

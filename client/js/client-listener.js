@@ -29,6 +29,7 @@ function setSocketEventHandlers() {
     socket.on("new drop", onNewDrop);
     socket.on("collide drop", onCollideDrop);
     socket.on("start count down", onStartCountdown);
+    socket.on("team score", onTeamScore);
 };
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -91,7 +92,8 @@ function onLogin(data) {
         document.getElementById('error-message').innerHTML = data.error;
     } else {
         document.getElementById('login').style.display = 'none';
-        document.getElementById('alluser').style.display = 'none';
+        //document.getElementById('alluser').style.display = 'none';
+        document.getElementById('alluser').innerHTML = '<b>Team Green:</b> 30 | <b>Team Yellow</b> 30';
         showStartScreen = true;
     }
 }
@@ -136,6 +138,19 @@ function onCollideDrop(data) {
         return;
     }
     result.players.setBulletType(data.bulletType);
+}
+function onTeamScore(data){
+    var down = 30,
+        up = 30;
+    switch (data.team){
+        case 'up':
+            up -= data.score;
+            break;
+        case 'down':
+            down -= data.score;
+            break;
+    }
+    document.getElementById('alluser').innerHTML = '<b>Team Green:</b> '+down+' | <b>Team Yellow</b> '+up;
 }
 // Find player by username
 function playerByUsername(username) {
