@@ -2,6 +2,9 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.shootDestroyBrick = shootDestroyBrick;
     var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
 }
+var broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
+    main = require('../server/js/main'),
+    destroyedBrick = [];
 function shootDestroyBrick() {
     var remotePlayers = session.getRemotePlayers(),
         destructible = session.getDestructible(),
@@ -11,11 +14,13 @@ function shootDestroyBrick() {
         playerById = require('./player').playerById;
     }
     while(count<2){
-        var array;
+        var array, arrayName;
         if(count===0){
             array = destructible;
+            arrayName = 'destructible';
         } else {
             array = indestructible;
+            arrayName = 'indestructible';
         }
         for (var i = 0; i < lasers.length; i++) {
             var laser = lasers[i];
@@ -64,7 +69,7 @@ function shootDestroyBrick() {
                             destroy = false;
                         }
                     }
-                    if(destroy) removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG, array);
+                    if(destroy) removeDestructible(laser.getDirection(), j, k, xtileSTG, ytileSTG, array, arrayName);
                     // get out of loop
                     j = xend;
                     k = yend;
@@ -78,7 +83,7 @@ function shootDestroyBrick() {
         count++;
     }
 }
-function removeDestructible(direction, x, y, xSTG, ySTG, array) {
+function removeDestructible(direction, x, y, xSTG, ySTG, array, arrayName) {
     var xstart, xend, ystart, yend;
 
     switch(direction) {
@@ -97,9 +102,13 @@ function removeDestructible(direction, x, y, xSTG, ySTG, array) {
             yend = ySTG + 2;
             break;
     }
+    var brickDestroyedNow = [];
     for(var m=xstart; m<xend; m++) {
         for(var n=ystart; n<yend; n++){
             array[m][n] = '0';
+            destroyedBrick.push([m, n]);
+            brickDestroyedNow.push([m, n]);
         }
     }
+    broadcastToRoom(main.session.getRoomID(), 'destroy brick', {array: brickDestroyedNow, name: arrayName});
 }

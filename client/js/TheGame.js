@@ -64,7 +64,7 @@ tank5.main = (function() {
                 movingPlayer();
                 moveLaser();
                 bulletCollision();
-                shootDestroyBrick();
+                //shootDestroyBrick();
                 removeBullet();
             }
             //drawMap();

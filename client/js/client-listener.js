@@ -32,6 +32,7 @@ function setSocketEventHandlers() {
     socket.on("collide drop", onCollideDrop);
     socket.on("start count down", onStartCountdown);
     socket.on("team score", onTeamScore);
+    socket.on("destroy brick", onDestroyBrick);
 };
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -157,6 +158,14 @@ function onTeamScore(data){
             break;
     }
     document.getElementById('alluser').innerHTML = '<b>Team Green:</b> '+down+' | <b>Team Yellow</b> '+up;
+}
+function onDestroyBrick(data){
+    if(data.name==='destructible') var array = session.getDestructible();
+    else array = session.getIndestructible();
+    var receiveArray = data.array;
+    for(var i=0; i<receiveArray.length; i++){
+        array[receiveArray[i][0]][receiveArray[i][1]] = 0;
+    }
 }
 // Find player by username
 function playerByUsername(username) {
