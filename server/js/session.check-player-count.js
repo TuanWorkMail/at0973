@@ -10,6 +10,9 @@ exports.checkPlayerCount = function(){
     if(session.getRemotePlayers().length >= minimumNoPlayer){
         broadcastToRoom(main.session.getRoomID(), 'start count down');
         session.setLastCountdown(now);
-        setTimeout(function(){session.setStart(true)}, 5000);
+        setTimeout(function(){
+            session.setStart(true);
+            broadcastToRoom(main.session.getRoomID(), 'hide popup');
+        }, 5000);
     }
 };

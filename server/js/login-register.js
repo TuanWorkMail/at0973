@@ -39,6 +39,7 @@ exports.onPlayNow = function(){
     newPlayer = newPlayer.newPlayer;
     this.join('r' + roomID);
     debug.log('new player userID: ' + rows[0].ID + ' and username: ' + rows[0].Username);
+
     broadcastToRoom(roomID,"move player", { id: this.id, username: rows[0].Username,
         x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(),
         team: newPlayer.getTeamName() });

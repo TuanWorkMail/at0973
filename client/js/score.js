@@ -36,11 +36,8 @@ function onStartCountdown(){
         countdown = 5;
     }
     countdown--;
-    if(countdown===0){
-        document.getElementById('waiting').style.display = 'none';
-        return;
-    }
     document.getElementById('waiting').innerHTML = ''+countdown;
+    if(countdown===0) return;
     setTimeout(onStartCountdown, 1000);
 }
 function gameStart() {

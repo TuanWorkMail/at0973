@@ -33,6 +33,7 @@ function setSocketEventHandlers() {
     socket.on("start count down", onStartCountdown);
     socket.on("team score", onTeamScore);
     socket.on("destroy brick", onDestroyBrick);
+    socket.on("hide popup", onHidePopup);
 };
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -166,6 +167,9 @@ function onDestroyBrick(data){
     for(var i=0; i<receiveArray.length; i++){
         array[receiveArray[i][0]][receiveArray[i][1]] = 0;
     }
+}
+function onHidePopup(){
+    document.getElementById('waiting').style.display = 'none';
 }
 // Find player by username
 function playerByUsername(username) {
