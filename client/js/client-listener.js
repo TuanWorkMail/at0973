@@ -3,7 +3,9 @@ var mySocketID,
     serverURL = 'localhost',
     //serverURL = '125.212.217.58',
     //serverURL = 'tuan.sytes.net',
-    socket;         //Add the socket variable to the file
+    socket,         //Add the socket variable to the file
+    lastUpScore = 30,
+    lastDownScore = 30;
 
 
 //io.connect will connect you to a Socket.IO server by using
@@ -145,9 +147,13 @@ function onTeamScore(data){
     switch (data.team){
         case 'up':
             up -= data.score;
+            down = lastDownScore;
+            lastUpScore = up;
             break;
         case 'down':
+            up = lastUpScore;
             down -= data.score;
+            lastDownScore = down;
             break;
     }
     document.getElementById('alluser').innerHTML = '<b>Team Green:</b> '+down+' | <b>Team Yellow</b> '+up;

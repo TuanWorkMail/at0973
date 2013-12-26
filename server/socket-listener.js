@@ -20,7 +20,7 @@ function onMoveKeyUp() {
     var players = result.players;
     players.setMoving(false);
     broadcastToRoom(result.roomID,"move player", { id: this.id, username: players.getUsername(),
-        x: players.getX(), y: players.getY(), direction: players.getDirection() });
+        x: players.getX(), y: players.getY(), direction: players.getDirection(), team: players.getTeamName() });
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {
