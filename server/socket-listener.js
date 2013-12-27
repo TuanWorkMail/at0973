@@ -1,7 +1,7 @@
-function onLogin(data) {
-    loginRegister.login(data.username, data.password, this);
-}
-function onMoveKeyDown(data) {
+function onMoveKeyDown(data) {var test = io.sockets.manager.roomClients[this.id];
+    if(test['/'+'r0']){
+        debug.log('get client room test',1);
+    }
     var players = player.playerById(this.id);
     if (!players) {
         util.log('key down: player not found');

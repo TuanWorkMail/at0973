@@ -161,11 +161,18 @@ function onTeamScore(data){
     document.getElementById('alluser').innerHTML = '<b>Team Green:</b> '+down+' | <b>Team Yellow</b> '+up;
 }
 function onDestroyBrick(data){
-    if(data.name==='destructible') var array = session.getDestructible();
-    else array = session.getIndestructible();
+    var array = [];
+    if(typeof data.name === 'undefined'){
+        array.push(session.getDestructible());
+        array.push(session.getIndestructible());
+    }
+    else if(data.name==='destructible') array.push(session.getDestructible());
+    else array.push(session.getIndestructible());
     var receiveArray = data.array;
-    for(var i=0; i<receiveArray.length; i++){
-        array[receiveArray[i][0]][receiveArray[i][1]] = 0;
+    for(var j=0;j<array.length;j++){
+        for(var i=0; i<receiveArray.length; i++){
+            array[j][receiveArray[i][0]][receiveArray[i][1]] = 0;
+        }
     }
 }
 function onHidePopup(){

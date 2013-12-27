@@ -22,7 +22,8 @@ function Session(roomid) {
         bossLength = 0,
         bots = [],
         start = false,
-        lastCountdown = 0;
+        lastCountdown = 0,
+        destroyedBrick = [];
 
     clone2DArray(layerByName('destructible').data, destructible);
     clone2DArray(layerByName('indestructible').data, indestructible);
@@ -47,6 +48,7 @@ function Session(roomid) {
     function getBossLength(){return bossLength} function setBossLength(para){bossLength=para}
     function getStart(){return start}function setStart(para){start=para}
     function getLastCountdown(){return lastCountdown}function setLastCountdown(para){lastCountdown=para}
+    function getDestroyedBrick(){return destroyedBrick}
 
     return {
         bots: bots,
@@ -65,7 +67,7 @@ function Session(roomid) {
         getBotLength: getBotLength, setBotLength: setBotLength,
         getStart:getStart,setStart:setStart,
         getLastCountdown:getLastCountdown,setLastCountdown:setLastCountdown,
-
+        getDestroyedBrick:getDestroyedBrick,
         getBossLength: getBossLength, setBossLength: setBossLength
     }
 }

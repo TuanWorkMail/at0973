@@ -3,8 +3,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var tmxloader = require('./../server/js/TMX_Engine').tmxloader;
 }
 var broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
-    main = require('../server/js/main'),
-    destroyedBrick = [];
+    main = require('../server/js/main');
 function shootDestroyBrick() {
     var remotePlayers = session.getRemotePlayers(),
         destructible = session.getDestructible(),
@@ -106,7 +105,7 @@ function removeDestructible(direction, x, y, xSTG, ySTG, array, arrayName) {
     for(var m=xstart; m<xend; m++) {
         for(var n=ystart; n<yend; n++){
             array[m][n] = '0';
-            destroyedBrick.push([m, n]);
+            main.session.getDestroyedBrick().push([m, n]);
             brickDestroyedNow.push([m, n]);
         }
     }

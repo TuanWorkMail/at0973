@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'classic_small';
+var mapName = '1000_small';
 debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
@@ -78,6 +78,12 @@ exports.onEndMatch = function(data) {
         if (err) util.log(err);
     });
     //connection.end();
+};
+exports.sessionByRoomID = function(roomID){
+    for(var i=0; i<allSession.length; i++){
+        if(allSession[i].getRoomID()===roomID) return allSession[i];
+    }
+    return false;       // no session found
 };
 
 // LOCAL SCOPE

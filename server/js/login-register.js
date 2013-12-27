@@ -3,7 +3,8 @@ var broadcastToRoom = require('../socket-listener').broadcastToRoom,
     util = require('util'),
     playerAddNew = require('../../common/player.add-new'),
     debug = require('../../common/helper').debug,
-    logonUsers = [];
+    logonUsers = [],
+    sessionByRoomID = require('./main').sessionByRoomID;
 exports.login = function(data){
     var that = this;
     mysql.runQuery('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password],
@@ -43,6 +44,11 @@ exports.onPlayNow = function(){
     broadcastToRoom(roomID,"move player", { id: this.id, username: rows[0].Username,
         x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(),
         team: newPlayer.getTeamName() });
+    var session = sessionByRoomID(roomID);
+    if(session.getStart()){
+        broadcastToRoom(roomID, 'hide popup');
+        broadcastToRoom(roomID, 'destroy brick', {array: session.getDestroyedBrick()});
+    }
 };
 function logonUserById(id){
     for(var i=0;i<logonUsers.length;i++){
