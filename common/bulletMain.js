@@ -6,9 +6,11 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         tmxloader = require('../server/js/TMX_Engine').tmxloader,
         socket = require('../server/js/socket').socket,
         playerById = require('./player').playerById,
-        broadcastToRoom = require('../server/socket-listener').broadcastToRoom;
+        broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
+        main = require('../server/js/main');
     exports.moveLaser = moveLaser;
     exports.shooting = shooting;
+    exports.removeBullet_old = removeBullet_old;
     exports.removeBullet = removeBullet;
 }
 function shooting(x,y,direction, originID, bulletid, roomid) {
@@ -52,24 +54,20 @@ function moveLaser() {
     //removeBullet();
 }
 
-function renderBulletDestroyed(bulletObject) {
-
+function removeBullet(counter) {
+    broadcastToRoom(main.session.getRoomID(), "remove bullet", {id: lasers[counter].getID() });
+    lasers.splice(counter, 1);
 }
 
-function removeBullet() {
-    if(lasers.length==0) return;
-    var endOfArray = false;
-    while(!endOfArray) {
+function removeBullet_old() {
+    //todo combine client and server
+    var lasers = main.session.getLasers();
         for (var i = 0; i < lasers.length; i++) {
-            if(i==lasers.length-1) {
-                endOfArray=true;
-            }
             if(lasers[i].getIsRemoved() || lasers[i].isRemoved) {
-                //if(result.players.getBulletType()==='piercing') continue;
+                broadcastToRoom(main.session.getRoomID(), "remove bullet", {id: lasers[i].getID() });
                 lasers.splice(i, 1);
-                //get out of loop
-                i = lasers.length;
+                i--;    // after splice i might be out of lasers.length, so take it down a notch
             }
         }
-    }
+
 }

@@ -73,7 +73,7 @@ function hitTestBot() {
             enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
             if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
                 botArray[obj].setHitPoint(botArray[obj].getHitPoint() - lasers[i].getDamage());
-                lasers[i].isRemoved = true;
+                lasers[i].setIsRemoved(true);
                 if(botArray[obj].getHitPoint()<=0){
                     // CREATE DROP
                     if(botArray[obj].getType()==='smart'){

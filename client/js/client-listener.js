@@ -21,6 +21,7 @@ function setSocketEventHandlers() {
 	socket.on("disconnect", onSocketDisconnect);
 	socket.on("move player", onMovePlayer);
 	socket.on("new bullet", onNewBullet);
+    socket.on("remove bullet", onRemoveBullet);
 	socket.on("remove player", onRemovePlayer);
 	socket.on("bot broadcast", onBotBroadcast);
 	socket.on("bot die", onBotDie);
@@ -73,14 +74,17 @@ function onMovePlayer(data) {
 	movePlayer.setDirection(data.direction);
     movePlayer.setMoving(false);
 }
-
-// Move lasers
 function onNewBullet(data) {
-	//add new lasers
     shooting(data.x, data.y, data.direction, data.originID, data.id);
 }
-
-// Remove player
+function onRemoveBullet(data) {
+    for (var i = 0; i < lasers.length; i++) {
+        if(lasers[i].getID()===data.id) {
+            lasers.splice(i, 1);
+            i--;    // after splice i might be out of lasers.length, so take it down a notch
+        }
+    }
+}
 function onRemovePlayer(data) {
 	var removePlayer = playerById(data.id);
 	if (!removePlayer) {

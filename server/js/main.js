@@ -36,7 +36,7 @@ function loop() {
             hitTest.bulletCollision();
             botClass.moveBot();
             shootDestroyBrick();
-            bulletMain.removeBullet();
+            bulletMain.removeBullet_old();
         }
         if(loopRounded < 1) continue;
         hitTest.hitTestBot();

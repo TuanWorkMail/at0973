@@ -1,6 +1,8 @@
+var lasttick = Date.now();
 function onMoveKeyDown(data) {var test = io.sockets.manager.roomClients[this.id];
-    if(test['/'+'r0']){
-        debug.log('get client room test',1);
+    if(test['/'+'r0'] && Date.now()-lasttick>10000){
+        debug.log('client in room r0 [/r0]',1);
+        lasttick = Date.now();
     }
     var players = player.playerById(this.id);
     if (!players) {
