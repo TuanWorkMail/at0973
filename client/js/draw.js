@@ -181,9 +181,26 @@ function clearCanvas() {
 }
 //If there are lasers in the lasers array, then this will draw them on the canvas
 function drawLaser() {
+    var dimension = tmxloader.map.objectgroup['dimension'].objects[0],
+        halfWidth = dimension.width / 2,
+        halfHeight = dimension.height / 2;
     for (var i = 0; i < lasers.length; i++) {
-        ctx.fillStyle = '#f00';
-        ctx.fillRect(lasers[i].x - 2, lasers[i].y - 2, 4, 4);
+        var gid = 0;
+        switch (lasers[i].getDirection()){
+            case 'up':
+                gid = 49;
+                break;
+            case 'down':
+                gid = 51;
+                break;
+            case 'left':
+                gid = 52;
+                break;
+            case 'right':
+                gid = 50;
+                break;
+        }
+        drawTile(gid, lasers[i].getX() - halfWidth, lasers[i].getY() - halfHeight);
     }
 }
 function drawPlayer() {
