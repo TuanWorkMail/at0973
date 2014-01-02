@@ -32,6 +32,8 @@ function checkLive(object) {
         object.setY(result.y);
         object.setDirection(result.direction);
         object.setHitPoint(10);
+        broadcastToRoom(main.session.getRoomID(), 'move player', {id: object.getSocketID(), username: object.getUsername(),
+            x: object.getX(), y: object.getY(), direction: object.getDirection(), team: object.getTeamName()})
         //reset('');
     } else if (object.getLive() <= 0) {
         //alive = false;

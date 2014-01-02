@@ -75,7 +75,7 @@ function hitTestBot() {
                 botArray[obj].setHitPoint(botArray[obj].getHitPoint() - lasers[i].getDamage());
                 lasers[i].setIsRemoved(true);
                 if(botArray[obj].getHitPoint()<=0){
-                    // CREATE DROP
+                    // CREATE DROP---------------------------------------
                     if(botArray[obj].getType()==='smart'){
                         var id = helper.createUUID('xxxx'),
                             type = 'piercing',
@@ -97,7 +97,7 @@ function hitTestBot() {
                                 +remotePlayers[k].getBotKill()+' score: '+remotePlayers[k].getScore());
                         }
                     }
-                    // MOVE THE ABOVE OUT
+                    // MOVE THE ABOVE OUT-----------------------------------
                     broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id });
                     botArray.splice(obj, 1);
                 }

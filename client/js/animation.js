@@ -16,6 +16,11 @@ animation = (function(){
         [34,1000/15],
         [41,1000/15]
     ];
+    all_animation.spawn = [
+        [65,1000/15],
+        [66,1000/15],
+        [67,1000/15]
+    ];
     function renderAnimation() {
         for(var i=0;i<animationQueue.length;i++){
             if(animationQueue[i].start_time>Date.now()) continue;
