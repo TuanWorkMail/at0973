@@ -11,7 +11,8 @@ function onMoveKeyDown(data) {var test = io.sockets.manager.roomClients[this.id]
     }
     players.players.setDirection(data.move);
     players.players.setMoving(true);
-    this.broadcast.to('r'+players.roomID).emit("moving player", { id: this.id, direction: data.move });
+    this.broadcast.to('r'+players.roomID).emit("moving player", { id: this.id, direction: data.move,
+        x: players.players.getX(), y: players.players.getY() });
 }
 function onMoveKeyUp() {
     var result = player.playerById(this.id);

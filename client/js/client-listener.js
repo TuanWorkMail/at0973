@@ -35,7 +35,7 @@ function setSocketEventHandlers() {
     socket.on("team score", onTeamScore);
     socket.on("destroy brick", onDestroyBrick);
     socket.on("hide popup", onHidePopup);
-};
+}
 function onSocketConnected() {
     debug.log("Connected to socket server");
     debug.log("ID: " + this.socket.sessionid);
@@ -127,6 +127,8 @@ function onMovingPlayer(data) {
         debug.log('Moving: player not found');
         return;
     }
+    player.players.setX(data.x);
+    player.players.setY(data.y);
     player.players.setDirection(data.direction);
     player.players.setMoving(true);
 }
