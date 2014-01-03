@@ -1,29 +1,9 @@
 var lasttick = Date.now();
-function onMoveKeyDown(data) {var test = io.sockets.manager.roomClients[this.id];
-    if(test['/'+'r0'] && Date.now()-lasttick>10000){
-        debug.log('client in room r0 [/r0]',1);
-        lasttick = Date.now();
-    }
-    var players = player.playerById(this.id);
-    if (!players) {
-        util.log('key down: player not found');
-        return;
-    }
-    players.players.setDirection(data.move);
-    players.players.setMoving(true);
-    this.broadcast.to('r'+players.roomID).emit("moving player", { id: this.id, direction: data.move,
-        x: players.players.getX(), y: players.players.getY() });
+function onMoveKeyDown(data) {
+    main.queuePlayerInput(this.id, 'move key down', data);
 }
 function onMoveKeyUp() {
-    var result = player.playerById(this.id);
-    if (!result) {
-        console.log('key up: player not found');
-        return;
-    }
-    var players = result.players;
-    players.setMoving(false);
-    broadcastToRoom(result.roomID,"move player", { id: this.id, username: players.getUsername(),
-        x: players.getX(), y: players.getY(), direction: players.getDirection(), team: players.getTeamName() });
+    main.queuePlayerInput(this.id, 'move key up');
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {

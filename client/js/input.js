@@ -4,7 +4,10 @@ var changeDirection,
     rightKey = false,
     leftKey = false,
     upKey = false,
-    downKey = false;
+    downKey = false,
+    lastMoveKeyCode = 0,
+    moveKeyChanged = false,
+    lastShootKeyState = false;
 //Checks to see which key has been pressed and either to move the ship or fire a laser
 function keyDown(e) {
     if (e.keyCode == 39) {
@@ -36,27 +39,31 @@ function keyDown(e) {
         case 32: e.preventDefault(); break;     // Space
         default: break;                         // do not block other keys
     }
+    if(e.keyCode!==lastMoveKeyCode) {
+        lastMoveKeyCode = e.keyCode;
+        moveKeyChanged = true;
+    }
 }
 //Checks to see if a pressed key has been released and stops the ships movement if it has
 function keyUp(e) {
-    var check = false;
+    var moveKeyReleased = false;
     if (e.keyCode == 39) {
         rightKey = false;
-        check = true;
+        moveKeyReleased = true;
     } else if (e.keyCode == 37) {
         leftKey = false;
-        check = true;
+        moveKeyReleased = true;
     } else if (e.keyCode == 38) {
         upKey = false;
-        check = true;
+        moveKeyReleased = true;
     } else if (e.keyCode == 40) {
         downKey = false;
-        check = true;
+        moveKeyReleased = true;
     }
     if (e.keyCode == 32) {
         shootKey = false;
     }
-    if(check)
+    if(moveKeyReleased)
         socket.emit("move key up");
     var player = playerById(mySocketID);
     if(!player) {
@@ -82,8 +89,7 @@ function updateInput() {
         player.players.setMoving(true);
     }
     if (shootKey)
-        //if(Date.now() - lastTick > 1000)//only shoot every 1 second
-            socket.emit("shoot key down");
+        socket.emit("shoot key down");
 }
 
 //holds the cursors position

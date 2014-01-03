@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = '1000_small';
+var mapName = 'classic_small';
 debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
@@ -31,6 +31,9 @@ function loop() {
         checkPlayerCount();
         if(!allSession[j].getStart()) continue;
         for(var i=0;i<loopRounded;i++) {
+            exports.inputQueue = inputQueue;
+            moveKeyUp();
+            moveKeyDown();
             player.movingPlayer();
             bulletMain.moveLaser();
             hitTest.bulletCollision();
@@ -52,7 +55,9 @@ function loop() {
     if(now-lastBotTick>=1000) lastBotTick = now;
     setTimeout(loop, 1000/60);
 }
-
+exports.queuePlayerInput = function(socketID, eventName, data){
+    inputQueue.push(new InputQueue(socketID, eventName, data));
+};
 exports.onEndMatch = function(data) {
     var that = this,
         wonID,
@@ -103,9 +108,13 @@ var util = require("util"),
     checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
     debug = require('../../common/helper').debug,
     shootDestroyBrick = require('../../common/shoot-destroy-brick').shootDestroyBrick,
+    InputQueue = require('./InputQueue').InputQueue,
+    moveKeyDown = require('./player.move-key-down').moveKeyDown,
+    moveKeyUp = require('./player.move-key-up').moveKeyUp,
     lastTick = Date.now(),                                  // calculate delta time
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot
+    inputQueue = [],
     loopUnused = 0;                                         // % of loop left
 
 
