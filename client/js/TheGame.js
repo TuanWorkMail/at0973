@@ -6,17 +6,9 @@ var debugLogLevel = 1,
     lasers;
 // LOCAL SCOPE
 tank5.main = (function() {
-    var shipSpeed = 5,
-        fps = 60,
-        ship_w = 40, ship_h = 40,
+    var fps = 60,
         lastTick = Date.now(),//delta time
         lastfpstick = Date.now(),
-        loopUnused = 0,//percent left of last loop
-    //which direction the ship is facing
-        direction,
-        bullet,
-        ship_x, ship_y,
-        score = 0,
         gameStarted = false;
 
     function init() {
@@ -52,22 +44,12 @@ tank5.main = (function() {
         scoreTotal();
         if (gameStarted) {
             var now = Date.now(),
-                fixedDelta = 1000/60,
-                loopRounded,
-                remainder,
                 delta = now - lastTick;
             lastTick = now;
-            var loopUnrounded = delta/fixedDelta + loopUnused;
-            loopRounded = Math.round(loopUnrounded);
-            loopUnused = loopUnrounded - loopRounded;
-            for(var i=0;i<loopRounded;i++) {
+            tick(function(){
                 movingPlayer();
                 moveLaser();
-                bulletCollision();
-                //shootDestroyBrick();
-            }
-            //drawMap();
-            //shipCollision();
+            });
             updateInput();
             if(now-lastfpstick>500){
                 document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);

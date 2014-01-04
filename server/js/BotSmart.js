@@ -32,7 +32,7 @@ exports.movingBot = function (bots) {
     } else {
         bots.whereNow++;
     }
-}
+};
 
 //input: current location
 //output: array of path to a random point

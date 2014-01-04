@@ -13,14 +13,7 @@ function init() {
 }
 function loop() {
     var now = Date.now(),
-        fixedDelta = 1000/60,
-        loopRounded,
-        delta = now - lastTick,
         d1second = now - last1second;
-    lastTick = now;
-    var loopUnrounded = delta/fixedDelta + loopUnused;
-    loopRounded = Math.round(loopUnrounded);
-    loopUnused = loopUnrounded - loopRounded;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
         exports.session = allSession[j];
@@ -30,7 +23,7 @@ function loop() {
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         checkPlayerCount();
         if(!allSession[j].getStart()) continue;
-        for(var i=0;i<loopRounded;i++) {
+        tick(function(){
             exports.inputQueue = inputQueue;
             moveKeyUp();
             moveKeyDown();
@@ -40,8 +33,7 @@ function loop() {
             botClass.moveBot();
             shootDestroyBrick();
             bulletMain.removeBullet_old();
-        }
-        if(loopRounded < 1) continue;
+        });
         hitTest.hitTestBot();
         teamSumKill.totalKill();
         //TODO: change 1000 to 500 will throw error,
@@ -111,11 +103,10 @@ var util = require("util"),
     InputQueue = require('./InputQueue').InputQueue,
     moveKeyDown = require('./player.move-key-down').moveKeyDown,
     moveKeyUp = require('./player.move-key-up').moveKeyUp,
-    lastTick = Date.now(),                                  // calculate delta time
+    tick = require('../../common/tick').tick,
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot
-    inputQueue = [],
-    loopUnused = 0;                                         // % of loop left
+    inputQueue = [];
 
 
 // GLOBAL SCOPE

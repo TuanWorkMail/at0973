@@ -5,6 +5,7 @@
         broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
         Drop = require('./dto/drop').Drop,
         helper = require('./helper'),
+        main = require('../server/js/main'),
         clone2DArray = helper.clone2DArray,
         debug = helper.debug,
         botCheckHitPoint = require('../server/js/BotClass');
@@ -141,23 +142,18 @@ function hitTestEagle() {
     }
 }
 function bulletCollision() {
-    if(lasers.length==0) return;
-    var endOfArray = false;
-    while(!endOfArray) {
-        for (var i = 0; i < lasers.length; i++) {
-            var laser = lasers[i];
-            if(i==lasers.length-1) {
-                endOfArray=true;
-            }
-            if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight ||
-                laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
-                lasers.splice(i, 1);
-                //restart loop
-                i = lasers.length;
-            }else if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
-                laser.setIsRemoved(true);
-            }
+    for (var i = 0; i < lasers.length; i++) {
+        var laser = lasers[i];
+        if(i==lasers.length-1) {
+            endOfArray=true;
+        }
+        if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight ||
+            laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
+            broadcastToRoom(main.session.getRoomID(), "remove bullet", {id: lasers[i].getID() });
+            lasers.splice(i, 1);
+            i--;        // avoid i>=length throw exception
+        }else if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
+            laser.setIsRemoved(true);
         }
     }
-
 }
