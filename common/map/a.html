@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>compress tmx map</title>
+</head>
+<body>
+quick / efficient way to do this
+<input type="file" id="upload" ><br/>
+<span id="result">result here</span>
+<script src="../../client/js/TMX_Engine.js"></script>
+<script>
+    var viewport,
+            viewport_x = 0,
+            viewport_y = 0,
+            mapLayer = [],
+            width, height,
+            debug = console;
+    document.getElementById('upload').onchange = uploadOnChange;
+    function uploadOnChange() {
+        var filename = this.value;
+        var lastIndex = filename.lastIndexOf("\\");
+        if (lastIndex >= 0) {
+            filename = filename.substring(lastIndex + 1);
+        }
+        tmxloader.load("./" + filename);
+        document.getElementById('result').innerHTML = filename;
+    }
+    function compressLayer(){
+        tmxloader.map.layers[i].data[tile_x][tile_y];
+    }
+</script>
+</body>
+</html>

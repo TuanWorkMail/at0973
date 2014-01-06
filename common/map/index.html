@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>compress tmx map</title>
+</head>
+<body>
+<input type="file" id="upload"><br/>
+<span id="result"></span>
+<script>
+    var mapLayer = [],
+        width, height;
+    document.getElementById('upload').onchange = uploadOnChange;
+    function uploadOnChange() {
+        var filename = this.value;
+        var lastIndex = filename.lastIndexOf("\\");
+        if (lastIndex >= 0) {
+            filename = filename.substring(lastIndex + 1);
+        }
+        var xmlDoc = loadFile(filename);
+        loadLayer(xmlDoc);
+        compressLayer();
+    }
+    function loadFile(url) {
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            var xmlhttp = new XMLHttpRequest();
+        }
+        else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.open("GET", url, false);
+        //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //xmlhttp.setRequestHeader("Content-length", 4096);
+        //xmlhttp.setRequestHeader("Connection", "close");
+        xmlhttp.send();
+        var xmlText = xmlhttp.responseText;
+
+        if (window.DOMParser) {
+            var parser = new DOMParser();
+            var xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        }
+        else // Internet Explorer
+        {
+            xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = false;
+            xmlDoc.loadXML(xmlText);
+        }
+        width = xmlDoc.getElementsByTagName("map")[0].getAttribute("width");
+        height = xmlDoc.getElementsByTagName("map")[0].getAttribute("height");
+        return xmlDoc;
+    }
+    function Layer(name) {
+        this.name = name;
+        this.data = new Array(height);
+        //THIS ONE HAS BEEN FIXED A LOT
+        for (var d = 0; d < height; ++d) {
+            this.data[d] = new Array(width);
+        }
+    }
+    function loadLayer(xmlDoc) {
+        var $layer = xmlDoc.getElementsByTagName("layer");
+        for (var i = 0; i < $layer.length; i++) {
+            if ($layer[i].getAttribute("visible") !== null) continue;
+            mapLayer.push(new Layer($layer[i].getAttribute("name")));
+            var $data = $layer[i].getElementsByTagName("data")[0];
+            if ($data.getAttribute("encoding") == "csv") {
+                //because firefox xmlHttpRequest parse xml with maximum 4096 character,
+                //this loop glue all the pieces together
+                var eData = '';
+                for (var j = 0; j < $data.childNodes.length; j++) {
+                    eData = eData + $data.childNodes[j].nodeValue;
+                }
+                loadCSV(eData);
+            } else {
+                document.getElementById('result').innerHTML = "Only CSV is supported";
+            }
+        }
+    }
+    function trim(str) {
+        return str.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    }
+    function loadCSV(eData) {
+        //array hold each row
+        var layerData = trim(eData).split('\n');
+        //each row
+        for (var y = 0; y < height; ++y) {
+            var line = trim(layerData[y]);
+            //array hold every tile in a row
+            var entries = line.split(',');
+            //each tile
+            for (var x = 0; x < width; ++x) {
+                //tile at x,y have gid
+                mapLayer[mapLayer.length - 1].data[y][x] = entries[x];
+            }
+        }
+    }
+    function compressLayer() {
+        for(var k=0;k<mapLayer.length;k++){
+            document.getElementById('result').innerHTML += mapLayer[k].name + '<br/>';
+            var stringArray = [];
+            for(var i=0;i<mapLayer[k].data.length;i++){
+                var lastGid = 0,
+                    multiplier = 1;
+                stringArray.push('');
+                for(var j=0;j<=mapLayer[k].data[i].length;j++){
+                    function exportString(){
+                        if(multiplier>1) stringArray[stringArray.length-1] += lastGid + 'x' + multiplier + ',';
+                        else stringArray[stringArray.length-1] += lastGid + ',';
+                        lastGid = mapLayer[k].data[i][j];
+                        multiplier = 1;
+                    }
+                    if(j===0) lastGid = mapLayer[k].data[i][j];
+                    else if(j === mapLayer[k].data[i].length){
+                        exportString();
+                    }else if(mapLayer[k].data[i][j]===lastGid) multiplier++;
+                    else{
+                        exportString();
+                    }
+                }
+            }
+            compressRow(stringArray);
+        }
+    }
+    function compressRow(stringArray){
+        var lastRow = '',
+                multiplier = 1;
+        for(var i=0;i<=stringArray.length;i++){
+            function exportString(){
+                if(multiplier>1)document.getElementById('result').innerHTML+=stringArray[i-1]+']x'+multiplier+'<br/>';
+                else document.getElementById('result').innerHTML+=stringArray[i-1]+'<br/>';
+                lastRow = stringArray[i];
+                multiplier = 1;
+            }
+            if(lastRow==='') lastRow = stringArray[i];
+            else if(i === stringArray.length){
+                exportString();
+            }else if(lastRow===stringArray[i]) multiplier++;
+            else{
+                exportString();
+            }
+        }
+    }
+</script>
+</body>
+</html>
