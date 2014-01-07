@@ -7,7 +7,10 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         socket = require('../server/js/socket').socket,
         playerById = require('./player').playerById,
         broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
-        main = require('../server/js/main');
+        main = require('../server/js/main'),
+        character = {},
+        characterMoving = require('./character.moving').character;
+    character.moving = characterMoving.moving;
     exports.moveLaser = moveLaser;
     exports.shooting = shooting;
     exports.removeBullet_old = removeBullet_old;
@@ -28,30 +31,10 @@ function shooting(x,y,direction, originID, bulletid, roomid) {
     }
     return _id;
 }
-//If we're drawing lasers on the canvas, this moves them in the canvas
 function moveLaser() {
     for (var i = 0; i < lasers.length; i++) {
-        var laser = lasers[i];
-        switch (laser.getDirection()){
-            case 'up':
-                laser.y -= laser.getSpeed();
-                laser.setY(laser.getY() - laser.getSpeed());
-                break;
-            case 'down':
-                laser.y += laser.getSpeed();
-                laser.setY(laser.getY() + laser.getSpeed());
-                break;
-            case 'right':
-                laser.x += laser.getSpeed();
-                laser.setX(laser.getX() + laser.getSpeed());
-                break;
-            case 'left':
-                laser.x -= laser.getSpeed();
-                laser.setX(laser.getX() - laser.getSpeed());
-                break;
-        }
+        character.moving(lasers[i], 'bullet');
     }
-    //removeBullet();
 }
 
 function removeBullet(counter) {

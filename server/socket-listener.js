@@ -15,20 +15,17 @@ function onShootKeyDown() {
         ship_y = result.players.getY(),
         ship_w = result.players.getWidth(),
         ship_h = result.players.getHeight(),
-        x, y,
+        x = ship_x + ship_w / 2,
+        y = ship_y + ship_h / 2,
         direction = result.players.getDirection();
-    if (direction == 'up') {
-        x = ship_x + ship_w / 2;
+    if (direction === 0) {          //up
         y = ship_y - 1;
-    } else if (direction == 'down') {
-        x = ship_x + ship_w / 2;
+    } else if (direction === 2) {   //down
         y = ship_y + ship_h + 1;
-    } else if (direction == 'right') {
+    } else if (direction === 1) {   //right
         x = ship_x + ship_w + 1;
-        y = ship_y + ship_h / 2;
-    } else if (direction == 'left') {
+    } else if (direction === -1) {  //left
         x = ship_x - 1;
-        y = ship_y + ship_h / 2;
     }
     require('../common/bulletMain').shooting(x, y, direction, this.id, '', result.roomID);
     shootLastTick = now;

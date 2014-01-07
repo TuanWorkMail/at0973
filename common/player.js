@@ -52,7 +52,12 @@ function checkLive(object) {
     }
 }
 function movingPlayer() {
-    character.moving(session.getRemotePlayers());
+    var remotePlayers = session.getRemotePlayers();
+    for (var i = 0; i < remotePlayers.length; i++) {
+        if (remotePlayers[i].getMoving()){
+            character.moving(remotePlayers[i], 'tank');
+        }
+    }
 }
 // Find player by ID
 function playerById(socketid) {

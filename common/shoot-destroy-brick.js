@@ -38,21 +38,21 @@ function shootDestroyBrick() {
                 xincrement = 1,
                 yincrement = 1;
             switch (laser.getDirection()) {
-                case 'up':
+                case 0://up
                     ystart = Math.round( (laser.getY() + laser.getSpeed()) / tmxloader.map.tileHeight);
                     yend = ytile;
                     yincrement = -1;
                     break;
-                case 'down':
+                case 2://down
                     ystart = Math.round( (laser.getY() - laser.getSpeed()) / tmxloader.map.tileHeight);
                     yend = ytile;
                     break;
-                case 'left':
+                case -1://left
                     xstart = Math.round( (laser.getX() + laser.getSpeed()) / tmxloader.map.tileWidth);
                     xend = xtile;
                     xincrement = -1;
                     break;
-                case 'right':
+                case 1://right
                     xstart = Math.round( (laser.getX() - laser.getSpeed()) / tmxloader.map.tileWidth);
                     xend = xtile;
                     break;
@@ -86,15 +86,15 @@ function removeDestructible(direction, x, y, xSTG, ySTG, array, arrayName) {
     var xstart, xend, ystart, yend;
 
     switch(direction) {
-        case 'up':
-        case 'down':
+        case 0://up
+        case 2://down
             xstart = xSTG - 2;
             xend = xSTG + 2;
             ystart = y;
             yend = y + 1;
             break;
-        case 'left':
-        case 'right':
+        case -1://left
+        case 1://right
             xstart = x;
             xend = x + 1;
             ystart = ySTG - 2;

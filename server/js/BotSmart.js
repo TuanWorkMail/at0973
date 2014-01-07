@@ -14,20 +14,20 @@ exports.movingBot = function (bots) {
         //down or up
         if (differenceY > 0) {
             bots.setY(bots.getY() - bots.speed);
-            bots.setDirection('up');
+            bots.setDirection(0);//up
         } else {
             bots.setY(bots.getY() + bots.speed);
-            bots.setDirection('down');
+            bots.setDirection(2);//down
         }
         //go horizontally
     } else if (differenceY == 0 && differenceX != 0) {
         //right or left
         if (differenceX > 0) {
             bots.setX(bots.getX() - bots.speed);
-            bots.setDirection('left');
+            bots.setDirection(-1);//left
         } else {
             bots.setX(bots.getX() + bots.speed);
-            bots.setDirection('right');
+            bots.setDirection(1);//right
         }
     } else {
         bots.whereNow++;

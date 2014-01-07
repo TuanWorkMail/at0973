@@ -187,16 +187,16 @@ function drawLaser() {
     for (var i = 0; i < lasers.length; i++) {
         var gid = 0;
         switch (lasers[i].getDirection()){
-            case 'up':
+            case 0://up
                 gid = 49;
                 break;
-            case 'down':
+            case 2://down
                 gid = 51;
                 break;
-            case 'left':
+            case -1://left
                 gid = 52;
                 break;
-            case 'right':
+            case 1://right
                 gid = 50;
                 break;
         }
@@ -230,16 +230,16 @@ function drawPlayer() {
 function drawingBot(object) {
     if(object.getType() == 'dumb') {
         switch(object.getDirection()) {
-            case 'right':
+            case 1://right
                 drawTile(5, object.getX(), object.getY());
                 break;
-            case 'left':
+            case -1://left
                 drawTile(8, object.getX(), object.getY());
                 break;
-            case 'up':
+            case 0://up
                 drawTile(7, object.getX(), object.getY());
                 break;
-            case 'down':
+            case 2://down
                 drawTile(6, object.getX(), object.getY());
                 break;
             default :
@@ -247,16 +247,16 @@ function drawingBot(object) {
         }
     } else {
         switch(object.getDirection()) {
-            case 'right':
+            case 1://right
                 drawTile(22, object.getX(), object.getY());
                 break;
-            case 'left':
+            case -1://left
                 drawTile(24, object.getX(), object.getY());
                 break;
-            case 'up':
+            case 0://up
                 drawTile(23, object.getX(), object.getY());
                 break;
-            case 'down':
+            case 2://down
                 drawTile(21, object.getX(), object.getY());
                 break;
             default :

@@ -13,7 +13,7 @@ function Bot(id, startX, startY, type) {
         pathFound,
         whereNow = 0,
         to,
-        direction = 'up',
+        direction = 0,  //up
         speed,
         image,
         hitPoint,
