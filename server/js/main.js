@@ -1,5 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'classic_small';
+var mapName = '1000_small';
 debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
@@ -25,8 +25,8 @@ function loop() {
         if(!allSession[j].getStart()) continue;
         tick(function(){
             exports.inputQueue = inputQueue;
-            moveKeyUp();
             moveKeyDown();
+            moveKeyUp();
             player.movingPlayer();
             bulletMain.moveLaser();
             hitTest.bulletCollision();

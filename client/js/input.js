@@ -75,10 +75,10 @@ function keyUp(e) {
 function updateInput() {
     if (rightKey || leftKey || upKey || downKey) {
         var move;
-        if(rightKey) move='right';
-        else if(leftKey) move='left';
-        else if(upKey) move='up';
-        else if(downKey) move='down';
+        if(rightKey) move=1;        //right
+        else if(leftKey) move=-1;   //left
+        else if(upKey) move=0;      //up
+        else if(downKey) move=2;    //down
         socket.emit("move key down", { move: move });
         var player = playerById(mySocketID);
         if(!player) {

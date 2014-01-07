@@ -13,7 +13,8 @@ function newPlayer(socketID, username, userID) {
         x = result.x,
         y = result.y,
         direction = result.direction,
-        spawnPoint = result.spawnPoint;
+        spawnPoint = result.spawnPoint,
+        team = result.team;
     if(allSession[allSession.length-1].getRemotePlayers().length>=tmxloader.map.objectgroup['spawn'].objects.length) {
         var roomID = newRoomID();
         var newSession = new Session(roomID);
@@ -22,7 +23,7 @@ function newPlayer(socketID, username, userID) {
     var player = addNewPlayer(socketID, username, x, y, direction, spawnPoint);
     if (!player) return false;
     player.newPlayer.setUserID(userID);
-    player.newPlayer.setTeamName(direction);
+    player.newPlayer.setTeamName(team);
     return {newPlayer: player.newPlayer, roomID: player.roomID};
 }
 function spawnPlayer(position) {
@@ -30,9 +31,15 @@ function spawnPlayer(position) {
         point = position % spawn.length,
         x = spawn[point].x,
         y = spawn[point].y,
-        direction = spawn[point].name;
+        direction;
+    switch (spawn[point].name){
+        case 'up': direction = 0; break;
+        case 'down': direction = 2; break;
+        case 'left': direction = -1; break;
+        case 'right': direction = 1; break;
+    }
     debug.log('x: '+x+' y: '+y+' direction: '+direction);
-    return {x: x, y: y, direction: direction, spawnPoint: point}
+    return {x: x, y: y, direction: direction, spawnPoint: point, team:spawn[point].name}
 }
 //add new player to array
 function addNewPlayer(id, username, x, y, direction, spawnPoint) {

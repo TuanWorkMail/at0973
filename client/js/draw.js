@@ -211,17 +211,17 @@ function drawPlayer() {
             y = remotePlayers[i].getY();
         if(remotePlayers[i].getTeamName()==='up'){
             switch(remotePlayers[i].getDirection()){
-                case 'right': gid = 1; break;
-                case 'left': gid = 4; break;
-                case 'up': gid = 3; break;
-                case 'down': gid = 2; break;
+                case 1: gid = 1; break;     //right
+                case -1: gid = 4; break;    //left
+                case 0: gid = 3; break;     //up
+                case 2: gid = 2; break;     //down
             }
         } else {
             switch(remotePlayers[i].getDirection()){
-                case 'right': gid = 17; break;
-                case 'left': gid = 20; break;
-                case 'up': gid = 19; break;
-                case 'down': gid = 18; break;
+                case 1: gid = 17; break;    //right
+                case -1: gid = 20; break;   //left
+                case 0: gid = 19; break;    //up
+                case 2: gid = 18; break;    //down
             }
         }
         drawTile(gid, x, y);
