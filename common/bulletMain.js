@@ -32,8 +32,10 @@ function shooting(x,y,direction, originID, bulletid, roomid) {
     return _id;
 }
 function moveLaser() {
+    if (typeof require !== 'undefined' && typeof exports !== 'undefined') lasers = main.session.getLasers();
     for (var i = 0; i < lasers.length; i++) {
-        character.moving(lasers[i], 'bullet');
+        var check = character.moving(lasers[i], 'bullet');
+        if(!check) lasers[i].setIsRemoved(true);
     }
 }
 

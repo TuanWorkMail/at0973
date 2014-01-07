@@ -63,64 +63,28 @@ function mapCollision(x, y, w, h, type) {
 
 
 function hitTestBot() {
-    var remotePlayers = session.getRemotePlayers(),
-        enemy_xw,
-        enemy_yh,
-        botArray = bots;    // this to make webstorm not throwing warning
-    for (var i = 0; i < lasers.length; i++) {
-        if(lasers[i].getOriginID().length!==20) continue;  // bot don't shoot each other
-        for (var obj = 0; obj < botArray.length; ++obj) {
-            enemy_xw = botArray[obj].getX() + botArray[obj].getWidth();
-            enemy_yh = botArray[obj].getY() + botArray[obj].getHeight();
-            if(lasers[i].x<enemy_xw && lasers[i].y<enemy_yh && lasers[i].x>botArray[obj].getX() && lasers[i].y>botArray[obj].getY()) {
-                botArray[obj].setHitPoint(botArray[obj].getHitPoint() - lasers[i].getDamage());
-                lasers[i].setIsRemoved(true);
-                if(botArray[obj].getHitPoint()<=0){
-                    // CREATE DROP---------------------------------------
-                    if(botArray[obj].getType()==='smart'){
-                        var id = helper.createUUID('xxxx'),
-                            type = 'piercing',
-                            x = botArray[obj].getX(),
-                            y = botArray[obj].getY(),
-                            newDrop = new Drop(id, type, x, y);
-                        session.getDrop().push(newDrop);
-                        broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
-                    }
-                    for(var k=0; k<remotePlayers.length; k++) {
-                        if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
-                            remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
-                            if(botArray[obj].getType()==='smart') {
-                                remotePlayers[k].setScore(remotePlayers[k].getScore()+1);
-                            } else {
-                                remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
-                            }
-                            debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '
-                                +remotePlayers[k].getBotKill()+' score: '+remotePlayers[k].getScore());
-                        }
-                    }
-                    // MOVE THE ABOVE OUT-----------------------------------
-                    broadcastToRoom(session.getRoomID(),"bot die",{ count: botArray[obj].id });
-                    botArray.splice(obj, 1);
-                }
-            }
-        }
-    }
+    hitTest(bots, 'bot');
 }
 function hitTestPlayer() {
     if(session.getRemotePlayers().length<2) return; // make sure checkLive() don't throw error
-    var remotePlayers = session.getRemotePlayers(),
-        ship_xw,
-        ship_yh;
+    hitTest(session.getRemotePlayers());
+}
+function hitTest(array, type) {
+    if(typeof type === 'undefined') type = 0;
+    lasers = main.session.getLasers();
     for (var i = 0; i < lasers.length; i++) {
-        for (var obj = 0; obj < remotePlayers.length; ++obj) {
-            ship_xw = remotePlayers[obj].getX() + remotePlayers[obj].getWidth();
-            ship_yh = remotePlayers[obj].getY() + remotePlayers[obj].getHeight();
-            if (lasers[i].x < ship_xw && lasers[i].y < ship_yh && lasers[i].x > remotePlayers[obj].getX() && lasers[i].y > remotePlayers[obj].getY()) {
-                remotePlayers[obj].setHitPoint(remotePlayers[obj].getHitPoint() - lasers[i].getDamage());
-                lasers[i].isRemoved = true;
+        if(type==='bot'&&lasers[i].getOriginID().length!==20) continue;
+        for (var j = 0; j < array.length; j++) {
+            var ship_xw = array[j].getX() + array[j].getWidth(),
+                ship_yh = array[j].getY() + array[j].getHeight();
+            if (lasers[i].getX() < ship_xw && lasers[i].getY() < ship_yh && lasers[i].getX() > array[j].getX() && lasers[i].getY() > array[j].getY()) {
+                array[j].setHitPoint(array[j].getHitPoint() - lasers[i].getDamage());
+                lasers[i].setIsRemoved(true);
+                return true;
             }
         }
     }
+    return false;
 }
 function hitTestEagle() {
     var remotePlayers = session.getRemotePlayers(),
@@ -144,15 +108,8 @@ function hitTestEagle() {
 function bulletCollision() {
     for (var i = 0; i < lasers.length; i++) {
         var laser = lasers[i];
-        if(i==lasers.length-1) {
-            endOfArray=true;
-        }
         if (laser.getY() < 0 || laser.getY() > tmxloader.map.height * tmxloader.map.tileHeight ||
             laser.getX() < 0 || laser.getX() > tmxloader.map.width * tmxloader.map.tileWidth) {
-            broadcastToRoom(main.session.getRoomID(), "remove bullet", {id: lasers[i].getID() });
-            lasers.splice(i, 1);
-            i--;        // avoid i>=length throw exception
-        }else if (mapCollision(laser.getX(), laser.getY(), 4, 4, 'bullet')) {
             laser.setIsRemoved(true);
         }
     }

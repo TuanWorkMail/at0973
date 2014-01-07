@@ -30,9 +30,9 @@ function loop() {
             player.movingPlayer();
             bulletMain.moveLaser();
             hitTest.bulletCollision();
+            bulletMain.removeBullet_old();
             botClass.moveBot();
             shootDestroyBrick();
-            bulletMain.removeBullet_old();
         });
         hitTest.hitTestBot();
         teamSumKill.totalKill();

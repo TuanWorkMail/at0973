@@ -85,7 +85,37 @@ function createBot() {
         bots.push(newBot);
     }
 }
-
+function botCheckHP(){
+    for(var obj=0;obj<bots.length;obj++){
+        if(bots[obj].getHitPoint()<=0){
+            // CREATE DROP---------------------------------------
+            if(bots[obj].getType()==='smart'){
+                var id = helper.createUUID('xxxx'),
+                    type = 'piercing',
+                    x = bots[obj].getX(),
+                    y = bots[obj].getY(),
+                    newDrop = new Drop(id, type, x, y);
+                session.getDrop().push(newDrop);
+                broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
+            }
+            for(var k=0; k<remotePlayers.length; k++) {
+                if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
+                    remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
+                    if(bots[obj].getType()==='smart') {
+                        remotePlayers[k].setScore(remotePlayers[k].getScore()+1);
+                    } else {
+                        remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
+                    }
+                    debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '
+                        +remotePlayers[k].getBotKill()+' score: '+remotePlayers[k].getScore());
+                }
+            }
+            // MOVE THE ABOVE OUT-----------------------------------
+            broadcastToRoom(session.getRoomID(),"bot die",{ count: bots[obj].id });
+            bots.splice(obj, 1);
+        }
+    }
+}
 
 
 function drawPath() {
