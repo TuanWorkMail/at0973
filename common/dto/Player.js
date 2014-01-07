@@ -9,7 +9,7 @@ var defaultLive = 1;
 ** CLIENT PLAYER CLASS
 **************************************************/
 dto.Player = function(x, y, direction, spawnPoint) {
-    var uuid,
+    var id,
         userID,
         socketID,
         username,
@@ -28,8 +28,8 @@ dto.Player = function(x, y, direction, spawnPoint) {
 	// Getters and setters
 	var getX = function () { return x; }, setX = function (newX) { x = newX; },
         getY = function () { return y; }, setY = function (newY) { y = newY; },
-        getUUID = function () { return uuid; },
-        setUUID = function (para) { uuid = para; },
+        getID = function () { return id; },
+        setID = function (para) { id = para; },
         getUserID = function () { return userID; },
         setUserID = function (para) { userID = para; },
         getSocketID = function () { return socketID; },
@@ -69,7 +69,7 @@ dto.Player = function(x, y, direction, spawnPoint) {
 		getX: getX, setX: setX,
 		getY: getY, setY: setY,
         getDirection: getDirection, setDirection: setDirection,
-		getUUID: getUUID, setUUID: setUUID,
+		getID: getID, setID: setID,
         getUserID: getUserID, setUserID: setUserID,
         getSocketID: getSocketID, setSocketID: setSocketID,
         getUsername: getUsername, setUsername: setUsername,

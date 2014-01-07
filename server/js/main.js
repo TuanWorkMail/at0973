@@ -29,9 +29,8 @@ function loop() {
             moveKeyUp();
             player.movingPlayer();
             bulletMain.moveLaser();
-            hitTest.bulletCollision();
             bulletMain.removeBullet_old();
-            botClass.moveBot();
+            //botClass.moveBot();
             shootDestroyBrick();
         });
         hitTest.hitTestBot();

@@ -55,7 +55,7 @@ function createBot() {
             bossCount = session.getBossCount(),
             botLength = session.getBotLength(),
             bossLength = session.getBossLength();
-        var id = helper.createUUID('xxxx'),
+        var id = helper.createUUID(),
             x, y, type, newBot;
         if(alternate==='stupid'){
             if (whereSpawn >= botGroup.length) {
@@ -90,7 +90,7 @@ function botCheckHP(){
         if(bots[obj].getHitPoint()<=0){
             // CREATE DROP---------------------------------------
             if(bots[obj].getType()==='smart'){
-                var id = helper.createUUID('xxxx'),
+                var id = helper.createUUID(),
                     type = 'piercing',
                     x = bots[obj].getX(),
                     y = bots[obj].getY(),

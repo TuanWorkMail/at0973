@@ -1,7 +1,9 @@
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var tmxloader = require('../server/js/TMX_Engine').tmxloader,
         Session = require('./dto/Session').Session,
-        debug = require('./helper').debug,
+        helper = require('./helper'),
+        debug = helper.debug,
+        createUUID = helper.createUUID,
         dto = {};
     dto.Player = require('./dto/Player').Player;
     exports.newPlayer = newPlayer;
@@ -47,6 +49,7 @@ function addNewPlayer(id, username, x, y, direction, spawnPoint) {
         newPlayer = new dto.Player(x, y, direction, spawnPoint);
     newPlayer.setSocketID(id);
     newPlayer.setUsername(username);
+    newPlayer.setID(createUUID());
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         allSession = allSession;
         var remotePlayers = allSession[allSession.length - 1].getRemotePlayers();

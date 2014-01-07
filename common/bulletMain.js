@@ -19,7 +19,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
 function shooting(x,y,direction, originID, bulletid, roomid) {
     var _id;
     if(typeof bulletid==='undefined' || bulletid == ''){
-        _id = helper.createUUID('xxxx')
+        _id = helper.createUUID();
     } else {
         _id = bulletid;
     }
