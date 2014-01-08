@@ -19,7 +19,6 @@ function setSocketEventHandlers() {
 	socket.on("connect", onSocketConnected);
     socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
-	socket.on("move player", onMovePlayer);
 	socket.on("new bullet", onNewBullet);
     socket.on("remove bullet", onRemoveBullet);
 	socket.on("remove player", onRemovePlayer);
@@ -28,13 +27,15 @@ function setSocketEventHandlers() {
 	socket.on("login", onLogin);
 	socket.on("register", onRegister);
 	socket.on("reset", onReset);
-    socket.on("moving player", onMovingPlayer);
     socket.on("new drop", onNewDrop);
     socket.on("collide drop", onCollideDrop);
     socket.on("start count down", onStartCountdown);
     socket.on("team score", onTeamScore);
     socket.on("destroy brick", onDestroyBrick);
     socket.on("hide popup", onHidePopup);
+    socket.on("new character", onNewCharacter);
+    socket.on("moving character", onMovingCharacter);
+    socket.on("move character", onMoveCharacter);
 }
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -57,22 +58,6 @@ function onStart(data) {
 }
 function onSocketDisconnect() {
 	debug.log("Disconnected from socket server");
-}
-
-// Move player
-function onMovePlayer(data) {
-    var movePlayer = playerById(data.id);
-	// Player not found
-	if (!movePlayer) {
-	    var newPlayer = addNewPlayer(data.id, data.username, data.x, data.y, data.direction).newPlayer;
-        newPlayer.setTeamName(data.team);
-		return;
-	}
-    movePlayer = movePlayer.players;
-	movePlayer.setX(data.x);
-	movePlayer.setY(data.y);
-	movePlayer.setDirection(data.direction);
-    movePlayer.setMoving(false);
 }
 function onNewBullet(data) {
     shooting(data.x, data.y, data.direction, data.originID, data.id);
@@ -111,26 +96,13 @@ function onRegister(data) {
 }
 
 // End
-function onReset(data) {
+function onReset() {
     debug.log('reset!');
     remoteBots.length = 0;
     lasers.length = 0;
     clone2DArray(layerByName('destructible').data, session.getDestructible());
     clone2DArray(layerByName('indestructible').data, session.getIndestructible());
     //alive = false;
-}
-
-// Moving player
-function onMovingPlayer(data) {
-    var player = playerById(data.id);
-    if (!player) {
-        debug.log('Moving: player not found');
-        return;
-    }
-    player.players.setX(data.x);
-    player.players.setY(data.y);
-    player.players.setDirection(data.direction);
-    player.players.setMoving(true);
 }
 function onNewDrop(data) {
     var newDrop = new Drop(data.id, data.type, data.x, data.y);
@@ -184,13 +156,31 @@ function onDestroyBrick(data){
 function onHidePopup(){
     document.getElementById('waiting').style.display = 'none';
 }
-// Find player by username
-function playerByUsername(username) {
-    var i;
-    for (i = 0; i < remotePlayers.length; i++) {
-        if (remotePlayers[i].getUsername() == username)
-            return remotePlayers[i];
+function onNewCharacter(data){
+    var result = characterById(data.id);
+    if(result) return;
+    session.getCharacters().push(new Character(data.id, data.x, data.y, data.direction, data.speed, data.type));
+}
+function onMovingCharacter(data){
+    var result = characterById(data.id);
+    if(!result) return;
+    result.setX(data.x);
+    result.setY(data.y);
+    result.setDirection(data.direction);
+    result.setMoving(true);
+}
+function onMoveCharacter(data){
+    var result = characterById(data.id);
+    if(!result) return;
+    result.setX(data.x);
+    result.setY(data.y);
+    result.setDirection(data.direction);
+    result.setMoving(false);
+}
+function characterById(id){
+    var characters = session.getCharacters();
+    for(var i=0;i<characters.length;i++){
+        if(characters[i].getID()===id) return characters[i];
     }
-
     return false;
 }

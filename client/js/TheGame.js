@@ -47,7 +47,6 @@ tank5.main = (function() {
                 delta = now - lastTick;
             lastTick = now;
             tick(function(){
-                movingPlayer();
                 moveLaser();
             });
             updateInput();
@@ -55,8 +54,8 @@ tank5.main = (function() {
                 document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
                 lastfpstick = now;
             }
+            renderCharacter();
             drawBot();
-            drawPlayer();
             drawLaser();
             drawDrop();
             animation.renderAnimation();

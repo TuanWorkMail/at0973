@@ -39,11 +39,16 @@ exports.onPlayNow = function(){
     newPlayer = newPlayer.newPlayer;
     this.join('r' + roomID);
     debug.log('new player userID: ' + result.ID + ' and username: ' + result.Username + ' and uuid: ' + newPlayer.getID());
-
-    broadcastToRoom(roomID,"move player", { id: this.id, username: result.Username,
-        x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(),
-        team: newPlayer.getTeamName() });
     var session = sessionByRoomID(roomID);
+    for(var i=0;i<session.getRemotePlayers().length;i++){
+        newPlayer = session.getRemotePlayers()[i];
+        switch (newPlayer.getTeamName()){
+            case 'up': var type = 'player-up'; break;
+            case 'down': type = 'player-down'; break;
+        }
+        broadcastToRoom(roomID,"new character", { id: newPlayer.getID(),
+            x: newPlayer.getX(), y: newPlayer.getY(), direction: newPlayer.getDirection(), type: type});
+    }
     if(session.getStart()){
         broadcastToRoom(roomID, 'hide popup');
         broadcastToRoom(roomID, 'destroy brick', {array: session.getDestroyedBrick()});

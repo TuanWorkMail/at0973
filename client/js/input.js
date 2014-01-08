@@ -65,12 +65,6 @@ function keyUp(e) {
     }
     if(moveKeyReleased)
         socket.emit("move key up");
-    var player = playerById(mySocketID);
-    if(!player) {
-        console.log('movekeyup: player not found');
-        return;
-    }
-    player.players.setMoving(false);
 }
 function updateInput() {
     if (rightKey || leftKey || upKey || downKey) {
@@ -80,13 +74,6 @@ function updateInput() {
         else if(upKey) move=0;      //up
         else if(downKey) move=2;    //down
         socket.emit("move key down", { move: move });
-        var player = playerById(mySocketID);
-        if(!player) {
-            console.log('updateInput: player not found');
-            return;
-        }
-        player.players.setDirection(move);
-        player.players.setMoving(true);
     }
     if (shootKey)
         socket.emit("shoot key down");

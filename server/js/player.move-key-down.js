@@ -13,7 +13,7 @@ exports.moveKeyDown = function() {
         }
         players.players.setDirection(inputQueue[i].getData().move);
         players.players.setMoving(true);
-        broadcastToRoom(players.roomID,"moving player", { id: inputQueue[i].getSocketID(),
+        broadcastToRoom(players.roomID,"moving character", { id: players.players.getID(),
             direction: players.players.getDirection(), x: players.players.getX(), y: players.players.getY() });
         inputQueue.splice(i, 1);
         i--;

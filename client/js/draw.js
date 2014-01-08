@@ -58,8 +58,8 @@ function Viewport(x, y, width, height) {
 function drawMap() {
 
     //clear(); 
-    viewport.x = viewport_x //- viewport.halfWidth;
-    viewport.y = viewport_y //- viewport.halfHeight;
+    viewport.x = viewport_x; //- viewport.halfWidth;
+    viewport.y = viewport_y; //- viewport.halfHeight;
 
     if (viewport.x < 0) viewport.x = 0;
     if (viewport.y < 0) viewport.y = 0;
@@ -152,8 +152,6 @@ function drawLayer(layer, context, mode) {
 function drawTile(gid, x, y, width, height) {
     //number of tiles per row of tilesheet
     var NoOfTiles = 320 / 40,
-        width = width,
-        height = height,
         dimension = tmxloader.map.objectgroup['dimension'].objects[0];
 
     //gid%NoOfTiles: position in a row
@@ -201,30 +199,6 @@ function drawLaser() {
                 break;
         }
         drawTile(gid, lasers[i].getX() - halfWidth, lasers[i].getY() - halfHeight);
-    }
-}
-function drawPlayer() {
-    var remotePlayers = session.getRemotePlayers();
-    for (var i = 0; i < remotePlayers.length; i++) {
-        var gid = 0,
-            x = remotePlayers[i].getX(),
-            y = remotePlayers[i].getY();
-        if(remotePlayers[i].getTeamName()==='up'){
-            switch(remotePlayers[i].getDirection()){
-                case 1: gid = 1; break;     //right
-                case -1: gid = 4; break;    //left
-                case 0: gid = 3; break;     //up
-                case 2: gid = 2; break;     //down
-            }
-        } else {
-            switch(remotePlayers[i].getDirection()){
-                case 1: gid = 17; break;    //right
-                case -1: gid = 20; break;   //left
-                case 0: gid = 19; break;    //up
-                case 2: gid = 18; break;    //down
-            }
-        }
-        drawTile(gid, x, y);
     }
 }
 function drawingBot(object) {
@@ -300,6 +274,32 @@ function drawDrop() {
         var x = drops[i].getX(),
             y = drops[i].getY();
         ctx.drawImage(drop, 0, 0, 40, 40, x, y, 40, 40);
+    }
+}
+function renderCharacter(){
+    var characters = session.getCharacters();
+    for(var i=0;i<characters.length;i++){
+        var character = characters[i],
+            gid;
+        switch (character.getType()){
+            case 'player-up':
+                switch (character.getDirection()){
+                    case 1: gid = 1; break;     //right
+                    case -1: gid = 4; break;    //left
+                    case 0: gid = 3; break;     //up
+                    case 2: gid = 2; break;     //down
+                }
+                break;
+            case 'player-down':
+                switch (character.getDirection()){
+                    case 1: gid = 17; break;    //right
+                    case -1: gid = 20; break;   //left
+                    case 0: gid = 19; break;    //up
+                    case 2: gid = 18; break;    //down
+                }
+                break;
+        }
+        drawTile(gid, character.getX(), character.getY());
     }
 }
 function drawStartScreen_old() {
