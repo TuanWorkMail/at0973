@@ -47,7 +47,6 @@ tank5.main = (function() {
                 delta = now - lastTick;
             lastTick = now;
             tick(function(){
-                moveLaser();
                 moveCharacter();
             });
             if(now-lastfpstick>500){
@@ -56,7 +55,6 @@ tank5.main = (function() {
             }
             renderCharacter();
             drawBot();
-            drawLaser();
             drawDrop();
             animation.renderAnimation();
         }

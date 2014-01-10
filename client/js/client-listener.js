@@ -19,7 +19,6 @@ function setSocketEventHandlers() {
 	socket.on("connect", onSocketConnected);
     socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
-	socket.on("remove player", onRemovePlayer);
 	socket.on("bot broadcast", onBotBroadcast);
 	socket.on("bot die", onBotDie);
 	socket.on("login", onLogin);
@@ -56,14 +55,6 @@ function onStart(data) {
 }
 function onSocketDisconnect() {
 	debug.log("Disconnected from socket server");
-}
-function onRemovePlayer(data) {
-	var removePlayer = playerById(data.id);
-	if (!removePlayer) {
-		debug.log("Remove: Player not found: "+data.id);
-		return;
-	}
-	remotePlayers.splice(remotePlayers.indexOf(removePlayer.players), 1);
 }
 
 // Login
@@ -143,12 +134,28 @@ function onDestroyBrick(data){
 function onHidePopup(){
     document.getElementById('waiting').style.display = 'none';
 }
+var names = {};
 function onNewCharacter(data){
-    var result = characterById(data.id);
+    var result = characterById(data.id),
+        characters = session.getCharacters();
     if(result) return;
-    session.getCharacters().push(new Character(data.id, data.x, data.y, data.direction, data.speed, data.type));
+    characters.push(new Character(data.id, data.x, data.y, data.direction, data.speed, data.type));
     if(typeof data.moving!=='undefined'){
-        session.getCharacters()[session.getCharacters().length-1].setMoving(data.moving);
+        characters[characters.length-1].setMoving(data.moving);
+    }
+    if(typeof data.name !== 'undefined'){
+        if(typeof names[data.name] !== 'undefined') return;
+        characters[characters.length-1].setName(data.name);
+        var canvas = document.createElement("canvas"),
+            context = canvas.getContext('2d');
+        canvas.width = 40;
+        canvas.height = 20;
+        context.font = '10px Arial';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillStyle = 'white';
+        context.fillText(data.name, 20, 10);
+        names[data.name] = canvas;
     }
 }
 function onMoveCharacter(data){

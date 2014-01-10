@@ -47,7 +47,7 @@ exports.onPlayNow = function(){
             case 'down': type = 'player-down'; break;
         }
         broadcastToRoom(roomID,"new character", { id: newPlayer.getID(), x: newPlayer.getX(), y: newPlayer.getY(),
-            direction: newPlayer.getDirection(), speed: newPlayer.getSpeed(), type: type});
+            direction: newPlayer.getDirection(), speed: newPlayer.getSpeed(), type: type, name: newPlayer.getUsername()});
     }
     if(session.getStart()){
         broadcastToRoom(roomID, 'hide popup');

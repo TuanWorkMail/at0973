@@ -177,30 +177,6 @@ function clearCanvas() {
     //ctx.fillStyle = "#000";
     //ctx.fillRect(0, 0, width, height);
 }
-//If there are lasers in the lasers array, then this will draw them on the canvas
-function drawLaser() {
-    var dimension = tmxloader.map.objectgroup['dimension'].objects[0],
-        halfWidth = dimension.width / 2,
-        halfHeight = dimension.height / 2;
-    for (var i = 0; i < lasers.length; i++) {
-        var gid = 0;
-        switch (lasers[i].getDirection()){
-            case 0://up
-                gid = 49;
-                break;
-            case 2://down
-                gid = 51;
-                break;
-            case -1://left
-                gid = 52;
-                break;
-            case 1://right
-                gid = 50;
-                break;
-        }
-        drawTile(gid, lasers[i].getX() - halfWidth, lasers[i].getY() - halfHeight);
-    }
-}
 function drawingBot(object) {
     if(object.getType() == 'dumb') {
         switch(object.getDirection()) {
@@ -252,10 +228,11 @@ function drawEndScreen() {
         height = tmxloader.map.height * tmxloader.map.tileHeight;
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 50px VT323';
-    ctx.fillText('Game Over!', (width / 2) - 60, height / 2);
-    ctx.fillRect((width / 2) - 60, (height / 2) + 10, 100, 40);
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over!', (width / 2), height / 2);
+    ctx.fillRect((width / 2) - 100, (height / 2) + 5, 200, 40);
     ctx.fillStyle = '#000';
-    ctx.fillText('Continue?', (width / 2) - 60, (height / 2) + 35);
+    ctx.fillText('Continue?', (width / 2), (height / 2) + 35);
     canvasOverhead.addEventListener('click', continueButton, false);
 }
 function drawEagle() {
@@ -313,6 +290,9 @@ function renderCharacter(){
                 break;
         }
         drawTile(gid, x, y);
+        if(typeof character.getName() !== 'undefined'){
+            ctx.drawImage(names[character.getName()], x, y - 20);
+        }
     }
 }
 function drawStartScreen_old() {
