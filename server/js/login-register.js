@@ -14,6 +14,12 @@ exports.login = function(data){
                 if (rows.length == 0) {
                     that.emit("login", { error: 'wrong username or password' });
                 } else {
+                    for(var i=0;i<logonUsers.length;i++){
+                        if(rows[0].Username===logonUsers[i][1].Username){
+                            that.emit("login", { error: 'user already logon' });
+                            return;
+                        }
+                    }
                     that.emit("login",{hello:'world'});
                     logonUsers.push([]);
                     logonUsers[logonUsers.length-1].push(that.id);
@@ -54,9 +60,17 @@ exports.onPlayNow = function(){
         broadcastToRoom(roomID, 'destroy brick', {array: session.getDestroyedBrick()});
     }
 };
-function logonUserById(id){
+function logonUserById(id, option){
     for(var i=0;i<logonUsers.length;i++){
-        if(logonUsers[i][0]===id) return logonUsers[i][1];
+        if(logonUsers[i][0]===id) {
+            if(typeof option !== 'undefined'){
+                if(option==='remove') {
+                    logonUsers.splice(i, 1);
+                    return true;
+                }
+            }
+            return logonUsers[i][1];
+        }
     }
     return false;
 }

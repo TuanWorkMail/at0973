@@ -31,20 +31,18 @@ function onShootKeyDown() {
     shootLastTick = now;
 }
 function onClientDisconnect() {
-    var removePlayer = false;
+    loginRegister.logonUserById(this.id, 'remove');
     allSession = allSession;
     for(var j=0; j<allSession.length; j++) {
         for (var i = 0; i < allSession[j].getRemotePlayers().length; i++) {
             if (allSession[j].getRemotePlayers()[i].getSocketID() === this.id) {
+                broadcastToRoom(allSession[j].getRoomID(), 'remove character', {id: allSession[j].getRemotePlayers()[i].getID()});
                 allSession[j].getRemotePlayers().splice(i, 1);
-                // NEED FIX
-                //this.broadcast.to('authenticated').emit("remove player", { id: this.id });
-                removePlayer = true;
+                return;
             }
         }
     }
-    if (!removePlayer)
-        util.log("Remove: Player not found: "+this.id);
+    util.log("Remove: Player not found: "+this.id);
 }
 function onBroadcastToRoom(data){
     if(local_remote==='local') return;
