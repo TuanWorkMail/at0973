@@ -2,8 +2,8 @@ var lasttick = Date.now();
 function onMoveKeyDown(data) {
     main.queuePlayerInput(this.id, 'move key down', data);
 }
-function onMoveKeyUp() {
-    main.queuePlayerInput(this.id, 'move key up');
+function onMoveKeyUp(data) {
+    main.queuePlayerInput(this.id, 'move key up', data);
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {

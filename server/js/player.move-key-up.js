@@ -14,7 +14,7 @@ exports.moveKeyUp = function() {
         var players = result.players;
         players.setMoving(false);
         broadcastToRoom(result.roomID,"move character", { id: players.getID(),
-            x: players.getX(), y: players.getY(), direction: players.getDirection()});
+            x: players.getX(), y: players.getY(), direction: players.getDirection(), moving: false});
         inputQueue.splice(i, 1);
         i--;
     }

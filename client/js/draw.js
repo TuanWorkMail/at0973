@@ -280,7 +280,9 @@ function renderCharacter(){
     var characters = session.getCharacters();
     for(var i=0;i<characters.length;i++){
         var character = characters[i],
-            gid;
+            gid,
+            x = character.getX(),
+            y = character.getY();
         switch (character.getType()){
             case 'player-up':
                 switch (character.getDirection()){
@@ -298,8 +300,19 @@ function renderCharacter(){
                     case 2: gid = 18; break;    //down
                 }
                 break;
+            case 'bullet':
+                switch (character.getDirection()){
+                    case 0: gid = 49; break;    //up
+                    case 2: gid = 51; break;    //down
+                    case -1: gid = 52; break;   //left
+                    case 1: gid = 50; break;    //right
+                }
+                var dimension = tmxloader.map.objectgroup['dimension'].objects[0];
+                x -= dimension.width / 2;
+                y -= dimension.height / 2;
+                break;
         }
-        drawTile(gid, character.getX(), character.getY());
+        drawTile(gid, x, y);
     }
 }
 function drawStartScreen_old() {

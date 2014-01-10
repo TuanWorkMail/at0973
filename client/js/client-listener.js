@@ -19,8 +19,6 @@ function setSocketEventHandlers() {
 	socket.on("connect", onSocketConnected);
     socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
-	socket.on("new bullet", onNewBullet);
-    socket.on("remove bullet", onRemoveBullet);
 	socket.on("remove player", onRemovePlayer);
 	socket.on("bot broadcast", onBotBroadcast);
 	socket.on("bot die", onBotDie);
@@ -34,8 +32,8 @@ function setSocketEventHandlers() {
     socket.on("destroy brick", onDestroyBrick);
     socket.on("hide popup", onHidePopup);
     socket.on("new character", onNewCharacter);
-    socket.on("moving character", onMovingCharacter);
     socket.on("move character", onMoveCharacter);
+    socket.on("remove character", onRemoveCharacter);
 }
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -58,17 +56,6 @@ function onStart(data) {
 }
 function onSocketDisconnect() {
 	debug.log("Disconnected from socket server");
-}
-function onNewBullet(data) {
-    shooting(data.x, data.y, data.direction, data.originID, data.id);
-}
-function onRemoveBullet(data) {
-    for (var i = 0; i < lasers.length; i++) {
-        if(lasers[i].getID()===data.id) {
-            lasers.splice(i, 1);
-            i--;    // after splice i might be out of lasers.length, so take it down a notch
-        }
-    }
 }
 function onRemovePlayer(data) {
 	var removePlayer = playerById(data.id);
@@ -160,14 +147,9 @@ function onNewCharacter(data){
     var result = characterById(data.id);
     if(result) return;
     session.getCharacters().push(new Character(data.id, data.x, data.y, data.direction, data.speed, data.type));
-}
-function onMovingCharacter(data){
-    var result = characterById(data.id);
-    if(!result) return;
-    result.setX(data.x);
-    result.setY(data.y);
-    result.setDirection(data.direction);
-    result.setMoving(true);
+    if(typeof data.moving!=='undefined'){
+        session.getCharacters()[session.getCharacters().length-1].setMoving(data.moving);
+    }
 }
 function onMoveCharacter(data){
     var result = characterById(data.id);
@@ -175,7 +157,13 @@ function onMoveCharacter(data){
     result.setX(data.x);
     result.setY(data.y);
     result.setDirection(data.direction);
-    result.setMoving(false);
+    result.setMoving(data.moving);
+}
+function onRemoveCharacter(data){
+    var result = characterById(data.id);
+    if(!result) return;
+    var characters = session.getCharacters();
+    characters.splice(characters.indexOf(result), 1);
 }
 function characterById(id){
     var characters = session.getCharacters();

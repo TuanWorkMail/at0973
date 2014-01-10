@@ -48,8 +48,8 @@ tank5.main = (function() {
             lastTick = now;
             tick(function(){
                 moveLaser();
+                moveCharacter();
             });
-            updateInput();
             if(now-lastfpstick>500){
                 document.getElementById('showfps').innerHTML = 'fps: ' + Math.floor(1000/delta);
                 lastfpstick = now;
@@ -62,8 +62,15 @@ tank5.main = (function() {
         }
         requestAnimationFrame(gameLoop);
     }
+
     function getGameStarted() {return gameStarted}
     function setGameStarted(para) {gameStarted=para}
+    function moveCharacter(){
+        for(var i=0;i<session.getCharacters().length;i++){
+            if(session.getCharacters()[i].getMoving()) character.moving(session.getCharacters()[i], '');
+        }
+    }
+
     return {
         getGameStarted: getGameStarted,
         setGameStarted: setGameStarted,

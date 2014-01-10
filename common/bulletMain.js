@@ -27,7 +27,8 @@ function shooting(x,y,direction, originID, bulletid, roomid) {
     newBullet.setOriginID(originID);
     lasers.push(newBullet);
     if(typeof roomid!=='undefined' && typeof require !== 'undefined' && typeof exports !== 'undefined'){
-        broadcastToRoom(roomid, "new bullet", {id: _id, x: x, y: y, direction: direction, originID: originID});
+        broadcastToRoom(roomid, "new character", {id: _id, x: x, y: y,
+            direction: direction, speed: newBullet.getSpeed(), type: 'bullet', moving: true});
     }
     return _id;
 }
@@ -49,7 +50,7 @@ function removeBullet_old() {
     var lasers = main.session.getLasers();
         for (var i = 0; i < lasers.length; i++) {
             if(lasers[i].getIsRemoved() || lasers[i].isRemoved) {
-                broadcastToRoom(main.session.getRoomID(), "remove bullet", {id: lasers[i].getID() });
+                broadcastToRoom(main.session.getRoomID(), "remove character", {id: lasers[i].getID() });
                 lasers.splice(i, 1);
                 i--;    // after splice i might be out of lasers.length, so take it down a notch
             }
