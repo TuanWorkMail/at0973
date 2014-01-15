@@ -1,11 +1,10 @@
 //RESTART server for changes to applied
-var mapName = '1000_small';
+var mapName = 'classic_small';
 debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
 setTimeout = setTimeout;
 function init() {
-    require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx');
     //create a new blank session
     var newSession = new Session(0);
     allSession.push(newSession);
@@ -120,5 +119,4 @@ if(typeof local_remote==='undefined') {
 }
 
 
-
-init();
+require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx', init);

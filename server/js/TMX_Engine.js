@@ -78,27 +78,16 @@ var ObjectGroup = function (groupname, width, height) {
     this.objects = [];
 
 };
-function loadMapOld (src, callback) {          // run callback after map loaded
-    readFile(src, parseMap, callback);
-};
-function readFile(src, callback1, callback2) {  // run callback1 after file loaded
+function loadMap(mapFileURL, callback) {  // run callback1 after file loaded
     var parser = new xml2js.Parser();
-    fs.readFile(src, function(err, data) {                  // read xml
-        if(err) {util.log(err); return;}                    // log error
-        parser.parseString(data, function (err, result) {   // parse xml
-            if(err) {util.log(err); return;}                // log error
-            callback1(result, callback2);                   // process xml
+    fs.readFile(mapFileURL, function(err, data) {                  // read xml file
+        parser.parseString(data, function (err, result) {   // parse loaded xml
+            parseMap(result);
         });
+        callback();
     });
 }
-function loadMap(src, callback) {                       // run callback after map loaded
-    var parser = new xml2js.Parser(),
-        buffer = fs.readFileSync(src),                  // read xml
-        result = {};
-    parser.parseString(buffer, function (err, data) {   // parse xml
-        if(err) {util.log(err); return;}                // log error
-        result = data;
-    });
+function parseMap(result) {
 
     //console.log('Parsing...' + result.map.$.version);
 
@@ -172,7 +161,6 @@ function loadMap(src, callback) {                       // run callback after ma
             tmxloader.map.objectgroup['' + $objectGroupName + ''].objects.push(new TmxObject($objectname, $objecttype, $objectx, $objecty, $objectwidth, $objectheight));
         }
     }
-    //callback();
 }
 exports.layerByName = function(name) {
     for (var i = 0; i < tmxloader.map.layers.length; i++) {

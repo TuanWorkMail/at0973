@@ -55,7 +55,11 @@ function movingPlayer() {
     var remotePlayers = session.getRemotePlayers();
     for (var i = 0; i < remotePlayers.length; i++) {
         if (remotePlayers[i].getMoving()){
-            character.moving(remotePlayers[i], 'tank');
+            if(!character.moving(remotePlayers[i], 'tank')){
+                broadcastToRoom(main.session.getRoomID(), 'move character', {id: remotePlayers[i].getID(),
+                    x: remotePlayers[i].getX(), y: remotePlayers[i].getY(),
+                    direction: remotePlayers[i].getDirection(), moving: false});
+            }
         }
     }
 }
