@@ -19,11 +19,12 @@ function loop() {
         //todo all socket event QUEUE to process in loop(), make allSession private
         bots = allSession[j].bots;
         lasers = allSession[j].getLasers();
-        if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         checkPlayerCount();
+        exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
+        loginRegister.login();
+        loginRegister.register();
         if(!allSession[j].getStart()) continue;
         tick(function(){
-            exports.inputQueue = inputQueue;
             moveKeyDown();
             moveKeyUp();
             player.movingPlayer();
@@ -32,6 +33,7 @@ function loop() {
             //botClass.moveBot();
             shootDestroyBrick();
         });
+        if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         hitTest.hitTestBot();
         teamSumKill.totalKill();
         //TODO: change 1000 to 500 will throw error,
@@ -102,6 +104,7 @@ var util = require("util"),
     moveKeyDown = require('./player.move-key-down').moveKeyDown,
     moveKeyUp = require('./player.move-key-up').moveKeyUp,
     tick = require('../../common/tick').tick,
+    loginRegister = require('./login-register'),
     last1second = Date.now(),
     lastBotTick = Date.now(),                                            // for stupid bot auto shoot
     inputQueue = [];

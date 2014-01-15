@@ -59,7 +59,7 @@ function onSocketDisconnect() {
 
 // Login
 function onLogin(data) {
-    if (typeof data.error !== 'undefined' ) {
+    if (typeof data !== 'undefined' ) {
         document.getElementById('error-message').innerHTML = data.error;
     } else {
         document.getElementById('login').style.display = 'none';

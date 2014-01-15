@@ -5,6 +5,12 @@ function onMoveKeyDown(data) {
 function onMoveKeyUp(data) {
     main.queuePlayerInput(this.id, 'move key up', data);
 }
+function onLogin(data){
+    main.queuePlayerInput(this.id, 'login', data);
+}
+function onRegister(data){
+    main.queuePlayerInput(this.id, 'register', data);
+}
 var shootLastTick = Date.now();
 function onShootKeyDown() {
     var now = Date.now();
@@ -51,32 +57,34 @@ function onBroadcastToRoom(data){
 function broadcastToRoom(roomID, string, object){
     io.sockets.in('r' + roomID).emit(string, object);
 }
-exports.broadcastToRoom = broadcastToRoom;
 var util = require('util');
 local_remote = 'local';
 util.log('production environment');
-var io = require("socket.io").listen(8000),		    // Socket.IO
-    runQuery = require('./js/mysql').runQuery,
-    loginRegister = require('./js/login-register'),
-    player = require('../common/player'),
-    main = require('./js/main'),
-    debug = require('../common/helper').debug;
+var io = require("socket.io").listen(8000);
 io.configure(function () {
     io.set("log level", 2);
 });
 io.sockets.on("connection", function(socket) {
+    socket.emit('start', {map: main.mapName, all_user: []});
     runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
-        if (err) util.log(err);
+        if (err) debug.log(err);
         else {
             socket.emit('start', {map: main.mapName, all_user: rows});
         }
     });
     socket.on("disconnect", onClientDisconnect);
-    socket.on("login", loginRegister.login);
-    socket.on("register", loginRegister.register);
+    socket.on("login", onLogin);
+    socket.on("register", onRegister);
     socket.on("play now", loginRegister.onPlayNow);
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
     socket.on("shoot key down", onShootKeyDown);
     socket.on("broadcast to room", onBroadcastToRoom);
 });
+exports.broadcastToRoom = broadcastToRoom;
+exports.sockets = io.sockets;
+var runQuery = require('./js/mysql').runQuery,
+    loginRegister = require('./js/login-register'),
+    player = require('../common/player'),
+    main = require('./js/main'),
+    debug = require('../common/helper').debug;

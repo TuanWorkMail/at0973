@@ -1,12 +1,46 @@
-var broadcastToRoom = require('../socket-listener').broadcastToRoom,
+var socketListener = require('../socket-listener'),
+    broadcastToRoom = socketListener.broadcastToRoom,
+    sockets = socketListener.sockets,
     mysql = require('./mysql'),
     util = require('util'),
     playerAddNew = require('../../common/player.add-new'),
     debug = require('../../common/helper').debug,
+    fs = require('fs'),
+    main = require('./main'),
+    sessionByRoomID = main.sessionByRoomID,
     logonUsers = [],
-    sessionByRoomID = require('./main').sessionByRoomID;
-exports.login = function(data){
-    var that = this;
+    userDB;
+
+fs.readFile('./userDB', function(err, data) {
+    if(!err) userDB = JSON.parse(data);
+});
+exports.login = function(){
+    var inputQueue = main.inputQueue;
+    for(var i=0;i<inputQueue.length;i++){
+        if(inputQueue[i].getEventName()!=='login') continue;
+        for(var j=0;j<userDB.length;j++){
+            if(userDB[j][0]===inputQueue[i].getData().username && userDB[j][1]===inputQueue[i].getData().password){
+                for(var k=0;k<logonUsers.length;k++){
+                    if(userDB[j][0]===logonUsers[k][1].Username){
+                        sockets.socket(inputQueue[i].getSocketID()).emit("login", { error: 'user already logon' });
+                        inputQueue.splice(i, 1);
+                        return;
+                    }
+                }
+                sockets.socket(inputQueue[i].getSocketID()).emit("login");
+                var object = {};
+                object.Username = userDB[j][0];
+                object.Password = userDB[j][1];
+                logonUsers.push([inputQueue[i].getSocketID(), object]);
+                inputQueue.splice(i, 1);
+                return;
+            }
+        }
+        sockets.socket(inputQueue[i].getSocketID()).emit("login", { error: 'wrong username or password' });
+        inputQueue.splice(i, 1);
+        i--;
+    }
+    return;
     mysql.runQuery('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password],
         function (err, rows, fields) {
             if (err) util.log(err);
@@ -29,8 +63,25 @@ exports.login = function(data){
         }
     );
 };
-exports.register = function(data) {
-    var that = this;
+exports.register = function() {
+    var inputQueue = main.inputQueue;
+    for(var i=0;i<inputQueue.length;i++){
+        if(inputQueue[i].getEventName()!=='register') continue;
+        for(var j=0;j<userDB.length;j++){
+            if(userDB[j][0]===inputQueue[i].getData().username){
+                sockets.socket(inputQueue[i].getSocketID()).emit("register", { result: 'username already existed' });
+                inputQueue.splice(i, 1);
+                return;
+            }
+        }
+        userDB.push([inputQueue[i].getData().username, inputQueue[i].getData().password, 0]);
+        sockets.socket(inputQueue[i].getSocketID()).emit("register", { result: 'register successfully, now please login' });
+        inputQueue.splice(i, 1);
+        fs.writeFile('./userDB', JSON.stringify(userDB), function (err) {
+            if(err) debug.log(err, 1);
+        });
+    }
+    return;
     mysql.connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
         if (err) that.emit("register", { result: 'username already existed' });
         else
