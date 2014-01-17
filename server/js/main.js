@@ -21,8 +21,6 @@ function loop() {
         lasers = allSession[j].getLasers();
         checkPlayerCount();
         exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
-        loginRegister.login();
-        loginRegister.register();
         if(!allSession[j].getStart()) continue;
         tick(function(){
             moveKeyDown();

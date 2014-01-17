@@ -1,4 +1,5 @@
-var socketListener = require('../socket-listener'),
+var dbmode = 'mysql',                                     // use which database: mysql OR file-based?
+    socketListener = require('../socket-listener'),
     broadcastToRoom = socketListener.broadcastToRoom,
     sockets = socketListener.sockets,
     mysql = require('./mysql'),
@@ -8,86 +9,77 @@ var socketListener = require('../socket-listener'),
     fs = require('fs'),
     main = require('./main'),
     sessionByRoomID = main.sessionByRoomID,
-    logonUsers = [],
-    userDB = [];
-(function(){
-    fs.readFile('./userDB', function(err, data) {
-        if(!err) userDB = JSON.parse(data);
-    });
-}());
-exports.login = function(){
-    var inputQueue = main.inputQueue;
-    for(var i=0;i<inputQueue.length;i++){
-        if(inputQueue[i].getEventName()!=='login') continue;
-        for(var j=0;j<userDB.length;j++){
-            if(userDB[j][0]===inputQueue[i].getData().username && userDB[j][1]===inputQueue[i].getData().password){
-                for(var k=0;k<logonUsers.length;k++){
-                    if(userDB[j][0]===logonUsers[k][1].Username){
-                        sockets.socket(inputQueue[i].getSocketID()).emit("login", { error: 'user already logon' });
-                        inputQueue.splice(i, 1);
-                        return;
-                    }
-                }
-                sockets.socket(inputQueue[i].getSocketID()).emit("login");
-                var object = {};
-                object.Username = userDB[j][0];
-                object.Password = userDB[j][1];
-                logonUsers.push([inputQueue[i].getSocketID(), object]);
-                inputQueue.splice(i, 1);
-                return;
+    logonUsers = [];
+exports.dbmode = dbmode;
+exports.login = function(data){
+    var that = this;
+    if(dbmode==='mysql'){
+        mysql.runQuery('SELECT * FROM user where Username = ? and Password = ?',
+            [data.username, data.password], checkLogin);
+    } else {
+        fs.readFile('./userDB', function(err, data2) {
+            var userDB = JSON.parse(data2),
+                result = [];
+            for(var j=0;j<userDB.length;j++){
+                if(userDB[j].Username===data.username && userDB[j].Password===data.password) result.push(userDB[j]);
             }
-        }
-        sockets.socket(inputQueue[i].getSocketID()).emit("login", { error: 'wrong username or password' });
-        inputQueue.splice(i, 1);
-        i--;
-    }
-    return;
-    mysql.runQuery('SELECT * FROM user where Username = ? and Password = ?', [data.username, data.password],
-        function (err, rows, fields) {
-            if (err) util.log(err);
-            else {
-                if (rows.length == 0) {
-                    that.emit("login", { error: 'wrong username or password' });
-                } else {
-                    for(var i=0;i<logonUsers.length;i++){
-                        if(rows[0].Username===logonUsers[i][1].Username){
-                            that.emit("login", { error: 'user already logon' });
-                            return;
-                        }
-                    }
-                    that.emit("login",{hello:'world'});
-                    logonUsers.push([]);
-                    logonUsers[logonUsers.length-1].push(that.id);
-                    logonUsers[logonUsers.length-1].push(rows[0]);
-                }
-            }
-        }
-    );
-};
-exports.register = function() {
-    var inputQueue = main.inputQueue;
-    for(var i=0;i<inputQueue.length;i++){
-        if(inputQueue[i].getEventName()!=='register') continue;
-        for(var j=0;j<userDB.length;j++){
-            if(userDB[j][0]===inputQueue[i].getData().username){
-                sockets.socket(inputQueue[i].getSocketID()).emit("register", { result: 'username already existed' });
-                inputQueue.splice(i, 1);
-                return;
-            }
-        }
-        userDB.push([inputQueue[i].getData().username, inputQueue[i].getData().password, 0]);
-        sockets.socket(inputQueue[i].getSocketID()).emit("register", { result: 'register successfully, now please login' });
-        inputQueue.splice(i, 1);
-        fs.writeFile('./userDB', JSON.stringify(userDB), function (err) {
-            if(err) debug.log(err, 1);
+            checkLogin(err, result);
         });
     }
-    return;
-    mysql.connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);', [data.username, data.password], function (err, rows, fields) {
-        if (err) that.emit("register", { result: 'username already existed' });
-        else
-            that.emit("register", { result: 'register successfully, now please login' });
-    });
+    function checkLogin(err, rows){
+        if (rows.length === 0) {
+            that.emit("login", { error: 'wrong username or password' });
+        } else {
+            for(var i=0;i<logonUsers.length;i++){
+                if(rows[0].Username===logonUsers[i][1].Username){
+                    that.emit("login", { error: 'user already logon' });
+                    return;
+                }
+            }
+            that.emit("login");
+            logonUsers.push([that.id, rows[0]]);
+        }
+    }
+};
+exports.register = function(data) {
+    var that = this;
+    if(dbmode==='mysql'){
+        mysql.connection.query('INSERT INTO `tank5`.`user`(`Username`,`Password`, `Won`)VALUES(?,?,0);',
+            [data.username, data.password], function (err) {
+                if (err) usernameExisted();
+                else success();
+        });
+    } else {
+        var userExisted = false;
+        fs.readFile('./userDB', function(err, data2) {
+            var userDB = JSON.parse(data2);
+            for(var j=0;j<userDB.length && !userExisted;j++){
+                if(userDB[j].Username===data.username){
+                    usernameExisted();
+                    userExisted = true;
+                }
+            }
+            if(!userExisted){
+                var object = {
+                    ID: userDB.length,
+                    Username: data.username,
+                    Password: data.password,
+                    Won: 0
+                };
+                userDB.push(object);
+                fs.writeFile('./userDB', JSON.stringify(userDB), function (err) {
+                    if(err) debug.log(err, 1);
+                });
+                success();
+            }
+        });
+    }
+    function usernameExisted(){
+        that.emit("register", { result: 'username already existed' });
+    }
+    function success(){
+        that.emit("register", { result: 'register successfully, now please login' });
+    }
 };
 exports.onPlayNow = function(){
     var result = logonUserById(this.id);

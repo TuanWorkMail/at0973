@@ -5,12 +5,6 @@ function onMoveKeyDown(data) {
 function onMoveKeyUp(data) {
     main.queuePlayerInput(this.id, 'move key up', data);
 }
-function onLogin(data){
-    main.queuePlayerInput(this.id, 'login', data);
-}
-function onRegister(data){
-    main.queuePlayerInput(this.id, 'register', data);
-}
 var shootLastTick = Date.now();
 function onShootKeyDown() {
     var now = Date.now();
@@ -60,21 +54,25 @@ function broadcastToRoom(roomID, string, object){
 var util = require('util');
 local_remote = 'local';
 util.log('production environment');
-var io = require("socket.io").listen(8000);
+var io = require("socket.io").listen(8000),
+    fs = require('fs');
 io.configure(function () {
     io.set("log level", 2);
 });
 io.sockets.on("connection", function(socket) {
-    socket.emit('start', {map: main.mapName, all_user: []});
-    runQuery('SELECT Username, Won FROM user', [], function (err, rows, fields) {
-        if (err) debug.log(err);
-        else {
+    if(loginRegister.dbmode==='mysql'){
+        runQuery('SELECT Username, Won FROM user', [], function (err, rows) {
             socket.emit('start', {map: main.mapName, all_user: rows});
-        }
-    });
+        });
+    } else {
+        fs.readFile('./userDB', function(err, data2) {
+            var userDB = JSON.parse(data2);
+            socket.emit('start', {map: main.mapName, all_user: userDB});
+        });
+    }
     socket.on("disconnect", onClientDisconnect);
-    socket.on("login", onLogin);
-    socket.on("register", onRegister);
+    socket.on("login", loginRegister.login);
+    socket.on("register", loginRegister.register);
     socket.on("play now", loginRegister.onPlayNow);
     socket.on("move key down", onMoveKeyDown);
     socket.on("move key up", onMoveKeyUp);
