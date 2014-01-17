@@ -30,7 +30,7 @@ function loop() {
             player.movingPlayer();
             bulletMain.moveLaser();
             bulletMain.removeBullet_old();
-            //botClass.moveBot();
+            botClass.moveBot();
             shootDestroyBrick();
         });
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());

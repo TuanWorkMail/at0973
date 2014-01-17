@@ -88,3 +88,4 @@ var runQuery = require('./js/mysql').runQuery,
     player = require('../common/player'),
     main = require('./js/main'),
     debug = require('../common/helper').debug;
+require('./web-server');

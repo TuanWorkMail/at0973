@@ -9,11 +9,12 @@ var socketListener = require('../socket-listener'),
     main = require('./main'),
     sessionByRoomID = main.sessionByRoomID,
     logonUsers = [],
-    userDB;
-
-fs.readFile('./userDB', function(err, data) {
-    if(!err) userDB = JSON.parse(data);
-});
+    userDB = [];
+(function(){
+    fs.readFile('./userDB', function(err, data) {
+        if(!err) userDB = JSON.parse(data);
+    });
+}());
 exports.login = function(){
     var inputQueue = main.inputQueue;
     for(var i=0;i<inputQueue.length;i++){
