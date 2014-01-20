@@ -2,7 +2,8 @@ var main = require('./main'),
     lastTeamKills = [],
     lastTeamScore = [],
     debug = require('../../common/helper').debug,
-    broadcastToRoom = require('../socket-listener').broadcastToRoom;
+    broadcastToRoom = require('../socket-listener').broadcastToRoom,
+    endSession = require('../../common/session.restart').end;
 lastTeamKills[0]=0;
 lastTeamKills[1]=0;
 lastTeamScore[0]=0;
@@ -10,7 +11,7 @@ lastTeamScore[1]=0;
 
 exports.totalKill = function(){
     var team = main.session.getTeam(),
-        remotePlayers = session.getRemotePlayers();
+        remotePlayers = main.session.getRemotePlayers();
     for(var j=0;j<team.length;j++){
         team[j].setKill(0);
         team[j].setScore(0);
@@ -20,7 +21,7 @@ exports.totalKill = function(){
                 team[j].setScore(team[j].getScore()+remotePlayers[i].getScore());
             }
         }
-        if(team[j].getScore()===30){}
+        if(team[j].getScore()===30) endSession(team[j].getName());
         //if(team[j].getKill()!==lastTeamKills[j] || team[j].getScore()!==lastTeamScore[j]){
         else{
             lastTeamKills[j]=team[j].getKill();

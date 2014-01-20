@@ -2,7 +2,11 @@ var spawnPlayer = require('./player.add-new').spawnPlayer,
     broadcastToRoom = require('../server/socket-listener').broadcastToRoom,
     layerByName = require('../server/js/TMX_Engine').layerByName,
     combine16to1tile = require('./combine-layer').combine16to1tile,
-    clone2DArray = require('./helper').clone2DArray;
+    clone2DArray = require('./helper').clone2DArray,
+    main = require('../server/js/main'),
+    loginRegister = require('../server/js/login-register'),
+    runQuery = require('../server/js/mysql').runQuery,
+    fs = require('fs');
 exports.reset = reset;
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
@@ -28,3 +32,25 @@ function reset(para) {
             username: remotePlayers[i].getUsername(), x: x, y: y, direction: direction });
     }
 }
+exports.end = function(teamName){
+    var remotePlayers = main.session.getRemotePlayers();
+    for(var i=0;i<remotePlayers.length;i++){
+        if(remotePlayers[i].getTeamName()===teamName) {
+            if(loginRegister.dbmode==='mysql'){
+                runQuery('UPDATE `tank5`.`user` SET `Won`=`Won`+1 WHERE `ID` = ?;',
+                    [remotePlayers[i].getUserID()]);
+            } else {
+                fs.readFile('./userDB', function(err, data2) {
+                    var userDB = JSON.parse(data2);
+                    for(var j=0;j<userDB.length;j++){
+                        if(userDB[j].ID===remotePlayers[i].getUserID()){
+                            userDB[j].Won++;
+                            fs.writeFile('./userDB', JSON.stringify(userDB));
+                        }
+                    }
+                });
+            }
+        }
+    }
+    main.session.setIsRemoved(true);
+};

@@ -1,6 +1,6 @@
 //RESTART server for changes to applied
 var mapName = 'classic_small';
-debugLogLevel = 0;
+debugLogLevel = 1;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
 setTimeout = setTimeout;
@@ -15,10 +15,10 @@ function loop() {
         d1second = now - last1second;
     for(var j=0; j<allSession.length; j++) {
         session = allSession[j];
-        exports.session = allSession[j];
-        //todo all socket event QUEUE to process in loop(), make allSession private
         bots = allSession[j].bots;
         lasers = allSession[j].getLasers();
+        //todo all socket event QUEUE to process in loop(), make allSession private
+        exports.session = allSession[j];
         checkPlayerCount();
         exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
         if(!allSession[j].getStart()) continue;
@@ -40,6 +40,10 @@ function loop() {
         dropcheck.collideDrop();
         player.checkHitPoint();
         botClass.botCheckHP();
+        if(allSession[j].getIsRemoved()) {
+            allSession.splice(j, 1);
+            j--;
+        }
     }
     if(d1second>1000) last1second = now;
     if(now-lastBotTick>=1000) lastBotTick = now;
