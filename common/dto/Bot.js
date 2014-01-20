@@ -5,12 +5,8 @@
 /**************************************************
 ** CLIENT BOT CLASS
 **************************************************/
-function Bot(id, startX, startY, type) {
-    var id = id,
-        x = startX,
-	    y = startY,
-        type = type,
-        pathFound,
+function Bot(id, x, y, type) {
+    var pathFound,
         whereNow = 0,
         to,
         direction = 0,  //up
@@ -18,7 +14,8 @@ function Bot(id, startX, startY, type) {
         image,
         hitPoint,
         width = 40,
-        height = 40;
+        height = 40,
+        lastOriginID = '';
 
     if (type == 'dumb') {
         speed = 2;
@@ -54,6 +51,8 @@ function Bot(id, startX, startY, type) {
     function setHitPoint(para) { hitPoint = para;}
     function getHeight() { return height; }
     function setHeight(para) { height = para; }
+    function getLastOriginID(){return lastOriginID}
+    function setLastOriginID(para){lastOriginID=para}
 
     // Define which variables and methods can be accessed
     return {
@@ -92,6 +91,8 @@ function Bot(id, startX, startY, type) {
         getWidth: getWidth,
         setWidth: setWidth,
         getHeight: getHeight,
-        setHeight: setHeight
+        setHeight: setHeight,
+        getLastOriginID:getLastOriginID,
+        setLastOriginID:setLastOriginID
     }
 }

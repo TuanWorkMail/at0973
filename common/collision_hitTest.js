@@ -79,6 +79,7 @@ function hitTest(array, type) {
                 ship_yh = array[j].getY() + array[j].getHeight();
             if (lasers[i].getX() < ship_xw && lasers[i].getY() < ship_yh && lasers[i].getX() > array[j].getX() && lasers[i].getY() > array[j].getY()) {
                 array[j].setHitPoint(array[j].getHitPoint() - lasers[i].getDamage());
+                array[j].setLastOriginID(lasers[i].getOriginID());
                 lasers[i].setIsRemoved(true);
                 return true;
             }

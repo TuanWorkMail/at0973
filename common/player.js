@@ -21,6 +21,13 @@ function checkHitPoint () {
             debug.log('player ' + remotePlayers[i].getUsername() + ' die');
             remotePlayers[i].setLive(remotePlayers[i].getLive() - 1);
             debug.log('live: ' + remotePlayers[i].getLive());
+            remotePlayers[i].setDeaths(remotePlayers[i].getDeaths()+1);
+            for(var k=0; k<remotePlayers.length; k++) {
+                if(remotePlayers[i].getLastOriginID()===remotePlayers[k].getSocketID()) {
+                    remotePlayers[k].setPlayersKilled(remotePlayers[k].getPlayersKilled()+1);
+                    remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
+                }
+            }
             checkLive(remotePlayers[i]);
         }
     }

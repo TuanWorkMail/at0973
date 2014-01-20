@@ -40,6 +40,7 @@ function loop() {
         hitTest.hitTestEagle();
         dropcheck.collideDrop();
         player.checkHitPoint();
+        botClass.botCheckHP();
     }
     if(d1second>1000) last1second = now;
     if(now-lastBotTick>=1000) lastBotTick = now;

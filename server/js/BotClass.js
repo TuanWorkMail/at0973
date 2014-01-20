@@ -1,6 +1,10 @@
 var botSmart = require('./BotSmart'),
     helper = require('../../common/helper'),
     tmxloader = require('./TMX_Engine').tmxloader,
+    main = require('./main'),
+    broadcastToRoom = require('../socket-listener').broadcastToRoom,
+    Drop = require('../../common/dto/drop').Drop,
+    debug = helper.debug,
     botsLimit = 99,
     alternate = 'stupid';
 /*
@@ -85,11 +89,13 @@ function createBot() {
         bots.push(newBot);
     }
 }
-function botCheckHP(){
+exports.botCheckHP=function(){
+    var bots = main.session.bots,
+        remotePlayers = main.session.getRemotePlayers();
     for(var obj=0;obj<bots.length;obj++){
         if(bots[obj].getHitPoint()<=0){
             // CREATE DROP---------------------------------------
-            if(bots[obj].getType()==='smart'){
+            if(false)if(bots[obj].getType()==='dumb'){
                 var id = helper.createUUID(),
                     type = 'piercing',
                     x = bots[obj].getX(),
@@ -99,12 +105,12 @@ function botCheckHP(){
                 broadcastToRoom(session.getRoomID(),"new drop",{id: id,type: type,x: x,y: y});
             }
             for(var k=0; k<remotePlayers.length; k++) {
-                if(lasers[i].getOriginID()===remotePlayers[k].getSocketID()) {
+                if(bots[obj].getLastOriginID()===remotePlayers[k].getSocketID()) {
                     remotePlayers[k].setBotKill(remotePlayers[k].getBotKill()+1);
                     if(bots[obj].getType()==='smart') {
                         remotePlayers[k].setScore(remotePlayers[k].getScore()+1);
                     } else {
-                        remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
+                        remotePlayers[k].setScore(remotePlayers[k].getScore()+2);
                     }
                     debug.log('player '+remotePlayers[k].getUsername()+' bot kill: '
                         +remotePlayers[k].getBotKill()+' score: '+remotePlayers[k].getScore());
@@ -115,7 +121,7 @@ function botCheckHP(){
             bots.splice(obj, 1);
         }
     }
-}
+};
 
 
 function drawPath() {

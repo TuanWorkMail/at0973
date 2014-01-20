@@ -25,6 +25,7 @@ dto.Player = function(x, y, direction, spawnPoint) {
         bulletType = 'normal',
         score = 0,
         deaths = 0,
+        lastOriginID = '',
         position;
 
 	// Getters and setters
@@ -57,8 +58,6 @@ dto.Player = function(x, y, direction, spawnPoint) {
     };
     this.getMoving = function () { return moving; };
     this.setMoving = function (para) { moving = para; };
-    this.getPosition = function () { return position; };
-    this.setPosition = function (para) { position = para; };
     this.getHitPoint = function () { return hitPoint; };
     this.setHitPoint = function (para) { hitPoint = para; };
     this.getBotKill = function(){return botKill};
@@ -68,9 +67,15 @@ dto.Player = function(x, y, direction, spawnPoint) {
     this.getTeamName=function (){return teamName};
     this.setTeamName=function (para){teamName=para};
     this.getSpawnPoint=function (){return spawnPoint};
-    this.getScore=function (){return score};
-    this.setScore=function (para){score=para};
+    this.getScore=function (){return score};this.setScore=function (para){score=para};
+    this.getDeaths=function(){return deaths};this.setDeaths=function(para){deaths=para};
+    this.getLastOriginID=function(){return lastOriginID};
+    this.setLastOriginID=function(para){lastOriginID=para};
+    this.getPlayersKilled=function(){return playersKilled};
+    this.setPlayersKilled=function(para){playersKilled=para};
 
+    this.getPosition = function () { return position; };
+    this.setPosition = function (para) { position = para; };
 };
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.Player = dto.Player;
