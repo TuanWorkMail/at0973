@@ -70,8 +70,8 @@ function hitTestPlayer() {
     hitTest(session.getRemotePlayers());
 }
 function hitTest(array, type) {
-    if(typeof type === 'undefined') type = 0;
-    lasers = main.session.getLasers();
+    if(typeof type === 'undefined') type = '';
+    var lasers = main.session.getLasers();
     for (var i = 0; i < lasers.length; i++) {
         if(type==='bot'&&lasers[i].getOriginID().length!==20) continue;
         for (var j = 0; j < array.length; j++) {

@@ -28,7 +28,7 @@ function checkHitPoint () {
 function checkLive(object) {
     var remotePlayers = session.getRemotePlayers();
     //if (object.getLive() > 0) {
-    if(1===1){
+    if(true){
         var result = spawnPlayer(object.getSpawnPoint());
         object.setX(result.x);
         object.setY(result.y);
