@@ -33,7 +33,6 @@ function loop() {
         });
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         hitTest.hitTestBot();
-        teamSumKill.totalKill();
         //TODO: change 1000 to 500 will throw error,
         if(now-lastBotTick>=1000) botStupid.BotShootInterval(bots);
         hitTest.hitTestPlayer();
@@ -95,7 +94,6 @@ var util = require("util"),
     Bullet = require('../../common/dto/bullet').Bullet,
     dropcheck = require('./drop-check'),
     combine16to1tile = require('../../common/combine-layer').combine16to1tile,
-    teamSumKill = require('./team.sum-kill'),
     checkPlayerCount = require('./session.check-player-count.js').checkPlayerCount,
     debug = require('../../common/helper').debug,
     shootDestroyBrick = require('../../common/shoot-destroy-brick').shootDestroyBrick,

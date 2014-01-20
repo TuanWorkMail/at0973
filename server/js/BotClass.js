@@ -4,6 +4,7 @@ var botSmart = require('./BotSmart'),
     main = require('./main'),
     broadcastToRoom = require('../socket-listener').broadcastToRoom,
     Drop = require('../../common/dto/drop').Drop,
+    teamSumKill = require('./team.sum-kill'),
     debug = helper.debug,
     botsLimit = 99,
     alternate = 'stupid';
@@ -91,7 +92,8 @@ function createBot() {
 }
 exports.botCheckHP=function(){
     var bots = main.session.bots,
-        remotePlayers = main.session.getRemotePlayers();
+        remotePlayers = main.session.getRemotePlayers(),
+        check = false;
     for(var obj=0;obj<bots.length;obj++){
         if(bots[obj].getHitPoint()<=0){
             // CREATE DROP---------------------------------------
@@ -117,10 +119,12 @@ exports.botCheckHP=function(){
                 }
             }
             // MOVE THE ABOVE OUT-----------------------------------
+            check = true;
             broadcastToRoom(session.getRoomID(),"bot die",{ count: bots[obj].id });
             bots.splice(obj, 1);
         }
     }
+    if(check) teamSumKill.totalKill();
 };
 
 

@@ -43,16 +43,18 @@ function onStart(data) {
     tmxloader.load("../common/map/" + data.map + ".tmx");
     function compare(a,b) {
         if (a.Won < b.Won)
-            return -1;
-        if (a.Won > b.Won)
             return 1;
+        if (a.Won > b.Won)
+            return -1;
         return 0;
     }
     data.all_user.sort(compare);
 
     var alluser = '';
     alluser += '<table><tr><th>Username</th><th>Won</th></tr>';
-    for(var i=0; i<data.all_user.length; i++) {
+    if(data.all_user.length>20) var display = 20;
+    else display = data.all_user.length;
+    for(var i=0; i<display; i++) {
         alluser += '<tr>';
         alluser += '<td>'+data.all_user[i].Username+'</td>';
         alluser += '<td>'+data.all_user[i].Won+'</td>';

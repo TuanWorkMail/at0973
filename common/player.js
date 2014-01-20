@@ -10,12 +10,14 @@
         debug = helper.debug,
         reset = require('./session.restart').reset,
         spawnPlayer = require('./player.add-new').spawnPlayer,
-        characterMoving = require('./character.moving').character;
+        characterMoving = require('./character.moving').character,
+        teamSumKill = require('../server/js/team.sum-kill');
     dto.Player = require('./dto/Player').Player;
     character.moving = characterMoving.moving;
 }
 function checkHitPoint () {
-    var remotePlayers = session.getRemotePlayers();
+    var remotePlayers = session.getRemotePlayers(),
+        check = false;
     for (var i = 0; i < remotePlayers.length; ++i) {
         if (remotePlayers[i].getHitPoint() <= 0 && alive) {
             debug.log('player ' + remotePlayers[i].getUsername() + ' die');
@@ -28,9 +30,11 @@ function checkHitPoint () {
                     remotePlayers[k].setScore(remotePlayers[k].getScore()+5);
                 }
             }
+            check = true;
             checkLive(remotePlayers[i]);
         }
     }
+    if(check)teamSumKill.totalKill();
 }
 function checkLive(object) {
     var remotePlayers = session.getRemotePlayers();

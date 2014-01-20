@@ -20,7 +20,9 @@ exports.totalKill = function(){
                 team[j].setScore(team[j].getScore()+remotePlayers[i].getScore());
             }
         }
-        if(team[j].getKill()!==lastTeamKills[j] || team[j].getScore()!==lastTeamScore[j]){
+        if(team[j].getScore()===30){}
+        //if(team[j].getKill()!==lastTeamKills[j] || team[j].getScore()!==lastTeamScore[j]){
+        else{
             lastTeamKills[j]=team[j].getKill();
             lastTeamScore[j]=team[j].getScore();
             debug.log('team '+team[j].getName()+' kills: '+team[j].getKill()+' score: '+team[j].getScore(), 1);
