@@ -1,7 +1,6 @@
 var dbmode = 'mysql-----',                                     // use which database: mysql OR file-based?
     socketListener = require('../socket-listener'),
     broadcastToRoom = socketListener.broadcastToRoom,
-    sockets = socketListener.sockets,
     mysql = require('./mysql'),
     util = require('util'),
     playerAddNew = require('../../common/player.add-new'),

@@ -36,6 +36,7 @@ exports.end = function(teamName){
     var remotePlayers = main.session.getRemotePlayers();
     for(var i=0;i<remotePlayers.length;i++){
         if(remotePlayers[i].getTeamName()===teamName) {
+            broadcastToRoom(main.session.getRoomID(),"a", { result: 'a' });
             if(loginRegister.dbmode==='mysql'){
                 runQuery('UPDATE `tank5`.`user` SET `Won`=`Won`+1 WHERE `ID` = ?;',
                     [remotePlayers[i].getUserID()]);
@@ -52,6 +53,8 @@ exports.end = function(teamName){
                     });
                 }(remotePlayers[i].getUserID()));
             }
+        } else {
+            broadcastToRoom(main.session.getRoomID(),"a", { result: 'b' });
         }
     }
     main.session.setIsRemoved(true);

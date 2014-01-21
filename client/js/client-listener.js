@@ -33,6 +33,7 @@ function setSocketEventHandlers() {
     socket.on("new character", onNewCharacter);
     socket.on("move character", onMoveCharacter);
     socket.on("remove character", onRemoveCharacter);
+    socket.on("a", onEndSession);
 }
 function onSocketConnected() {
     debug.log("Connected to socket server");
@@ -182,6 +183,11 @@ function onRemoveCharacter(data){
     if(!result) return;
     var characters = session.getCharacters();
     characters.splice(characters.indexOf(result), 1);
+}
+function onEndSession(data){
+    document.getElementById('waiting').style.display = 'block';
+    if(data.result === 'a') document.getElementById('waiting').innerHTML += 'VICTORY';
+    else document.getElementById('waiting').innerHTML += data.result;
 }
 function characterById(id){
     var characters = session.getCharacters();
