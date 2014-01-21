@@ -40,15 +40,17 @@ exports.end = function(teamName){
                 runQuery('UPDATE `tank5`.`user` SET `Won`=`Won`+1 WHERE `ID` = ?;',
                     [remotePlayers[i].getUserID()]);
             } else {
-                fs.readFile('./userDB', function(err, data2) {
-                    var userDB = JSON.parse(data2);
-                    for(var j=0;j<userDB.length;j++){
-                        if(userDB[j].ID===remotePlayers[i].getUserID()){
-                            userDB[j].Won++;
-                            fs.writeFile('./userDB', JSON.stringify(userDB));
+                (function(UserID){
+                    fs.readFile('./userDB', function(err, data2) {
+                        var userDB = JSON.parse(data2);
+                        for(var j=0;j<userDB.length;j++){
+                            if(userDB[j].ID===UserID){
+                                userDB[j].Won++;
+                                fs.writeFile('./userDB', JSON.stringify(userDB));
+                            }
                         }
-                    }
-                });
+                    });
+                }(remotePlayers[i].getUserID()));
             }
         }
     }
