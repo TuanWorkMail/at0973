@@ -11,6 +11,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var lastRoomID = 0;                                            // auto increment roomID
 }
 function newPlayer(socketID, username, userID) {
+    if(allSession.length<1) allSession.push(new Session(newRoomID()));
     var result = spawnPlayer(allSession[allSession.length-1].getRemotePlayers().length),
         x = result.x,
         y = result.y,

@@ -30,7 +30,7 @@ tank5.main = (function() {
         setTimeout(function() {
             drawMap();
             drawLayer(layerByName('overhead').data, contextOverhead);
-            drawEagle();
+            //drawEagle();
         }, 500);
 
         //START THE GAME

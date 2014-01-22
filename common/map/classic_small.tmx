@@ -214,8 +214,6 @@
  <objectgroup color="#ff0000" name="bot" width="48" height="48">
   <object name="1" x="0" y="240" width="40" height="40"/>
   <object name="2" x="440" y="200" width="40" height="40"/>
-  <object name="3" x="400" y="240" width="40" height="40"/>
-  <object name="4" x="40" y="200" width="40" height="40"/>
  </objectgroup>
  <objectgroup color="#ffff00" name="eagle" width="48" height="48">
   <object name="0" x="210" y="440" width="40" height="40"/>
@@ -240,5 +238,9 @@
  </objectgroup>
  <objectgroup name="dimension" width="48" height="48">
   <object x="120" y="0" width="40" height="40"/>
+ </objectgroup>
+ <objectgroup color="#ff5500" name="boss" width="48" height="48">
+  <object x="50" y="210"/>
+  <object x="400" y="240" width="30" height="30"/>
  </objectgroup>
 </map>

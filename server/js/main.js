@@ -3,6 +3,7 @@ var mapName = 'classic_small';
 debugLogLevel = 1;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
+exports.score = 1;
 setTimeout = setTimeout;
 function init() {
     //create a new blank session
@@ -29,7 +30,7 @@ function loop() {
         player.movingPlayer();
         bulletMain.moveLaser();
         bulletMain.removeBullet_old();
-        botClass.moveBot();
+        botClass.moveBot();//ERROR smartbot on classic bug cannot move
         shootDestroyBrick();
 
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());

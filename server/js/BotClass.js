@@ -70,7 +70,7 @@ function createBot() {
             y = botGroup[whereSpawn].y;
             type = 'dumb';
             session.setWhereSpawn(whereSpawn+1);
-            alternate = 'smart';
+            //alternate = 'smart';      // smart bot stuck in classic_small
         } else {
             if(bossGroup.length !== 0){
             if (bossCount >= bossGroup.length){

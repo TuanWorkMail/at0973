@@ -21,7 +21,7 @@ exports.totalKill = function(){
                 team[j].setScore(team[j].getScore()+remotePlayers[i].getScore());
             }
         }
-        if(team[j].getScore()>=1) endSession(team[j].getName());
+        if(team[j].getScore()>=main.score) endSession(team[j].getName());
         //if(team[j].getKill()!==lastTeamKills[j] || team[j].getScore()!==lastTeamScore[j]){
         else{
             lastTeamKills[j]=team[j].getKill();

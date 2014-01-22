@@ -15,6 +15,7 @@ exports.pathFinder = function(world, pathStart, pathEnd) {
 
     //If your game world is rectangular, 
     // just fill the array with dummy values to pad the empty space.
+    if(typeof world[0] === 'undefined') return [];
     if (world.length > world[0].length) {
         for (var j = 0; j < world.length; j++) {
             for (var i = 1; i <= world.length - world[0].length; i++) {

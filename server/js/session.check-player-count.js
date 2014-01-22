@@ -13,9 +13,12 @@ exports.checkPlayerCount = function(){
             for(var i=0;i<remotePlayers.length;i++){
                 if(remotePlayers[i].getTeamName()===team[j].getName()) teamPlayers[j]++;
             }
+            if(teamPlayers[j]===0) var check = true;
         }
-        for(i=0;i<teamPlayers.length;i++){
-            if(teamPlayers[i]===0) endSession(team[i].getName());
+        if(check){
+            for(i=0;i<teamPlayers.length;i++){
+                if(teamPlayers[i]!==0) endSession(team[i].getName());
+            }
         }
     } else {
     var now = Date.now();
