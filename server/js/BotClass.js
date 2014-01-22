@@ -86,7 +86,7 @@ exports.botCheckHP=function(){
     for(var obj=0;obj<bots.length;obj++){
         if(bots[obj].getHitPoint()<=0){
             // CREATE DROP---------------------------------------
-            if(false)if(bots[obj].getType()==='dumb'){
+            if(false)if(bots[obj].getType()==='dumb'){      //temporary disable drop
                 var id = helper.createUUID(),
                     type = 'piercing',
                     x = bots[obj].getX(),

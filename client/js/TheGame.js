@@ -3,19 +3,19 @@ window.onload = setSocketEventHandlers;
 var debugLogLevel = 1,
     tank5 = {},
     session,
-    lasers;
+    lasers,
+    gameStarted = false;
 // LOCAL SCOPE
 tank5.main = (function() {
     var fps = 60,
         lastTick = Date.now(),//delta time
-        lastfpstick = Date.now(),
-        gameStarted = false;
+        lastfpstick = Date.now();
 
     function init() {
         var width = tmxloader.map.width * tmxloader.map.tileWidth,
             height = tmxloader.map.height * tmxloader.map.tileHeight;
-        session = new Session(0);
-        lasers = session.getLasers();
+        //session = new Session(0);
+        //lasers = session.getLasers();
         createStackedCanvases();
         // pop up login
         var centerPlaceholder = document.getElementById('center'),
@@ -60,9 +60,6 @@ tank5.main = (function() {
         }
         requestAnimationFrame(gameLoop);
     }
-
-    function getGameStarted() {return gameStarted}
-    function setGameStarted(para) {gameStarted=para}
     function moveCharacter(){
         for(var i=0;i<session.getCharacters().length;i++){
             if(session.getCharacters()[i].getMoving()) character.moving(session.getCharacters()[i], '');
@@ -70,8 +67,6 @@ tank5.main = (function() {
     }
 
     return {
-        getGameStarted: getGameStarted,
-        setGameStarted: setGameStarted,
         init: init
     }
 }());

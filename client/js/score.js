@@ -15,7 +15,6 @@ function continueButton(e) {
 }
 
 function scoreTotal() {
-    var gameStarted = tank5.main.getGameStarted();
     /*
     ctx.fillText('Score: ', 10, 55);
     ctx.fillText(score, 70, 55);
@@ -43,6 +42,6 @@ function onStartCountdown(){
 function gameStart() {
     document.getElementById('waiting').style.display = 'block';
     socket.emit("play now");
-    tank5.main.setGameStarted(true);
+    gameStarted = true;
     canvasOverhead.removeEventListener('click', gameStart, false);
 }
