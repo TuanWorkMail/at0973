@@ -51,6 +51,9 @@ function onBroadcastToRoom(data){
 function broadcastToRoom(roomID, string, object){
     io.sockets.in('r' + roomID).emit(string, object);
 }
+function emit(socketID, string, object){
+    io.sockets.socket(socketID).emit(string, object);
+}
 var util = require('util');
 local_remote = 'local';
 util.log('production environment');
@@ -80,7 +83,7 @@ io.sockets.on("connection", function(socket) {
     socket.on("broadcast to room", onBroadcastToRoom);
 });
 exports.broadcastToRoom = broadcastToRoom;
-exports.sockets = io.sockets;
+exports.emit = emit;
 var runQuery = require('./js/mysql').runQuery,
     loginRegister = require('./js/login-register'),
     player = require('../common/player'),

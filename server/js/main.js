@@ -11,6 +11,7 @@ function init() {
     setTimeout(loop, 1000);
 }
 function loop() {
+    tick(function(){
     var now = Date.now(),
         d1second = now - last1second;
     for(var j=0; j<allSession.length; j++) {
@@ -22,15 +23,15 @@ function loop() {
         checkPlayerCount();
         exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
         if(!allSession[j].getStart()) continue;
-        tick(function(){
-            moveKeyDown();
-            moveKeyUp();
-            player.movingPlayer();
-            bulletMain.moveLaser();
-            bulletMain.removeBullet_old();
-            botClass.moveBot();
-            shootDestroyBrick();
-        });
+
+        moveKeyDown();
+        moveKeyUp();
+        player.movingPlayer();
+        bulletMain.moveLaser();
+        bulletMain.removeBullet_old();
+        botClass.moveBot();
+        shootDestroyBrick();
+
         if(d1second>1000) session.setCombinedLayer(combine16to1tile());
         hitTest.hitTestBot();
         //TODO: change 1000 to 500 will throw error,
@@ -47,6 +48,7 @@ function loop() {
     }
     if(d1second>1000) last1second = now;
     if(now-lastBotTick>=1000) lastBotTick = now;
+    });
     setTimeout(loop, 1000/60);
 }
 exports.queuePlayerInput = function(socketID, eventName, data){

@@ -8,7 +8,7 @@ var tick = (function(){
         var loopUnRounded = (delta + skipTick)/fixedDelta;
         var loopRounded = Math.round(loopUnRounded);
         skipTick = delta + skipTick - loopRounded * fixedDelta;
-        if(loopRounded>10) loopRounded = 10;    // frame skipping
+        //if(loopRounded>10) loopRounded = 10;    // frame skipping
         for(var i=0;i<loopRounded;i++) {
             callback();
         }
