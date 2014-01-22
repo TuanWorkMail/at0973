@@ -7,15 +7,19 @@
  */
 var mapCollision = require('./../../common/collision_hitTest').mapCollision,
     shooting = require('../../common/bulletMain').shooting,
-    character = require('../../common/character.moving').character;
+    character = require('../../common/character.moving').character,
+    broadcastToRoom = require('../socket-listener').broadcastToRoom,
+    main = require('./main');
 //stupid bot just go straight, if stuck turn randomly
 exports.goStraight = function (object) {
     //flag to check if hit the wall
     var flag = character.moving(object, 'tank');
     if(!flag) {
         var direction = require('./../../common/helper').randomNumber(0, 3);
-        if(direction===3) object.setDirection(-1);    //left
-        else object.setDirection(direction);
+        if(direction===3) direction=-1;    //left
+        object.setDirection(direction);
+        broadcastToRoom(main.session.getRoomID(),"move character", { id: object.getID(),
+            direction: object.getDirection(), x: object.getX(), y: object.getY(), moving: true });
     }
 };
 

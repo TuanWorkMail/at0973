@@ -288,6 +288,14 @@ function renderCharacter(){
                 x -= dimension.width / 2;
                 y -= dimension.height / 2;
                 break;
+            case 'bot':
+                switch (character.getDirection()){
+                    case 0: gid = 7; break;     //up
+                    case 2: gid = 6; break;     //down
+                    case -1: gid = 8; break;    //left
+                    case 1: gid = 5; break;     //right
+                }
+                break;
         }
         drawTile(gid, x, y);
         if(typeof character.getName() !== 'undefined'){

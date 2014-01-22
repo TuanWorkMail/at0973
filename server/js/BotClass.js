@@ -8,20 +8,6 @@ var botSmart = require('./BotSmart'),
     debug = helper.debug,
     botsLimit = 99,
     alternate = 'stupid';
-/*
-var pathStart,
-    pathStartX,
-    pathStartY,
-    pathEnd,
-    thePath,
-    thePathX,
-    thePathY,
-    c,//currently headed to which target in thePath
-    //botGroup,
-
-    //grid = new PF.Grid(20, 20, world),
-    //finder = new PF.AStarFinder(),
-*/
 
 exports.moveBot=function () {
     createBot();
@@ -84,7 +70,10 @@ function createBot() {
             alternate = 'stupid';
         }
         newBot = new Bot(id, x, y, type);
-        if(type==='smart') {
+        var direction = 0;  //up
+        broadcastToRoom(main.session.getRoomID(), "new character", {id: id, x: x, y: y,
+            direction: direction, speed: newBot.getSpeed(), type: 'bot', moving: true});
+        if(type==='smart') {                                        // here why still error????? and your code suckkkkkkkkkkkk
             newBot.pathFound = botSmart.botRandomPath(newBot);
         }
         bots.push(newBot);

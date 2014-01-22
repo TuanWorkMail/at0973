@@ -54,8 +54,8 @@ tank5.main = (function() {
                 lastfpstick = now;
             }
             renderCharacter();
-            drawBot();
-            drawDrop();
+            //drawBot();
+            //drawDrop();
             animation.renderAnimation();
         }
         requestAnimationFrame(gameLoop);
