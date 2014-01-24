@@ -76,20 +76,14 @@ function movingPlayer() {
 }
 // Find player by ID
 function playerById(socketid) {
-    var _allSession = [];
-    if(typeof allSession==='undefined')
-        _allSession.push(session);
-    else
-        _allSession = allSession;
-    for (var j=0; j<_allSession.length; j++) {
-        var remotePlayers = _allSession[j].getRemotePlayers();
+        var remotePlayers = main.session.getRemotePlayers();
         for (var i = 0; i < remotePlayers.length; i++) {
             if (remotePlayers[i].getSocketID() == socketid)
             // HACKY SOLUTION RETURN LASERS HERE
-                return {players:remotePlayers[i],roomID: _allSession[j].getRoomID(), lasers: _allSession[j].getLasers()};
+                return {players:remotePlayers[i],roomID: main.session.getRoomID(), lasers: [0,0]};
         }
 
-    }
+
     return false;
 }
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {

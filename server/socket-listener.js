@@ -1,9 +1,24 @@
 var lasttick = Date.now();
 function onMoveKeyDown(data) {
-    main.queuePlayerInput(this.id, 'move key down', data);
+    //main.queuePlayerInput(this.id, 'move key down', data);
+    main.getSession(this).getInputQueue().moveKeyDown.push(new InputQueue(this.id, data));
 }
 function onMoveKeyUp(data) {
-    main.queuePlayerInput(this.id, 'move key up', data);
+    //main.queuePlayerInput(this.id, 'move key up', data);
+    main.getSession(this).getInputQueue().moveKeyUp.push(new InputQueue(this.id, data));
+}
+function queueInput(message, that, data){
+    var session = main.getSession(that);
+    if(!session) return;
+    var inputQueue = session.getInputQueue();
+    switch (message){
+        case 'move key down':
+            inputQueue.moveKeyDown.push(new InputQueue(that.id, data));
+            break;
+        case 'move key up':
+            inputQueue.moveKeyUp.push(new InputQueue(that.id, data));
+            break;
+    }
 }
 var shootLastTick = Date.now();
 function onShootKeyDown() {
@@ -77,16 +92,29 @@ io.sockets.on("connection", function(socket) {
     socket.on("login", loginRegister.login);
     socket.on("register", loginRegister.register);
     socket.on("play now", loginRegister.onPlayNow);
-    socket.on("move key down", onMoveKeyDown);
-    socket.on("move key up", onMoveKeyUp);
+    socket.on("move key down", function(data){queueInput('move key down', this, data)});
+    socket.on("move key up", function(data){queueInput('move key up', this, data)});
     socket.on("shoot key down", onShootKeyDown);
     socket.on("broadcast to room", onBroadcastToRoom);
 });
+function InputQueue(socketid, data){
+    this.getSocketID = function(){return socketid};
+    this.getData = function(){return data};
+}
+function getRoomID(that){
+    for (var key in that.manager.rooms) {
+        if (that.manager.rooms.hasOwnProperty(key)) {
+            if(key!=='') return key.replace('/r','');
+        }
+    }
+    return false;
+}
 exports.broadcastToRoom = broadcastToRoom;
 exports.emit = emit;
 var runQuery = require('./js/mysql').runQuery,
     loginRegister = require('./js/login-register'),
     player = require('../common/player'),
     main = require('./js/main'),
-    debug = require('../common/helper').debug;
+    debug = require('../common/helper').debug,
+    inputQueue = [];
 require('./web-server');

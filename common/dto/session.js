@@ -26,7 +26,7 @@ function Session(roomid) {
         destroyedBrick = [],
         isRemoved = false,
         characters = [],
-        inputQueue = [];
+        inputQueue = {};
 
     clone2DArray(layerByName('destructible').data, destructible);
     clone2DArray(layerByName('indestructible').data, indestructible);
@@ -34,6 +34,8 @@ function Session(roomid) {
         team.push(new Team('up'));
         team.push(new Team('down'));
     }
+    inputQueue.moveKeyDown = [];
+    inputQueue.moveKeyUp = [];
 
     function getRoomID() {return roomid}
     function getRemotePlayers() { return remotePlayers; }

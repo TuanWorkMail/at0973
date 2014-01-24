@@ -1,6 +1,6 @@
 //RESTART server for changes to applied
 var mapName = 'classic_small';
-debugLogLevel = 1;
+debugLogLevel = 0;
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
 exports.score = 1;
@@ -87,7 +87,17 @@ exports.sessionByRoomID = function(roomID){
     }
     return false;       // no session found
 };
-
+exports.getSession = function(that){
+    for (var key in that.manager.rooms) {
+        if (that.manager.rooms.hasOwnProperty(key)) {
+            if(key!=='') var roomID = key.replace('/r','');
+        }
+    }
+    for(var i=0; i<allSession.length; i++){
+        if(allSession[i].getRoomID()==roomID) return allSession[i];     // compare string to number use == instead of ===
+    }
+    return false;
+};
 // LOCAL SCOPE
 var util = require("util"),
     helper = require('../../common/helper'),
@@ -109,6 +119,7 @@ var util = require("util"),
     moveKeyUp = require('./player.move-key-up').moveKeyUp,
     tick = require('../../common/tick').tick,
     loginRegister = require('./login-register'),
+    inputQueueSwitch = require('./inputQuere.switch').inputQueueSwitch,
     last1second = Date.now(),
     lastBotTick = Date.now();                                            // for stupid bot auto shoot
 

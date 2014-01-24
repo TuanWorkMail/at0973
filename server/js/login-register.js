@@ -86,6 +86,14 @@ exports.onPlayNow = function(){
     var newPlayer = playerAddNew.newPlayer(this.id, result.Username, result.ID),
         roomID = newPlayer.roomID;
     newPlayer = newPlayer.newPlayer;
+    for (var key in this.manager.rooms) {
+        if (this.manager.rooms.hasOwnProperty(key)) {
+            if(key!=='') {
+                this.leave(key.replace('/',''));
+                debug.log('client leave room '+key.replace('/',''), 1);
+            }
+        }
+    }
     this.join('r' + roomID);
     debug.log('new player userID: ' + result.ID + ' and username: ' + result.Username + ' and uuid: ' + newPlayer.getID());
     var session = sessionByRoomID(roomID);
