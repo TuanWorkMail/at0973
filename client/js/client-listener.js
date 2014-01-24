@@ -186,8 +186,8 @@ function onRemoveCharacter(data){
 }
 function onEndSession(data){
     document.getElementById('waiting').style.display = 'block';
-    if(data.result === 'a') document.getElementById('waiting').innerHTML = 'VICTORY';
-    else document.getElementById('waiting').innerHTML = 'DEFEAT';
+    if(data.result === 'a') document.getElementById('waiting').innerHTML = 'VICTORY<br/>click to replay';
+    else document.getElementById('waiting').innerHTML = 'DEFEAT<br/>click to replay';
 }
 function characterById(id){
     var characters = session.getCharacters();

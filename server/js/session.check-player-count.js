@@ -30,7 +30,7 @@ exports.checkPlayerCount = function(){
         setTimeout(function(){
             session.setStart(true);
             broadcastToRoom(main.session.getRoomID(), 'hide popup');
-        }, 5000);
+        }, 3000);
     }
     }
 };

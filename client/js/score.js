@@ -32,7 +32,7 @@ var countdown = 0;
 function onStartCountdown(){
     if(countdown===0) {
         document.getElementById('waiting').style.display = 'block';
-        countdown = 5;
+        countdown = 3;
     }
     countdown--;
     document.getElementById('waiting').innerHTML = ''+countdown;
