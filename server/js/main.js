@@ -22,7 +22,7 @@ function loop() {
         //todo all socket event QUEUE to process in loop(), make allSession private
         exports.session = allSession[j];
         checkPlayerCount();
-        exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
+        //exports.inputQueue = inputQueue;//todo move inputQueue to socket-listener to trigger export when have new info
         if(!allSession[j].getStart()) continue;
 
         moveKeyDown();
@@ -53,7 +53,7 @@ function loop() {
     setTimeout(loop, 1000/60);
 }
 exports.queuePlayerInput = function(socketID, eventName, data){
-    inputQueue.push(new InputQueue(socketID, eventName, data));
+    session.getInputQueue().push(new InputQueue(socketID, eventName, data));
 };
 exports.onEndMatch = function(data) {
     var that = this,
@@ -110,8 +110,7 @@ var util = require("util"),
     tick = require('../../common/tick').tick,
     loginRegister = require('./login-register'),
     last1second = Date.now(),
-    lastBotTick = Date.now(),                                            // for stupid bot auto shoot
-    inputQueue = [];
+    lastBotTick = Date.now();                                            // for stupid bot auto shoot
 
 
 // GLOBAL SCOPE

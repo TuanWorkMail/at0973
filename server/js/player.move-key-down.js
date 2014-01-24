@@ -3,12 +3,12 @@ var main = require('./main'),
     debug = require('../../common/helper').debug,
     broadcastToRoom = require('../socket-listener').broadcastToRoom;
 exports.moveKeyDown = function() {
-    var inputQueue = main.inputQueue;
+    var inputQueue = main.session.getInputQueue();
     for(var i=0;i<inputQueue.length;i++){
         if(inputQueue[i].getEventName()!=='move key down') continue;
         var players = playerById(inputQueue[i].getSocketID());
         if (!players) {
-            debug.log('move key down: player not found');
+            debug.log('move key down: player not found '+inputQueue[i].getSocketID(), 1);
             return;
         }
         players.players.setDirection(inputQueue[i].getData().move);

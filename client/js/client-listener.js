@@ -19,8 +19,8 @@ function setSocketEventHandlers() {
 	socket.on("connect", onSocketConnected);
     socket.on("start", onStart);
 	socket.on("disconnect", onSocketDisconnect);
-	socket.on("bot broadcast", onBotBroadcast);
-	socket.on("bot die", onBotDie);
+	//socket.on("bot broadcast", onBotBroadcast);
+	//socket.on("bot die", onBotDie);
 	socket.on("login", onLogin);
 	socket.on("register", onRegister);
 	socket.on("reset", onReset);

@@ -14,7 +14,7 @@ tank5.main = (function() {
     function init() {
         var width = tmxloader.map.width * tmxloader.map.tileWidth,
             height = tmxloader.map.height * tmxloader.map.tileHeight;
-        //session = new Session(0);
+        session = new Session(0);
         //lasers = session.getLasers();
         createStackedCanvases();
         // pop up login
@@ -65,7 +65,16 @@ tank5.main = (function() {
             if(session.getCharacters()[i].getMoving()) character.moving(session.getCharacters()[i], '');
         }
     }
-
+    function Session(id){
+        var characters = [],
+            destructible = [],
+            indestructible = [];
+        clone2DArray(layerByName('destructible').data, destructible);
+        clone2DArray(layerByName('indestructible').data, indestructible);
+        this.getCharacters = function(){return characters};
+        this.getDestructible = function(){return destructible};
+        this.getIndestructible = function(){return indestructible};
+    }
     return {
         init: init
     }
