@@ -78,7 +78,7 @@ io.configure(function () {
     io.set("log level", 2);
 });
 io.sockets.on("connection", function(socket) {
-    if(loginRegister.dbmode==='mysql'){
+    if(main.dbmode==='mysql'){
         runQuery('SELECT Username, Won FROM user', [], function (err, rows) {
             socket.emit('start', {map: main.mapName, all_user: rows});
         });

@@ -1,5 +1,6 @@
 ﻿if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     var util = require('util');
+    var debugLogLevel = require('../server/js/main').debugLogLevel;
     exports.createUUID = createUUID;
     exports.randomNumber = randomNumber;
     exports.clone2DArray = clone2DArray;

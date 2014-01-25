@@ -1,10 +1,10 @@
 //RESTART server for changes to applied
 var mapName = 'classic_small';
-debugLogLevel = 0;
+exports.debugLogLevel = 1;
+exports.dbmode = 'mysql--';
 exports.minimumNoPlayer = 2;
 exports.mapName = mapName;
 exports.score = 1;
-setTimeout = setTimeout;
 function init() {
     //create a new blank session
     var newSession = new Session(0);

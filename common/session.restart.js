@@ -38,7 +38,7 @@ exports.end = function(teamName){
     var remotePlayers = main.session.getRemotePlayers();
     for(var i=0;i<remotePlayers.length;i++){
         if(remotePlayers[i].getTeamName()===teamName) {
-            if(loginRegister.dbmode==='mysql'){
+            if(main.dbmode==='mysql'){
                 runQuery('UPDATE `tank5`.`user` SET `Won`=`Won`+1 WHERE `ID` = ?;',
                     [remotePlayers[i].getUserID()]);
             } else {

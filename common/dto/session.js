@@ -2,7 +2,6 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.Session = Session;
     var TMX_Engine = require('../../server/js/TMX_Engine'),
         helper = require('../helper'),
-        clone2DArray = helper.clone2DArray,
         layerByName = TMX_Engine.layerByName,
         splitBigTile = require('../split-big-tile').splitBigTile,
         Team = require('./team').Team;
@@ -28,8 +27,8 @@ function Session(roomid) {
         characters = [],
         inputQueue = {};
 
-    clone2DArray(layerByName('destructible').data, destructible);
-    clone2DArray(layerByName('indestructible').data, indestructible);
+    helper.clone2DArray(layerByName('destructible').data, destructible);
+    helper.clone2DArray(layerByName('indestructible').data, indestructible);
     if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
         team.push(new Team('up'));
         team.push(new Team('down'));

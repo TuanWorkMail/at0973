@@ -1,5 +1,4 @@
-var dbmode = 'mysql',                                     // use which database: mysql OR file-based?
-    socketListener = require('../socket-listener'),
+var socketListener = require('../socket-listener'),
     broadcastToRoom = socketListener.broadcastToRoom,
     mysql = require('./mysql'),
     util = require('util'),
@@ -7,9 +6,9 @@ var dbmode = 'mysql',                                     // use which database:
     debug = require('../../common/helper').debug,
     fs = require('fs'),
     main = require('./main'),
+    dbmode = main.dbmode,
     sessionByRoomID = main.sessionByRoomID,
     logonUsers = [];
-exports.dbmode = dbmode;
 exports.login = function(data){
     var that = this;
     if(dbmode==='mysql'){
