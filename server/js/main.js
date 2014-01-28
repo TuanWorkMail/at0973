@@ -1,10 +1,5 @@
 //RESTART server for changes to applied
-var mapName = 'classic_small';
-exports.debugLogLevel = 1;
 exports.dbmode = 'mysql--';
-exports.minimumNoPlayer = 2;
-exports.mapName = mapName;
-exports.score = 1;
 function init() {
     //create a new blank session
     var newSession = new Session(0);
@@ -99,7 +94,8 @@ exports.getSession = function(that){
     return false;
 };
 // LOCAL SCOPE
-var util = require("util"),
+var config = require('./loadConfig'),
+    util = require("util"),
     helper = require('../../common/helper'),
     botClass = require('./BotClass.js'),
     botStupid = require('./BotStupid'),
@@ -136,4 +132,4 @@ if(typeof local_remote==='undefined') {
 }
 
 
-require('./TMX_Engine.js').loadMap('../common/map/'+mapName+'.tmx', init);
+require('./TMX_Engine.js').loadMap('../common/map/'+config.mapName+'.tmx', init);

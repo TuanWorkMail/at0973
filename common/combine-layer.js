@@ -2,8 +2,7 @@ if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
     exports.combine16to1tile = combine16to1tile;
     var TMX_Engine = require('../server/js/TMX_Engine'),
         tmxloader = TMX_Engine.tmxloader,
-        helper = require('./helper'),
-        clone2DArray = helper.clone2DArray;
+        helper = require('./helper');
 }
 //combine all the tile layers together for pathfinding
 //output: 1 combined layer
@@ -16,7 +15,7 @@ function combineTileLayer() {
         if (!tmxloader.map.layers[layer].visible) continue;
         //first use 1 layer as the start
         if (combined.length == 0) {
-            clone2DArray(session.getDestructible(), combined);
+            helper.clone2DArray(session.getDestructible(), combined);
         }
         //if combined is 0 and layer is not 0, combined = 1 (unwalkable)
         for (var i = 0; i < tmxloader.map.width; i++) {

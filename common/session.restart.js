@@ -8,7 +8,8 @@ var spawnPlayer = require('./player.add-new').spawnPlayer,
     main = require('../server/js/main'),
     loginRegister = require('../server/js/login-register'),
     runQuery = require('../server/js/mysql').runQuery,
-    fs = require('fs');
+    fs = require('fs'),
+    config = require('../server/js/loadConfig');
 exports.reset = reset;
 function reset(para) {
     var remotePlayers = session.getRemotePlayers();
@@ -38,7 +39,7 @@ exports.end = function(teamName){
     var remotePlayers = main.session.getRemotePlayers();
     for(var i=0;i<remotePlayers.length;i++){
         if(remotePlayers[i].getTeamName()===teamName) {
-            if(main.dbmode==='mysql'){
+            if(config.dbmode==='mysql'){
                 runQuery('UPDATE `tank5`.`user` SET `Won`=`Won`+1 WHERE `ID` = ?;',
                     [remotePlayers[i].getUserID()]);
             } else {

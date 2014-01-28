@@ -1,7 +1,7 @@
 var tmxloader = require('./TMX_Engine').tmxloader,
     broadcastToRoom = require('../socket-listener').broadcastToRoom,
     main = require('./main'),
-    minimumNoPlayer = require('./main').minimumNoPlayer,
+    minimumNoPlayer = require('./loadConfig').minimumNoPlayer,
     endSession = require('../../common/session.restart').end;
 exports.checkPlayerCount = function(){
     if(session.getStart()){
