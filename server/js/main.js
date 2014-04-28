@@ -132,4 +132,5 @@ if(typeof local_remote==='undefined') {
 }
 
 
-require('./TMX_Engine.js').loadMap('../common/map/'+config.mapName+'.tmx', init);
+//require('./TMX_Engine.js').loadMap('../common/map/'+config.mapName+'.tmx', init);
+require('./TMX_Engine.js').loadMap('../common/map/classic_small.tmx', init);

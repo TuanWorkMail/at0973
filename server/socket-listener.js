@@ -80,12 +80,14 @@ io.configure(function () {
 io.sockets.on("connection", function(socket) {
     if(config.dbmode==='mysql'){
         runQuery('SELECT Username, Won FROM user', [], function (err, rows) {
-            socket.emit('start', {map: config.mapName, all_user: rows});
+//            socket.emit('start', {map: config.mapName, all_user: rows});
+            socket.emit('start', {map: 'classic_small', all_user: rows});
         });
     } else {
         fs.readFile('./userDB', function(err, data2) {
             var userDB = JSON.parse(data2);
-            socket.emit('start', {map: config.mapName, all_user: userDB});
+//            socket.emit('start', {map: config.mapName, all_user: userDB});
+            socket.emit('start', {map: 'classic_small', all_user: userDB});
         });
     }
     socket.on("disconnect", onClientDisconnect);
